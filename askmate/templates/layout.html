@@ -13,7 +13,6 @@
             html {
                 font-size: 14px;
             }
-
 		</style>
 
 
@@ -48,32 +47,32 @@
 <main class="container">
 	<div class="row">
 		<div class="col">
-			<div class="text-center">
-				{% with messages = get_flashed_messages(with_categories=true) %}
-					{% if messages %}
-						{% for category, message in messages %}
-							<div class="alert alert-{{ category }}">
-								{{ message }}
-							</div>
-						{% endfor %}
-					{% endif %}
-				{% endwith %}
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="row  w-50 text-center">
+						{% with messages = get_flashed_messages(with_categories=true) %}
+							{% if messages %}
+								{% for category, message in messages %}
+									<div class="alert alert-{{ category }}">
+										{{ message }}
+									</div>
+								{% endfor %}
+							{% endif %}
+						{% endwith %}
+					</div>
+				</div>
 			</div>
 			{%- block content %}
 			{% endblock %}
 		</div>
 		<div class="col-sm-2">
 			<a class="btn btn-outline-primary my-3" href="#" role="button">Ask question</a>
-			<ul class="list-group list-group-flush">
-				<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-light">
-					#java<span class="badge bg-primary rounded-pill">14</span></li>
-				<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-light">
-					#python<span class="badge bg-primary rounded-pill">10</span></li>
-				<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-light">
-					#c++<span class="badge bg-primary rounded-pill">15</span></li>
-				<li class="list-group-item d-flex justify-content-between align-items-center list-group-item-light">
-					#js<span class="badge bg-primary rounded-pill">12</span></li>
-			</ul>
+			<div class="list-group">
+				<a href="#" class="d-flex link-secondary text-decoration-none justify-content-between align-items-center my-1">#java<span class="badge bg-primary rounded-pill">14</span></a>
+				<a href="#" class="d-flex link-secondary text-decoration-none justify-content-between align-items-center my-1">#python<span class="badge bg-primary rounded-pill">10</span></a>
+				<a href="#" class="d-flex link-secondary text-decoration-none justify-content-between align-items-center my-1">#c++<span class="badge justify-content-evenly bg-primary rounded-pill">15</span></a>
+				<a href="#" class="d-flex link-secondary text-decoration-none justify-content-between align-items-center my-1">#js<span class="badge bg-primary rounded-pill">12</span></a>
+			</div>
 		</div>
 	</div>
 </main>
