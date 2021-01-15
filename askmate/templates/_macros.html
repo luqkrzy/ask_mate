@@ -1,0 +1,16 @@
+{# render wtf fields vith validartion  #}
+{% macro render_field(field) %}
+	<div class="form-label">
+		{{ field.label(class="form-control-label") }}
+		{% if field.errors %}
+			{{ field(class="form-control is-invalid") }}
+			<div class="invalid-feedback">
+				{% for error in field.errors %}
+					<span>{{ error }}</span>
+				{% endfor %}
+			</div>
+		{% else %}
+			{{ field(class="form-control") }}
+		{% endif %}
+	</div>
+{% endmacro %}

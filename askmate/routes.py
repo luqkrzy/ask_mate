@@ -1,8 +1,10 @@
 from flask import render_template, url_for, flash, redirect, request
 from askmate import app, db, bcrypt
-from askmate.forms import RegistrationForm, LoginForm
+from flask_wtf.file import FileField, FileAllowed, F
+from askmate.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from askmate.models import Users
 from flask_login import login_user, current_user, logout_user, login_required
+
 
 @app.route("/")
 @app.route("/home")
@@ -39,7 +41,6 @@ def route_login():
     if request.method == 'GET':
         if current_user.is_authenticated:
             return redirect(url_for('route_home'))
-        return render_template('login.html', form=form)
 
     elif request.method == 'POST' and form.validate_on_submit():
         # user = db.session.query(Users).filter(Users.email==form.email.data).first()
@@ -54,13 +55,39 @@ def route_login():
 
     return render_template('login.html', form=form)
 
+
 @app.route("/logout")
 def route_logout():
     logout_user()
     return redirect(url_for('route_home'))
 
 
-@app.route("/account")
+@app.route("/account", methods=['GET', 'POST'])
 @login_required
 def route_account():
     return render_template('account.html')
+
+@app.route("/update_account", methods=['GET', 'POST'])
+@login_required
+def route_update_account():
+    form = UpdateAccountForm()
+    print(request.method)
+
+    if request.method == 'GET':
+        form.username.data = current_user.user_name
+        form.email.data = current_user.email
+
+    if request.method == 'POST' and form.validate_on_submit():
+        print('into')
+        current_user.user_name = form.username.data
+        current_user.email = form.email.data
+        if bcrypt.check_password_hash(current_user.password, form.password.data):
+            print(form.username.data)
+            print(form.email.data)
+            db.session.commit()
+            flash('Your account has been updated!', 'success')
+            return redirect(url_for('route_account'))
+        else:
+            flash('wrong password', 'danger')
+
+    return render_template('update_account.html', form=form)

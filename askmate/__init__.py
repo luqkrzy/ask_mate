@@ -12,4 +12,3 @@ login_manager.login_view = 'route_login'
 login_manager.login_message_category = 'info'
 
 from askmate import routes
-from askmate import static
