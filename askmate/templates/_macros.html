@@ -1,7 +1,7 @@
 {# render wtf fields vith validartion  #}
 {% macro render_field(field) %}
 	<div class="form-label">
-		{{ field.label(class="form-control-label") }}
+		{{ field.label(class="form-control-label mt-2")}}
 		{% if field.errors %}
 			{{ field(class="form-control is-invalid") }}
 			<div class="invalid-feedback">
@@ -10,7 +10,36 @@
 				{% endfor %}
 			</div>
 		{% else %}
-			{{ field(class="form-control") }}
+			{{ field(class="form-control", **kwargs)|safe }}
 		{% endif %}
 	</div>
+{% endmacro %}
+
+{# upload picture button #}
+{% macro upload_picture(field) %}
+	<div class="form-label">
+		{{ field.label }}
+		{% if field.errors %}
+			{{ field(class="form-control-file mb-2") }}
+			{% for error in field.errors %}<br>
+				<span class="text-danger">{{ error }}</span>
+			{% endfor %}
+		{% else %}
+			{{ field(class="form-control-label mt-2", accept="image/*") }}
+		{% endif %}
+	</div>
+{% endmacro %}
+
+
+{% macro render_content(content) %}
+<div class="mb-3">
+	<label for="{{ content.name }}" class="col-form-label">{{ content.label }}</label>
+	{{ content(class_='form-control', **kwargs)|safe }}
+	{% if content.errors %}
+		{{ content(class="form-control-file mb-2") }}
+		{% for error in content.errors %}<br>
+			<span class="text-danger">{{ error }}</span>
+		{% endfor %}
+	{% endif %}
+</div>
 {% endmacro %}

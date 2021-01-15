@@ -1,4 +1,4 @@
-import os
+from askmate import os
 
 def get_connection_string():
     user_name = os.environ.get('PSQL_USER_NAME')

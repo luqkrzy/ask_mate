@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
-{% from '_macros.html' import render_field %}
+{% from '_macros.html' import render_field, upload_picture %}
 {% block title %}Register{% endblock %}
 {% block content %}
 	<div class="container">
 		<div class="row justify-content-center">
-			<form action="{{ url_for('route_register') }}" method="post" class=" row w-50">
+			<form action="{{ url_for('route_register') }}" method="post" enctype="multipart/form-data" class=" row w-50">
 				{{ form.hidden_tag() }}
 				<fieldset>
 					<legend class="border-bottom mb-4 text-center">Join Today</legend>
@@ -12,10 +12,9 @@
 					{{ render_field(form.email) }}
 					{{ render_field(form.password) }}
 					{{ render_field(form.confirm_password) }}
+					{{ upload_picture(form.picture) }}
 				</fieldset>
-				<div class="form-group">
-					{{ form.submit(class="btn btn-primary") }}
-				</div>
+				<div class="form-group my-3">{{ form.submit(class="btn btn-primary") }}</div>
 			</form>
 			<div class="border-top pt-2 mt-3">
 				<small class="text-muted">Already Have An Account? <a class="ml-2" href="{{ url_for('route_login') }}">Sign In</a></small>
@@ -23,5 +22,3 @@
 		</div>
 	</div>
 {% endblock %}
-
-<div class="form-ch"></div>
