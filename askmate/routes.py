@@ -1,8 +1,7 @@
 from askmate import os
 from flask import render_template, url_for, flash, redirect, request
-from askmate import app, db, bcrypt
+from askmate import app, bcrypt
 from askmate.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuestionForm
-from askmate.models import Users
 from flask_login import login_user, current_user, logout_user, login_required
 from askmate import data_manager
 
@@ -10,28 +9,26 @@ from askmate import data_manager
 @app.route("/")
 @app.route("/home")
 def route_home():
-    result = db.session.query(Users).all()
-
+    result = data_manager.find_all_users()
+    # print(result)
     return render_template('home.html', users=result)
 
 
 @app.route("/register", methods=['GET', 'POST'])
 def route_register():
     form = RegistrationForm()
-
     picture_file = 'default_user.jpg'
+
     if current_user.is_authenticated:
         return redirect(url_for('route_home'))
 
     if form.validate_on_submit():
         if form.picture.data:
-            print(form.picture.data)
             picture_file = data_manager.save_picture(form.picture.data)
 
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = Users(user_name=form.username.data, email=form.email.data, password=hashed_password, picture=picture_file)
-        db.session.add(user)
-        db.session.commit()
+        new_user = {'user_name': form.username.data, 'email': form.email.data, 'password': hashed_password, 'picture': picture_file}
+        data_manager.register_new_user(new_user=new_user)
 
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('route_login'))
@@ -47,8 +44,7 @@ def route_login():
             return redirect(url_for('route_home'))
 
     elif request.method == 'POST' and form.validate_on_submit():
-        # user = db.session.query(Users).filter(Users.email==form.email.data).first()
-        user = Users.query.filter_by(email=form.email.data).first()
+        user = data_manager.find_user_by_email(form.email.data)
 
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
@@ -92,7 +88,7 @@ def route_update_account():
             current_user.picture = data_manager.save_picture(form.picture.data)
 
         if bcrypt.check_password_hash(current_user.password, form.password.data):
-            db.session.commit()
+            data_manager.update_to_database()
             flash('Your account has been updated!', 'success')
             return redirect(url_for('route_account'))
         else:
@@ -102,8 +98,20 @@ def route_update_account():
 
 
 @app.route('/question', methods=['GET', 'POST'])
+@login_required
 def route_add_question():
     form = QuestionForm()
+    picture_file = 'default_question.png'
 
-    if request.method == 'GET':
-        return render_template("question.html", question=None, form=form)
+    if form.validate_on_submit():
+        if form.image.data:
+            picture_file = data_manager.save_picture(form.image.data)
+        new_question = {'user_id': current_user.user_id, 'title': form.title.data, 'message': form.message.data, 'image': picture_file}
+        print(new_question)
+        data_manager.ask_new_question(new_question)
+        flash('Question posted ', 'success')
+        return redirect(url_for('route_login'))
+
+    return render_template("question.html", question=None, form=form)
+
+

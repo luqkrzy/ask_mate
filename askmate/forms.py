@@ -1,10 +1,10 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from askmate.models import Users
-
+from askmate.data_manager import get_all_tag_names
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=20)])
@@ -42,7 +42,8 @@ class LoginForm(FlaskForm):
 
 
 class QuestionForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired(), Length(min=5, max=100)])
+    title = StringField('Title', validators=[DataRequired(), Length(min=10, max=100)])
     message = TextAreaField('Message', validators=[DataRequired(), Length(min=20)])
     image = FileField('Upload image', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
+    tag = SelectField('Tag', validators=[DataRequired()], choices=['choose...', *get_all_tag_names()])
     submit = SubmitField('Post')
