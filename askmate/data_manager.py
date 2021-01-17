@@ -13,7 +13,7 @@ def set_picture_path(called_function):
     if called_function == 'route_register':
         pic_path = usr_pic_path
 
-    elif called_function == 'route_add_question':
+    elif called_function == 'route_add_question' or called_function == 'route_edit_question':
         pic_path = question_pic_path
 
     elif called_function == 'route_add_answer':
@@ -48,8 +48,9 @@ def register_new_user(new_user: dict):
     user = Users(user_name=new_user['user_name'], email=new_user['email'], password=new_user['password'], picture=new_user['picture'])
     commit_to_database(user)
 
+
 def ask_new_question(new_question):
-    question = Question(user_id=new_question['user_id'] , title=new_question['title'], message=new_question['message'], image=new_question['image'])
+    question = Question(user_id=new_question['user_id'], title=new_question['title'], message=new_question['message'], image=new_question['image'], tag_id=new_question['tag_id'])
     commit_to_database(question)
 
 
@@ -67,3 +68,15 @@ def fetch_tags():
 
 def get_all_tag_names():
     return [tag.tag_name for tag in list(fetch_tags())]
+
+
+def count_tags():
+    return db.engine.execute('SELECT tag_name, COUNT(tag.tag_id) FROM tag, question_tag WHERE tag.tag_id = question_tag.tag_id GROUP BY tag.tag_id;')
+
+
+def choice_query():
+    return Tag.query
+
+
+def find_question_by_id(question_id):
+    return Question.query.get(question_id)

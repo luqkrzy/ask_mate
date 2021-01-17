@@ -26,7 +26,7 @@ class Users(db.Model, UserMixin):
         return (self.user_id)
 
     def __repr__(self):
-        return f"('{self.user_id}, {self.user_name}', '{self.email}', '{self.register_date}', {self.reputation}, {self.picture})"
+        return f"('{self.user_id}, '{self.user_name}', '{self.email}', '{self.register_date}', '{self.reputation}', '{self.picture}')"
 
 
 class Tag(db.Model):
@@ -34,7 +34,7 @@ class Tag(db.Model):
     tag_name = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
-        return f"('{self.tag_id}', '{str(self.tag_name)}')"
+        return f"('{self.tag_id}', '{self.tag_name}')"
 
 
 class Question(db.Model):
@@ -44,9 +44,10 @@ class Question(db.Model):
     edit_submission_time = db.Column(db.DateTime)
     view_number = db.Column(db.Integer, default=0)
     vote_number = db.Column(db.Integer, default=0)
-    title =  db.Column(db.Text, nullable=False)
+    title = db.Column(db.Text, nullable=False)
     message = db.Column(db.Text, nullable=False)
     image = db.Column(db.String, default='default_question.png')
+    tag_id = (db.Column(db.Integer, db.ForeignKey('tag.tag_id'), nullable=False))
 
     def __repr__(self):
-        return f"('{self.question_id}', '{str(self.user_id)}', '{str(self.title)}', '{str(self.submission_time)}', '{str(self.edit_submission_time)}', '{str(self.view_number)}', '{str(self.vote_number)}')"
+        return f"('{self.question_id}', '{self.user_id}', '{self.title}', '{self.submission_time}', '{self.edit_submission_time}', '{self.view_number}', '{self.vote_number}', '{self.tag_id}')"

@@ -3,14 +3,29 @@ from flask import render_template, url_for, flash, redirect, request
 from askmate import app, bcrypt
 from askmate.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuestionForm
 from flask_login import login_user, current_user, logout_user, login_required
-from askmate import data_manager
+from askmate import data_manager, db
+from askmate.models import Users, Question
 
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.context_processor
+def context_processor():
+    return dict(tags= data_manager.count_tags())
 
 @app.route("/")
 @app.route("/home")
 def route_home():
+    fint_it = db.session.query(Users).filter(Users.email.like('%wp.pl%')).all()
+    any = data_manager.count_tags()
     result = data_manager.find_all_users()
-    # print(result)
+    tags = data_manager.fetch_tags()
+    questions = Question.query.get(9)
+    # print(questions)
+
+
     return render_template('home.html', users=result)
 
 
@@ -84,7 +99,6 @@ def route_update_account():
         current_user.email = form.email.data
 
         if form.picture.data:
-            print(form.picture.data)
             current_user.picture = data_manager.save_picture(form.picture.data)
 
         if bcrypt.check_password_hash(current_user.password, form.password.data):
@@ -106,12 +120,56 @@ def route_add_question():
     if form.validate_on_submit():
         if form.image.data:
             picture_file = data_manager.save_picture(form.image.data)
-        new_question = {'user_id': current_user.user_id, 'title': form.title.data, 'message': form.message.data, 'image': picture_file}
+        new_question = {'user_id': current_user.user_id, 'title': form.title.data, 'message': form.message.data, 'image': picture_file, 'tag_id': form.tag_name.data.tag_id}
         print(new_question)
+
         data_manager.ask_new_question(new_question)
         flash('Question posted ', 'success')
         return redirect(url_for('route_login'))
 
     return render_template("question.html", question=None, form=form)
+
+
+@app.route('/question/<int:question_id>', methods=['GET', 'POST'])
+@login_required
+def route_edit_question(question_id):
+    form = QuestionForm()
+    question = data_manager.find_question_by_id(question_id)
+    print(question.tag_id)
+    picture_file = 'default_question.png'
+
+    if request.method == 'GET':
+        form.title.data = question.title
+        form.message.data = question.message
+        form.tag_name.data = question.tag_id
+
+    elif form.validate_on_submit():
+        if form.image.data:
+            picture_file = data_manager.save_picture(form.image.data)
+            current_user.image = picture_file
+
+        question.user_id = current_user.user_id
+        question.title = form.title.data
+        question.message = form.message.data
+        question.image = picture_file
+        question.tag_id = form.tag_name.data.tag_id
+        data_manager.update_to_database()
+        flash('Question updated ', 'success')
+        return redirect(url_for('route_home'))
+
+    return render_template("question.html", form=form, question_id=question_id)
+
+
+
+
+
+# @app.route('/test', methods=['GET', 'POST'])
+# def route_test():
+#     # form = TagChoiceForm()
+#
+#     if request.method == 'POST':
+#         print(form.options.data.tag_id)
+#
+#     return render_template('test.html', form=form)
 
 

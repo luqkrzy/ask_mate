@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% from '_macros.html' import render_field, upload_picture, render_select_field %}
+{% block title %}Login{% endblock %}
+{% block content %}
+	<div class="container mb-3">
+		<form class="form-label" action="{{ url_for('route_test') }}" method='POST' enctype="multipart/form-data">
+			<h1>Ask question</h1>
+			{{ form.hidden_tag() }}
+			{{ form.options }}
+			<ul>
+				{% for error in form.options.errors %}
+				<li>{{ error }}</li>
+				{% endfor %}
+			</ul>
+			<input type="submit">
+		</form>
+	</div>
+
+
+{% endblock %}
