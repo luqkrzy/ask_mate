@@ -127,7 +127,7 @@ def route_add_question():
         flash('Question posted ', 'success')
         return redirect(url_for('route_login'))
 
-    return render_template("question.html", question=None, form=form)
+    return render_template("question.html", form=form)
 
 
 @app.route('/question/<int:question_id>', methods=['GET', 'POST'])

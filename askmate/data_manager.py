@@ -79,4 +79,4 @@ def choice_query():
 
 
 def find_question_by_id(question_id):
-    return Question.query.get(question_id)
+    return Question.query.get_or_404(question_id)
