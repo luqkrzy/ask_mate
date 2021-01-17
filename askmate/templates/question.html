@@ -20,7 +20,7 @@
 		</div>
 	{% endmacro %}
 	{% if form.title.data == None %}
-		{{ question_input(action=url_for('route_add_question', question_id=None), info="Ask") }}
+		{{ question_input(action=url_for('route_add_question'), info="Ask") }}
 	{% else %}
 		{{ question_input(action= url_for('route_edit_question', question_id=question_id), info="Update") }}
 	{% endif %}

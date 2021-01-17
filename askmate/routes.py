@@ -3,7 +3,7 @@ from flask import render_template, url_for, flash, redirect, request
 from askmate import app, bcrypt
 from askmate.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuestionForm
 from flask_login import login_user, current_user, logout_user, login_required
-from askmate import data_manager, db
+from askmate import data_manager, db, datetime
 from askmate.models import Users, Question
 
 
@@ -153,6 +153,7 @@ def route_edit_question(question_id):
         question.message = form.message.data
         question.image = picture_file
         question.tag_id = form.tag_name.data.tag_id
+        question.edit_submission_time = datetime.now().replace(microsecond=0).isoformat()
         data_manager.update_to_database()
         flash('Question updated ', 'success')
         return redirect(url_for('route_home'))

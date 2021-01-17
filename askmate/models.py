@@ -1,6 +1,6 @@
-from datetime import datetime
+
 # from sqlalchemy.ext.automap import automap_base
-from askmate import db, login_manager
+from askmate import db, login_manager, datetime
 from flask_login import UserMixin
 
 
