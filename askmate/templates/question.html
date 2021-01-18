@@ -1,27 +1,10 @@
 {% extends "layout.html" %}
-{% from '_macros.html' import render_field, upload_picture, render_select_field %}
-{% block title %}Login{% endblock %}
+{% from '_macros.html' import question_input %}
+{% block title %}Question{% endblock %}
 {% block content %}
-	{% macro question_input(action="", info="") %}
-		<div class="container mb-3">
-			<h1>{{ info }} question</h1>
-			<div class="modal-body">
-				<form class="form-label" action="{{ action }}" method='POST' enctype="multipart/form-data">
-					{{ form.hidden_tag() }}
-					{{ render_field(form.title) }}
-					{{ render_field(form.message, rows=10) }}
-					<div class="modal-footer">
-						{{ render_select_field(form.tag_name, class='form-select-sm') }}
-						{{ upload_picture(form.image) }}
-						{{ form.submit(class="btn btn-primary my-2") }}
-					</div>
-				</form>
-			</div>
-		</div>
-	{% endmacro %}
 	{% if form.title.data == None %}
-		{{ question_input(action=url_for('route_add_question'), info="Ask") }}
+		{{ question_input(action=url_for('route_add_question'), info="Ask", title=form.title, message=form.message, tag_name=form.tag_name, image=form.image, hidden_tag=form.hidden_tag(), submit=form.submit) }}
 	{% else %}
-		{{ question_input(action= url_for('route_edit_question', question_id=question_id), info="Update") }}
+		{{ question_input(action= url_for('route_edit_question', question_id=question_id), info="Update", title=form.title, message=form.message, tag_name=form.tag_name, image=form.image, hidden_tag=form.hidden_tag(), submit=form.submit) }}
 	{% endif %}
 {% endblock %}

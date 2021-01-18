@@ -51,3 +51,12 @@ class Question(db.Model):
 
     def __repr__(self):
         return f"('{self.question_id}', '{self.user_id}', '{self.title}', '{self.submission_time}', '{self.edit_submission_time}', '{self.view_number}', '{self.vote_number}', '{self.tag_id}')"
+
+class QuestionTag(db.Model):
+    question_tag_id = db.Column(db.Integer, primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'), primary_key=True)
+    tag_id  = db.Column(db.Integer, db.ForeignKey('tag.tag_id'))
+
+    def __repr__(self):
+        return f"('{self.question_id}', '{self.tag_id}')"
+

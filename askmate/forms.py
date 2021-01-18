@@ -54,3 +54,7 @@ class QuestionForm(FlaskForm):
 class TagForm(FlaskForm):
     tag_id = IntegerField('tag_id')
     tag_name = SelectField('Tag', validators=[DataRequired()], choices=['choose...', *get_all_tag_names()])
+
+class QuestionTagForm(FlaskForm):
+    question_id = IntegerField('question_id')
+    tag_id = IntegerField('tag_id')

@@ -1,10 +1,8 @@
-from askmate import os
 from flask import render_template, url_for, flash, redirect, request
 from askmate import app, bcrypt
 from askmate.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuestionForm
 from flask_login import login_user, current_user, logout_user, login_required
-from askmate import data_manager, db, datetime
-from askmate.models import Users, Question
+from askmate import data_manager, datetime
 
 
 @app.errorhandler(404)
@@ -18,15 +16,8 @@ def context_processor():
 @app.route("/")
 @app.route("/home")
 def route_home():
-    fint_it = db.session.query(Users).filter(Users.email.like('%wp.pl%')).all()
-    any = data_manager.count_tags()
-    result = data_manager.find_all_users()
-    tags = data_manager.fetch_tags()
-    questions = Question.query.get(9)
-    # print(questions)
 
-
-    return render_template('home.html', users=result)
+    return render_template('home.html')
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -88,7 +79,6 @@ def route_account():
 @login_required
 def route_update_account():
     form = UpdateAccountForm()
-    print(request.method)
 
     if request.method == 'GET':
         form.username.data = current_user.user_name
@@ -135,13 +125,14 @@ def route_add_question():
 def route_edit_question(question_id):
     form = QuestionForm()
     question = data_manager.find_question_by_id(question_id)
-    print(question.tag_id)
+    question_tag = data_manager.find_question_tag_by_id(question_id)
     picture_file = 'default_question.png'
 
     if request.method == 'GET':
         form.title.data = question.title
         form.message.data = question.message
         form.tag_name.data = question.tag_id
+
 
     elif form.validate_on_submit():
         if form.image.data:
@@ -154,6 +145,7 @@ def route_edit_question(question_id):
         question.image = picture_file
         question.tag_id = form.tag_name.data.tag_id
         question.edit_submission_time = datetime.now().replace(microsecond=0).isoformat()
+        question_tag.tag_id = form.tag_name.data.tag_id
         data_manager.update_to_database()
         flash('Question updated ', 'success')
         return redirect(url_for('route_home'))
@@ -164,13 +156,25 @@ def route_edit_question(question_id):
 
 
 
-# @app.route('/test', methods=['GET', 'POST'])
-# def route_test():
-#     # form = TagChoiceForm()
-#
-#     if request.method == 'POST':
-#         print(form.options.data.tag_id)
-#
-#     return render_template('test.html', form=form)
+@app.route('/test', methods=['GET', 'POST'])
+def route_test():
+    # fint_it = db.session.query(Users).filter(Users.email.like('%wp.pl%')).all()
+    # any = data_manager.count_tags()
+    # result = data_manager.find_all_users()
+    # tags = data_manager.fetch_tags()
+    # questions = Question.query.get(9)
+
+    question_tag = data_manager.find_question_tag_by_id(124)
+
+    a = question_tag.tag_id
+    # print(a)
+
+    question_tag.tag_id = 5
+
+    # print(question_tag.tag_id)
+    data_manager.update_to_database()
+
+
+    return render_template('test.html')
 
 

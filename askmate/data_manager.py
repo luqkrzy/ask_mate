@@ -2,7 +2,7 @@ import inspect
 from askmate import os, db, app_config
 from secrets import token_hex
 from PIL import Image
-from askmate.models import Users, Tag, Question
+from askmate.models import Users, Tag, Question, QuestionTag
 
 
 def set_picture_path(called_function):
@@ -80,3 +80,8 @@ def choice_query():
 
 def find_question_by_id(question_id):
     return Question.query.get_or_404(question_id)
+
+def find_question_tag_by_id(question_id):
+    return QuestionTag.query.filter_by(question_id=124).first()
+    # return db.engine.execute('SELECT tag_id FROM question_tag WHERE question_id=124;')
+
