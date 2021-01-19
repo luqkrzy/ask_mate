@@ -81,7 +81,13 @@ def choice_query():
 def find_question_by_id(question_id):
     return Question.query.get_or_404(question_id)
 
+def find_tag_name_by_id(tag_id):
+    return Tag.query.get_or_404(tag_id)
+
 def find_question_tag_by_id(question_id):
-    return QuestionTag.query.filter_by(question_id=124).first()
+    return QuestionTag.query.filter_by(question_id).first()
     # return db.engine.execute('SELECT tag_id FROM question_tag WHERE question_id=124;')
+
+def fetch_all_questions():
+    return Question.query.all()
 

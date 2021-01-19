@@ -16,8 +16,11 @@ def context_processor():
 @app.route("/")
 @app.route("/home")
 def route_home():
+    questions = data_manager.fetch_all_questions()
+    tag_name = data_manager.find_tag_name_by_id
 
-    return render_template('home.html')
+
+    return render_template('home.html', questions=questions, find_tag_name=tag_name)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -151,7 +154,6 @@ def route_edit_question(question_id):
         return redirect(url_for('route_home'))
 
     return render_template("question.html", form=form, question_id=question_id)
-
 
 
 
