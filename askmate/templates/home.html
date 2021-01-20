@@ -38,6 +38,6 @@
 		</div>
 	{% endfor %}
 	{#pagination #}
-	{{ pagination(data_type=questions, previous=url_for('route_home', page=questions.prev_num), route= url_for('route_home', page=page_num), next=url_for('route_home', page=questions.next_num) ) }}
+	{{ pagination(data_type=questions, page_num=page_num ,previous=url_for('route_home', page=questions.prev_num), route= 'route_home', next=url_for('route_home', page=questions.next_num)) }}
 {% endblock content %}
 
