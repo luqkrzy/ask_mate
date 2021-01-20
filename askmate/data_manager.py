@@ -2,7 +2,7 @@ import inspect
 from askmate import os, db, app_config
 from secrets import token_hex
 from PIL import Image
-from askmate.models import Users, Tag, Question, QuestionTag
+from askmate.models import Users, Tag, Question, QuestionTag, Answer, Comment
 
 
 def set_picture_path(called_function):
@@ -82,12 +82,31 @@ def find_question_by_id(question_id):
     return Question.query.get_or_404(question_id)
 
 def find_tag_name_by_id(tag_id):
-    return Tag.query.get_or_404(tag_id)
+    return Tag.query.filter_by(tag_id=tag_id).first()
+
 
 def find_question_tag_by_id(question_id):
-    return QuestionTag.query.filter_by(question_id).first()
+    return QuestionTag.query.filter_by(question_id=question_id).first()
     # return db.engine.execute('SELECT tag_id FROM question_tag WHERE question_id=124;')
 
 def fetch_all_questions():
     return Question.query.all()
+
+def paginate_all_questions(page):
+    return Question.query.paginate(page, per_page=10)
+
+def fetch_all_comments():
+    return Comment.query.all()
+
+def count_answers_by_question_id(question_id):
+    return Answer.query.filter_by(question_id=question_id).count()
+
+def count_comments_by_question_id(question_id):
+    return Comment.query.filter_by(question_id=question_id).count()
+
+def count_comments_by_answer_id(answer_id):
+    return Comment.query.filter_by(answer_id=answer_id).count()
+
+def find_user_by_id(user_id):
+    return Users.query.get_or_404(user_id)
 

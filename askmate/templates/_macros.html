@@ -45,7 +45,7 @@
 	</div>
 {% endmacro %}
 
-{# question add and etit macro #}
+{# question add and edit macro #}
 {% macro question_input(action="", info="", title="", message="", tag_name="", image="", hidden_tag="", submit="") %}
 	<div class="container mb-3">
 		<h1>{{ info }} question</h1>
@@ -64,43 +64,67 @@
 	</div>
 {% endmacro %}
 
+{# votes add plus for positive #}
+{%- macro votes(question_votes="") %}
+	{%- set votes = question_votes -%}
+	{%- if votes >= 1 -%}
+		+{{ votes }}
+	{%- else -%}
+		{{ votes }}
+	{%- endif -%}
+{%- endmacro -%}
+
+{# answer or answers  plural/singular #}
+{%- macro answer_pl_sg(count_it='') -%}
+{%- set count_answers =  count_it -%}
+{%- if count_answers == 1 -%}
+	answer {{ count_answers }}
+{% else -%}
+	answers {{ count_answers }}
+{%- endif -%}
+{%- endmacro -%}
+
+{# comment  plural/singular #}
+{%- macro comment_pl_sg(count_it='') -%}
+{%- set count_comment =  count_it %}
+{%- if count_comment == 1 -%}
+	comment {{ count_comment }}
+{%- else -%}
+	comments {{ count_comment }}
+{%- endif -%}
+{%- endmacro -%}
+
 {# pagination #}
-{% macro pagination() %}
+{%- macro pagination(data_type="", previous="", route="", next="") -%}
 	<nav class="mt-5" aria-label="Page navigation">
 		<ul class="pagination justify-content-center">
-			<li class="page-item">
-				<a class="page-link" href="#" aria-label="Previous">
-					<span aria-hidden="true">&laquo;</span>
-				</a>
-			</li>
-			<li class="page-item active"><a class="page-link" href="#">1</a></li>
-			<li class="page-item"><a class="page-link" href="#">2</a></li>
-			<li class="page-item"><a class="page-link" href="#">3</a></li>
-			<li class="page-item">
-				<a class="page-link" href="#" aria-label="Next">
-					<span aria-hidden="true">&raquo;</span>
-				</a>
-			</li>
+			{%- if data_type.has_prev -%}
+				<li class="page-item">
+					<a class="page-link" href="{{ previous }}" aria-label="Previous">
+						<span aria-hidden="true">&laquo;</span>
+					</a>
+				</li>
+			{%- endif -%}
+			{%- for page_num in data_type.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) -%}
+				{%- if page_num -%}
+					{%- if data_type.page == page_num -%}
+						<li class="page-item active">
+							<a class="page-link" href="{{ route }}">{{ page_num }}</a>
+						</li>
+					{%- else -%}
+						<li class="page-item">
+							<a class="page-link" href="{{ route }}">{{ page_num }}</a>
+						</li>
+					{%- endif -%}
+				{%- endif -%}
+			{%- endfor -%}
+			{% if data_type.has_next -%}
+				<li class="page-item">
+					<a class="page-link" href="{{ next }}" aria-label="Previous">
+						<span aria-hidden="true">&raquo;</span>
+					</a>
+				</li>
+			{%- endif -%}
 		</ul>
 	</nav>
-{% endmacro %}
-
-{# votes add plus for positive #}
-{% macro votes(question_votes="") %}
-	{% set votes = question_votes %}
-	{% if votes >= 1 %}
-		+{{ votes }}
-	{% else %}
-		{{ votes }}
-	{% endif %}
-{% endmacro %}
-
-{# answer or answers #}
-{% macro answer_pr_sg(count_it='') %}
-{% set count_answers =  count_it|count %}
-{% if count_answers == 1 %}
-	{{ count_answers }} answer
-{% else %}
-	{{ count_answers }} answers
-{% endif %}
-{% endmacro %}
+{%- endmacro -%}

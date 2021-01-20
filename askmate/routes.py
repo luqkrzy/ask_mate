@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request
 from askmate import app, bcrypt
-from askmate.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuestionForm
+from askmate.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuestionForm, Users
 from flask_login import login_user, current_user, logout_user, login_required
 from askmate import data_manager, datetime
 
@@ -14,13 +14,16 @@ def context_processor():
     return dict(tags= data_manager.count_tags())
 
 @app.route("/")
-@app.route("/home")
 def route_home():
-    questions = data_manager.fetch_all_questions()
-    tag_name = data_manager.find_tag_name_by_id
+    page = request.args.get('page', default=1, type=int)
+    questions = data_manager.paginate_all_questions(page)
+    find_tag_name = data_manager.find_tag_name_by_id
+    count_answers_by_question_id = data_manager.count_answers_by_question_id
+    count_comments_by_question_id = data_manager.count_comments_by_question_id
+    user_info = data_manager.find_user_by_id
 
-
-    return render_template('home.html', questions=questions, find_tag_name=tag_name)
+    return render_template('home.html', questions=questions, find_tag_name=find_tag_name, count_answers=count_answers_by_question_id,
+                           count_comments = count_comments_by_question_id, user_info=user_info)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -165,18 +168,22 @@ def route_test():
     # result = data_manager.find_all_users()
     # tags = data_manager.fetch_tags()
     # questions = Question.query.get(9)
-
-    question_tag = data_manager.find_question_tag_by_id(124)
-
-    a = question_tag.tag_id
+    find_tag_name = data_manager.find_tag_name_by_id
+    # question_tag = data_manager.find_question_tag_by_id(124)
+    find_tag_name_by_id = data_manager.find_tag_name_by_id
+    # a = (question_tag)
     # print(a)
 
-    question_tag.tag_id = 5
-
+    # question_tag.tag_id = 5
     # print(question_tag.tag_id)
-    data_manager.update_to_database()
 
+    questions = data_manager.fetch_all_questions()
+    answers= data_manager.count_answers_by_question_id(113)
+    comments = data_manager.count_comments_by_question_id(143)
+    userd_name = data_manager.find_user_by_id(23)
+    paginate_all_questions = data_manager.paginate_all_questions(1)
+    print(paginate_all_questions.page)
 
-    return render_template('test.html')
+    return render_template('test.html', paginate_all_questions=paginate_all_questions)
 
 

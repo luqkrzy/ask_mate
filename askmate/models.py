@@ -50,13 +50,35 @@ class Question(db.Model):
     tag_id = (db.Column(db.Integer, db.ForeignKey('tag.tag_id'), nullable=False))
 
     def __repr__(self):
-        return f"('{self.question_id}', '{self.user_id}', '{self.title}', '{self.submission_time}', '{self.edit_submission_time}', '{self.view_number}', '{self.vote_number}', '{self.tag_id}')"
+        return f"'{self.question_id}', '{self.user_id}', '{self.title}', '{self.submission_time}', '{self.edit_submission_time}', '{self.view_number}', '{self.vote_number}', '{self.tag_id}'"
 
 class QuestionTag(db.Model):
     question_tag_id = db.Column(db.Integer, primary_key=True)
-    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'), primary_key=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))
     tag_id  = db.Column(db.Integer, db.ForeignKey('tag.tag_id'))
 
     def __repr__(self):
-        return f"('{self.question_id}', '{self.tag_id}')"
+        return f"{self.question_id}, {self.tag_id}"
 
+class Answer(db.Model):
+    answer_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))
+    submission_time = db.Column(db.DateTime, nullable=False, default=datetime.now().replace(microsecond=0).isoformat())
+    vote_number = db.Column(db.Integer, default=0)
+    message = db.Column(db.Text, nullable=False)
+    image = db.Column(db.String, default='default_question.png')
+
+    def __repr__(self):
+        return f"'{self.answer_id}', '{self.question_id}', '{self.submission_time}', '{self.vote_number}', '{self.message}', '{self.image}'"
+
+class Comment(db.Model):
+    comment_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))
+    answer_id = db.Column(db.Integer, db.ForeignKey('answer.answer_id'))
+    message = db.Column(db.Text, nullable=False)
+    submission_time = db.Column(db.DateTime, nullable=False, default=datetime.now().replace(microsecond=0).isoformat())
+    edited_number = db.Column(db.Integer, default=0)
+
+    def __repr__(self):
+        return f"'{self.comment_id}', '{self.user_id}', '{self.question_id}', '{self.answer_id}', '{self.message}', '{self.submission_time}', '{self.edited_number}'"
