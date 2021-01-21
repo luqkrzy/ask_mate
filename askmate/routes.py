@@ -115,6 +115,7 @@ def route_update_account():
 
 @app.route("/")
 def route_home():
+    print(request.args)
     order_direction = request.args.get('order_direction', 'asc')
     switch_order_direction = data_manager.switch_asc_desc(order_direction)
 
@@ -138,12 +139,12 @@ def route_add_question():
 
         data_manager.ask_new_question(new_question)
         flash('Question posted ', 'success')
-        return redirect(url_for('route_login'))
+        return redirect(url_for('route_home'))
 
     return render_template("question.html", form=form)
 
 
-@app.route('/question/<int:question_id>', methods=['GET', 'POST'])
+@app.route('/question/edit/<int:question_id>', methods=['GET', 'POST'])
 @login_required
 def route_edit_question(question_id):
     form = QuestionForm()

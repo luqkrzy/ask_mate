@@ -123,8 +123,9 @@ def sort_and_paginate_questions(request_args: dict, direction = 'desc'):
     page = int(request_args.get('page', 1))
     order_by = request_args.get('order_by', 'submission_time')
     questions = "Question.query.order_by(Question.{}.{}())".format(order_by, direction)
-    return eval(questions).paginate(page, per_page=10)
-
+    x = eval(questions).paginate(page, per_page=10)
+    print(type(x))
+    return x
 
 def fetch_questions_by_request(request_args: dict):
     order_by = request_args.get('order_by', 'submission_time')
