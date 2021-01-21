@@ -137,7 +137,7 @@
 		<div class="col-10  fw-bold text-start">
 			<span class="badge bg-success">{{ macro_votes(question_votes=item.vote_number) }}</span>&nbsp;
 			<a class="text-decoration-none" href="">{{ item.title }}</a>
-			<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for(route, tag=item.tag_id) }}">{{ func_find_tag_name(item.tag_id|int).tag_name|e }}</a></span>
+			<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for(route, tag_id=item.tag_id) }}">{{ func_find_tag_name(item.tag_id|int).tag_name|e }}</a></span>
 		</div>
 		<ul class="col-2 list-inline text-end mb-0">
 			<li class="list-inline-item">

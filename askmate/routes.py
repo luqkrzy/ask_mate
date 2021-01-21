@@ -115,43 +115,13 @@ def route_update_account():
 
 @app.route("/")
 def route_home():
-    order_direction = 'asc'
-    order_by = 'title'
-    if request.args.get('order_by'):
-        order_by = request.args.get('order_by')
-        order_direction = request.args.get('order_direction')
-
+    order_direction = request.args.get('order_direction', 'asc')
     switch_order_direction = data_manager.switch_asc_desc(order_direction)
-    page = request.args.get('page', default=1, type=int)
 
-    if request.args.get('tag'):
-        tag_id = request.args.get('tag')
-        questions_by_tags = data_manager.paginate_questions_by_tag(page=page, tag_id=tag_id, order_by=order_by, direction=switch_order_direction)
-        return redirect(url_for('tag.html', tag_id=tag_id, questions=questions_by_tags, asc_desc=switch_order_direction))
-
-    questions = data_manager.sort_and_paginate_questions(page=page, order_by=order_by, direction=switch_order_direction)
+    questions = data_manager.fetch_questions_by_request(request_args=dict(request.args)) if request.args.get('tag_id') is not None \
+        else data_manager.sort_and_paginate_questions(request_args=dict(request.args), direction=switch_order_direction)
 
     return render_template('index.html', questions=questions, asc_desc=switch_order_direction)
-
-@app.route("/tag/<int:tag_id>")
-def route_tag(tag_id):
-    order_direction = 'asc'
-    order_by = 'title'
-    if request.args.get('order_by'):
-        order_by = request.args.get('order_by')
-        order_direction = request.args.get('order_direction')
-
-    switch_order_direction = data_manager.switch_asc_desc(order_direction)
-    page = request.args.get('page', default=1, type=int)
-
-    if request.args.get('tag'):
-        tag_id = request.args.get('tag')
-        questions_by_tags = data_manager.paginate_questions_by_tag(page=page, tag_id=tag_id, order_by=order_by, direction=switch_order_direction)
-        return redirect(url_for('tag.html', tag_id=tag_id, questions=questions_by_tags, asc_desc=switch_order_direction))
-
-    questions_by_tags = data_manager.paginate_questions_by_tag(page=page, tag_id=tag_id, order_by=order_by, direction=switch_order_direction)
-
-    return render_template('tag.html', questions=questions_by_tags, asc_desc=switch_order_direction)
 
 
 @app.route('/question', methods=['GET', 'POST'])
@@ -246,13 +216,23 @@ def route_test():
     # for i in question_paginate.items:
     #     print(i)
 
-    # again = data_manager.sort_and_paginate_questions(1, 'question_id', 'desc')
+    # again = data_manager.sort_and_paginate_questions(1, 'title', 'desc')
     # for i in again.items:
     #     print(i)
 
+    # question = data_manager.paginate_questions_by_tag(1, 1)
 
-    question = data_manager.paginate_questions_by_tag(1, 1)
+    # new = dict(again)
+
     # for i in question.items:
     #     print(i)
 
-    return render_template('test.html', data=question)
+    all_questions = data_manager.fetch_all_questions()
+    q = list(all_questions)
+
+    lista = []
+
+    for item in q:
+        lista.append(list(item))
+
+    return render_template('test.html', data=q)

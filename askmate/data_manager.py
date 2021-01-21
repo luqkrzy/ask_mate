@@ -71,7 +71,7 @@ def get_all_tag_names():
 
 
 def count_tags():
-    return db.engine.execute('SELECT tag_name, COUNT(tag.tag_id) FROM tag, question_tag WHERE tag.tag_id = question_tag.tag_id GROUP BY tag.tag_id;')
+    return db.engine.execute('SELECT tag.tag_id, tag.tag_name, COUNT(tag.tag_id) FROM tag, question_tag WHERE tag.tag_id = question_tag.tag_id GROUP BY tag.tag_id;')
 
 
 def choice_query():
@@ -114,12 +114,24 @@ def find_user_by_id(user_id):
 def count_all_questions():
     return Question.query.count()
 
-
-def sort_and_paginate_questions(page, order_by= 'title', direction = 'desc'):
-    question = "Question.query.order_by(Question.{}.{}())".format(order_by, direction)
-    return eval(question).paginate(page, per_page=10)
+def fetch_all_questions():
+    return Question.query.all()
 
 
-def paginate_questions_by_tag(page, tag_id, order_by='title', direction ='desc'):
-    filter_question = "Question.query.filter_by(tag_id={}).order_by(Question.{}.{}())".format(tag_id, order_by, direction)
-    return eval(filter_question).paginate(page, per_page=10)
+
+def sort_and_paginate_questions(request_args: dict, direction = 'desc'):
+    page = int(request_args.get('page', 1))
+    order_by = request_args.get('order_by', 'submission_time')
+    questions = "Question.query.order_by(Question.{}.{}())".format(order_by, direction)
+    return eval(questions).paginate(page, per_page=10)
+
+
+def fetch_questions_by_request(request_args: dict):
+    order_by = request_args.get('order_by', 'submission_time')
+    order_direction = request_args.get('order_direction', 'desc')
+    page = request_args.get('page', int(1))
+    filter_by_type = next(iter(request_args))
+    filter_by_value = next(iter(request_args.values()))
+    filter_questions = "Question.query.filter_by({}={}).order_by(Question.{}.{}())".format(filter_by_type, filter_by_value, order_by, order_direction)
+    return eval(filter_questions).paginate(page, per_page=10)
+
