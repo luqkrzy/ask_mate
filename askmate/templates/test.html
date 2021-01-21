@@ -1,9 +1,12 @@
 {% extends "layout.html" %}
-{% from '_macros.html' import render_field, upload_picture, render_select_field %}
+{% from '_macros.html' import macro_render_field, macro_upload_picture, macro_render_select_field %}
 {% block title %}Test{% endblock %}
 {% block content %}
-	<br>
+	{% for question in data.items %}
 
+	{{ question }}
+
+	{% endfor %}
 
 
 

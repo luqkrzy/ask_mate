@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% from '_macros.html' import sort_bar, macro_pagination, macro_generate_question_list %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+{#{%- set dict_sort_by = ({'Title': 'title', 'View': 'view_number', 'Votes': 'vote_number'}) -%}#}
+{#	<div class="container mt-3 px-0">#}
+{#		<div class="row">#}
+{#			<div class="col p-1 fs-3">{{ func_questions_no }} questions</div>#}
+{#			<div class="col text-end">#}
+{#				<div class="btn-group" role="group" aria-label="Basic outlined">#}
+{#					{% for item, value in dict_sort_by.items() -%}#}
+{#						<a href="{{ url_for('route_home', page=questions.page, order_by=value, order_direction=asc_desc) }}" type="button" class="btn mt-0 btn-outline-primary">{{ item }}&nbsp;<i class="fas fa-sort"></i></a>#}
+{#					{% endfor -%}#}
+{#				</div>#}
+{#			</div>#}
+{#		</div>#}
+{#	</div>#}
+{# sorting bar#}
+{{ sort_bar(func_count_questions=func_questions_no, route='route_home', data=questions, order_direction=asc_desc ) }}
+
+{#	{% for question in questions.items %}#}
+{#		<div class="card text-dark bg-light mt-3">#}
+{#			<div class="card-header d-flex">#}
+{#				<div class="col-10  fw-bold text-start">#}
+{#					<span class="badge bg-success">{{ macro_votes(question_votes=question.vote_number) }}</span>&nbsp;#}
+{#					<a class="text-decoration-none" href="">{{ question.title }}</a>#}
+{#					<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for('route_home', tag=question.tag_id) }}">{{ func_find_tag_name(question.tag_id|int).tag_name|e }}</a></span>#}
+{#				</div>#}
+{#				<ul class="col-2 list-inline text-end mb-0">#}
+{#					<li class="list-inline-item">#}
+{#						<small class="text-muted">{{ question.submission_time.strftime('%Y-%m-%d') }}</small></li>#}
+{#					<li class="list-inline-item"><small class="text-muted">{{ question.view_number }} views</small>#}
+{#					</li>#}
+{#					<li class="list-inline-item"></li>#}
+{#				</ul>#}
+{#			</div>#}
+{#			<div class="card-body pb-1">#}
+{#				<div class="row">#}
+{#					<p class="card-text">{{ question.message|truncate(270, True, '...') }}</p>#}
+{#					<hr class="m-1">#}
+{#					<ul class="list-inline text-end mb-0">#}
+{#						<li class="list-inline-item">#}
+{#							<span class="badge bg-success"> {{ macro_answer_pl_sg(func_count_answers(question.question_id|int)) }}</span>#}
+{#						</li>#}
+{#						<li class="list-inline-item">#}
+{#							<span class="badge bg-secondary"> {{ macro_comment_pl_sg(func_count_comments(question.question_id|int)) }}</span>#}
+{#						</li>#}
+{#						<li class="list-inline-item">#}
+{#							<span class="badge bg-dark"><a class="link-light text-decoration-none" href="">{{ func_user_info(question.user_id|int).user_name }}</a></span>#}
+{#						</li>#}
+{#					</ul>#}
+{#				</div>#}
+{#			</div>#}
+{#		</div>#}
+{#	{% endfor %}#}
+{# generate questions result #}
+{{ macro_generate_question_list(item=question, the_list=questions, route="route_home")  }}
+
+{#pagination #}
+{{ macro_pagination(data_type=questions, page_num=page_num ,previous=url_for('route_home', page=questions.prev_num), route= 'route_home', next=url_for('route_home', page=questions.next_num)) }}
+{% endblock content %}
+

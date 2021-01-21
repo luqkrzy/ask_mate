@@ -21,6 +21,7 @@ class Users(db.Model, UserMixin):
     register_date = db.Column(db.DateTime, default=datetime.now().replace(microsecond=0).isoformat())
     reputation = db.Column(db.Integer, default=0)
     picture = db.Column(db.String(50), default='default_user.jpg')
+    questions = db.relationship('Question', backref='author', lazy=True)
 
     def get_id(self):
         return (self.user_id)

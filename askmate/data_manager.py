@@ -35,6 +35,10 @@ def save_picture(form_picture):
     return picture_filename
 
 
+def switch_asc_desc(order_direction):
+    return 'desc' if order_direction == 'asc' else 'asc'
+
+
 def commit_to_database(data):
     db.session.add(data)
     db.session.commit()
@@ -58,10 +62,6 @@ def find_user_by_email(email):
     return Users.query.filter_by(email=email).first()
 
 
-def find_all_users():
-    return Users.query.all()
-
-
 def fetch_tags():
     return Tag.query.all()
 
@@ -81,6 +81,7 @@ def choice_query():
 def find_question_by_id(question_id):
     return Question.query.get_or_404(question_id)
 
+
 def find_tag_name_by_id(tag_id):
     return Tag.query.filter_by(tag_id=tag_id).first()
 
@@ -89,24 +90,36 @@ def find_question_tag_by_id(question_id):
     return QuestionTag.query.filter_by(question_id=question_id).first()
     # return db.engine.execute('SELECT tag_id FROM question_tag WHERE question_id=124;')
 
-def fetch_all_questions():
-    return Question.query.all()
 
-def paginate_all_questions(page):
+def paginate_questions(page):
     return Question.query.paginate(page, per_page=10)
 
-def fetch_all_comments():
-    return Comment.query.all()
 
 def count_answers_by_question_id(question_id):
     return Answer.query.filter_by(question_id=question_id).count()
 
+
 def count_comments_by_question_id(question_id):
     return Comment.query.filter_by(question_id=question_id).count()
+
 
 def count_comments_by_answer_id(answer_id):
     return Comment.query.filter_by(answer_id=answer_id).count()
 
+
+
 def find_user_by_id(user_id):
     return Users.query.get_or_404(user_id)
 
+def count_all_questions():
+    return Question.query.count()
+
+
+def sort_and_paginate_questions(page, order_by= 'title', direction = 'desc'):
+    question = "Question.query.order_by(Question.{}.{}())".format(order_by, direction)
+    return eval(question).paginate(page, per_page=10)
+
+
+def paginate_questions_by_tag(page, tag_id, order_by='title', direction ='desc'):
+    filter_question = "Question.query.filter_by(tag_id={}).order_by(Question.{}.{}())".format(tag_id, order_by, direction)
+    return eval(filter_question).paginate(page, per_page=10)

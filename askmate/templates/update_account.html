@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% from '_macros.html' import render_field, upload_picture %}
+{% from '_macros.html' import macro_render_field, macro_upload_picture %}
 {% block title %}Account{% endblock %}
 {% block content %}
 	{#	section update account #}
@@ -9,10 +9,10 @@
 				{{ form.hidden_tag() }}
 				<fieldset>
 					<legend class="text-center">Update details</legend>
-					{{ render_field(form.username) }}
-					{{ render_field(form.email) }}
-					{{ render_field(form.password) }}
-					{{ upload_picture(form.picture) }}
+					{{ macro_render_field(form.username) }}
+					{{ macro_render_field(form.email) }}
+					{{ macro_render_field(form.password) }}
+					{{ macro_upload_picture(form.picture) }}
 				</fieldset>
 				<div class="form-group my-3">{{ form.submit(class="btn btn-primary") }}</div>
 			</form>
