@@ -1,9 +1,10 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, abort
 from askmate import app, bcrypt
 from askmate.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuestionForm, Users
 from flask_login import login_user, current_user, logout_user, login_required
 from askmate import data_manager, datetime
 from askmate.models import Users, Question
+
 
 app.jinja_env.globals.update(
     func_user_info=data_manager.find_user_by_id,
@@ -67,7 +68,8 @@ def route_login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('route_home'))
+
+            return redirect(next_page) if  next_page else redirect(url_for('route_home'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
             return redirect(url_for('route_login'))
@@ -116,13 +118,16 @@ def route_update_account():
 @app.route("/")
 def route_home():
     print(request.args)
-    order_direction = request.args.get('order_direction', 'asc')
+    order_direction = request.args.get('order_direction')
     switch_order_direction = data_manager.switch_asc_desc(order_direction)
+    search_phrase = request.args.get('search_phrase', '')
+    print(search_phrase != '')
 
-    questions = data_manager.fetch_questions_by_request(request_args=dict(request.args)) if request.args.get('tag_id') is not None \
+    questions = data_manager.search_query(search_phrase=search_phrase, page=request.args.get('page', int(1))) if search_phrase != '' \
+        else data_manager.fetch_questions_by_request(request_args=dict(request.args)) if request.args.get('tag_id') is not None \
         else data_manager.sort_and_paginate_questions(request_args=dict(request.args), direction=switch_order_direction)
 
-    return render_template('index.html', questions=questions, asc_desc=switch_order_direction)
+    return render_template('index.html', questions=questions, asc_desc=switch_order_direction, search_phrase=search_phrase)
 
 
 @app.route('/question', methods=['GET', 'POST'])
@@ -228,12 +233,17 @@ def route_test():
     # for i in question.items:
     #     print(i)
 
-    all_questions = data_manager.fetch_all_questions()
-    q = list(all_questions)
+    # all_questions = data_manager.fetch_all_questions()
+    # q = list(all_questions)
+    #
+    # lista = []
+    #
+    # for item in q:
+    #     lista.append(list(item))
 
-    lista = []
+    page = request.args.get('page', int(1))
+    search_phrase = request.args.get('search_phrase')
+    search_it = data_manager.search_query(search_phrase, page)
+    print(search_phrase)
 
-    for item in q:
-        lista.append(list(item))
-
-    return render_template('test.html', data=q)
+    return render_template('test.html', data=search_it, search_phrase=search_phrase)

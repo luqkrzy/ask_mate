@@ -129,48 +129,57 @@
 	</nav>
 {%- endmacro -%}
 
+{% macro macro_heihlight_search_pharse(search="", data="") %}
+	{% if search in data.title %}
+		{{ data.title.replace(search, '<span style="background-color: yellow;">{}</span>'.format(search))|safe }}
+		<br>
+	{% else %}
+		{{ search.title }}
+	{% endif %}
+{% endmacro %}
+
 {# generate list of questions#}
 {% macro macro_generate_question_list(item="", the_list="", route="") %}
-{% for item in the_list.items %}
-<div class="card text-dark bg-light mt-3">
-	<div class="card-header d-flex">
-		<div class="col-10  fw-bold text-start">
-			<span class="badge bg-success">{{ macro_votes(question_votes=item.vote_number) }}</span>&nbsp;
-			<a class="text-decoration-none" href="">{{ item.title }}</a>
-			<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for(route, tag_id=item.tag_id) }}">{{ func_find_tag_name(item.tag_id|int).tag_name|e }}</a></span>
+	{% for item in the_list.items %}
+		<div class="card text-dark bg-light mt-3">
+			<div class="card-header d-flex">
+				<div class="col-10  fw-bold text-start">
+					<span class="badge bg-success">{{ macro_votes(question_votes=item.vote_number) }}</span>&nbsp;
+					<a class="text-decoration-none" href="">{{ item.title }}</a>
+					<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for(route, tag_id=item.tag_id) }}">{{ func_find_tag_name(item.tag_id|int).tag_name|e }}</a></span>
+				</div>
+				<ul class="col-2 list-inline text-end mb-0">
+					<li class="list-inline-item">
+						<small class="text-muted">{{ item.submission_time.strftime('%y-%m-%d') }}</small></li>
+					<li class="list-inline-item"><small class="text-muted">{{ item.view_number }} views</small>
+					</li>
+					<li class="list-inline-item"></li>
+				</ul>
+			</div>
+			<div class="card-body pb-1">
+				<div class="row">
+					<p class="card-text">{{ item.message|truncate(270, True, '...') }}</p>
+					<hr class="m-1">
+					<ul class="list-inline text-end mb-0">
+						<li class="list-inline-item">
+							<span class="badge bg-success"> {{ macro_answer_pl_sg(func_count_answers(item.question_id|int)) }}</span>
+						</li>
+						<li class="list-inline-item">
+							<span class="badge bg-secondary"> {{ macro_comment_pl_sg(func_count_comments(item.question_id|int)) }}</span>
+						</li>
+						<li class="list-inline-item">
+							<span class="badge bg-dark"><a class="link-light text-decoration-none" href="">{{ func_user_info(item.user_id|int).user_name }}</a></span>
+						</li>
+					</ul>
+				</div>
+			</div>
 		</div>
-		<ul class="col-2 list-inline text-end mb-0">
-			<li class="list-inline-item">
-				<small class="text-muted">{{ item.submission_time.strftime('%y-%m-%d') }}</small></li>
-			<li class="list-inline-item"><small class="text-muted">{{ item.view_number }} views</small>
-			</li>
-			<li class="list-inline-item"></li>
-		</ul>
-	</div>
-	<div class="card-body pb-1">
-		<div class="row">
-			<p class="card-text">{{ item.message|truncate(270, True, '...') }}</p>
-			<hr class="m-1">
-			<ul class="list-inline text-end mb-0">
-				<li class="list-inline-item">
-					<span class="badge bg-success"> {{ macro_answer_pl_sg(func_count_answers(item.question_id|int)) }}</span>
-				</li>
-				<li class="list-inline-item">
-					<span class="badge bg-secondary"> {{ macro_comment_pl_sg(func_count_comments(item.question_id|int)) }}</span>
-				</li>
-				<li class="list-inline-item">
-					<span class="badge bg-dark"><a class="link-light text-decoration-none" href="">{{ func_user_info(item.user_id|int).user_name }}</a></span>
-				</li>
-			</ul>
-		</div>
-	</div>
-</div>
-{% endfor %}
+	{% endfor %}
 {% endmacro %}
 
 {# sorting bar #}
 {% macro sort_bar(func_count_questions="", route="", data="", order_direction="") %}
-{%- set dict_sort_by = ({'Title': 'title', 'View': 'view_number', 'Votes': 'vote_number'}) -%}
+	{%- set dict_sort_by = ({'Title': 'title', 'View': 'view_number', 'Votes': 'vote_number'}) -%}
 	<div class="container mt-3 px-0">
 		<div class="row">
 			<div class="col p-1 fs-3">{{ func_count_questions }} questions</div>

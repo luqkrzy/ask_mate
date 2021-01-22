@@ -2,6 +2,7 @@ import inspect
 from askmate import os, db, app_config
 from secrets import token_hex
 from PIL import Image
+from sqlalchemy import or_, func
 from askmate.models import Users, Tag, Question, QuestionTag, Answer, Comment
 
 
@@ -123,9 +124,7 @@ def sort_and_paginate_questions(request_args: dict, direction = 'desc'):
     page = int(request_args.get('page', 1))
     order_by = request_args.get('order_by', 'submission_time')
     questions = "Question.query.order_by(Question.{}.{}())".format(order_by, direction)
-    x = eval(questions).paginate(page, per_page=10)
-    print(type(x))
-    return x
+    return eval(questions).paginate(page, per_page=10)
 
 def fetch_questions_by_request(request_args: dict):
     order_by = request_args.get('order_by', 'submission_time')
@@ -136,3 +135,6 @@ def fetch_questions_by_request(request_args: dict):
     filter_questions = "Question.query.filter_by({}={}).order_by(Question.{}.{}())".format(filter_by_type, filter_by_value, order_by, order_direction)
     return eval(filter_questions).paginate(page, per_page=10)
 
+def search_query(search_phrase, page):
+    return Question.query.filter(or_(func.lower(Question.title).like(func.lower(f"%{search_phrase}%")),
+                                     func.lower(Question.message).like(func.lower(f"%{search_phrase}%")))).order_by(Question.submission_time.desc()).paginate(page, per_page=10)

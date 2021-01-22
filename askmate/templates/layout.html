@@ -25,8 +25,8 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarCollapse">
-			<form class="d-flex w-100">
-				<input class="form-control ms-5 me-2" type="search" placeholder="search.." aria-label="Search">
+			<form class="d-flex w-100" action="{{ url_for('route_test') }}">
+				<input class="form-control ms-5 me-2" name="search_phrase" id="search_phrase" type="search" placeholder="search.." aria-label="Search">
 				<button class="btn btn-outline-light" type="submit">Search</button>
 			</form>
 			<div class="navbar-nav">

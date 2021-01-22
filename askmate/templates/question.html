@@ -2,16 +2,16 @@
 {% from '_macros.html' import macro_question_input %}
 {% block title %}Question{% endblock %}
 {% block content %}
-	{% if form.title.data != None %}
-		{% set add_question = True %}
-	{% else %}
-		{% set add_question = False %}
-	{% endif %}
-	{% if add_question %}
+	{%- if form.title.data != None -%}
+		{% set add_question = True -%}
+	{%- else %}
+		{% set add_question = False -%}
+	{%- endif -%}
+	{%- if add_question %}
 		{{ macro_question_input(action= url_for('route_edit_question', question_id=question_id), info="Update", title=form.title,
 		 message=form.message, tag_name=form.tag_name, image=form.image, hidden_tag=form.hidden_tag(), submit=form.submit) }}
-	{% else %}
+	{% else -%}
 		{{ macro_question_input(action=url_for('route_add_question'), info="Ask", title=form.title, message=form.message,
 		tag_name=form.tag_name, image=form.image, hidden_tag=form.hidden_tag(), submit=form.submit) }}
-	{% endif %}
-{% endblock %}
+	{%- endif %}
+{%- endblock -%}
