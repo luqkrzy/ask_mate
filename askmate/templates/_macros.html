@@ -128,24 +128,24 @@
 		</ul>
 	</nav>
 {%- endmacro -%}
-
-{% macro macro_heihlight_search_pharse(search="", data="") %}
-	{% if search in data.title %}
-		{{ data.title.replace(search, '<span style="background-color: yellow;">{}</span>'.format(search))|safe }}
-		<br>
-	{% else %}
-		{{ search.title }}
-	{% endif %}
-{% endmacro %}
+{# highlight search results #}
+{%- macro macro_heihlight_search_pharse(column="", search_phrase="") -%}
+	{% set style =  '<span class="bg-warning">{}</span>'%}
+	{%- if search_phrase in column -%}
+		{{ column.replace(search_phrase, style.format(search_phrase)).replace(search_phrase|title, style.format(search_phrase|title))|safe }}
+	{%- else -%}
+		{{ column|truncate(270, True, '...') }}
+	{%- endif -%}
+{%- endmacro -%}
 
 {# generate list of questions#}
-{% macro macro_generate_question_list(item="", the_list="", route="") %}
+{% macro macro_generate_question_list(item="", the_list="", route="", search_phrase='') %}
 	{% for item in the_list.items %}
 		<div class="card text-dark bg-light mt-3">
 			<div class="card-header d-flex">
 				<div class="col-10  fw-bold text-start">
 					<span class="badge bg-success">{{ macro_votes(question_votes=item.vote_number) }}</span>&nbsp;
-					<a class="text-decoration-none" href="">{{ item.title }}</a>
+					<a class="text-decoration-none" href="">{{ macro_heihlight_search_pharse(column=item.title, search_phrase=search_phrase) }}</a>
 					<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for(route, tag_id=item.tag_id) }}">{{ func_find_tag_name(item.tag_id|int).tag_name|e }}</a></span>
 				</div>
 				<ul class="col-2 list-inline text-end mb-0">
@@ -158,7 +158,7 @@
 			</div>
 			<div class="card-body pb-1">
 				<div class="row">
-					<p class="card-text">{{ item.message|truncate(270, True, '...') }}</p>
+					<p class="card-text">{{ macro_heihlight_search_pharse(column=item.message, search_phrase=search_phrase) }}</p>
 					<hr class="m-1">
 					<ul class="list-inline text-end mb-0">
 						<li class="list-inline-item">
@@ -178,11 +178,12 @@
 {% endmacro %}
 
 {# sorting bar #}
-{% macro sort_bar(func_count_questions="", route="", data="", order_direction="") %}
+{% macro sort_bar(func_count_questions="", route="", data="", order_direction="", search_phrase="") %}
 	{%- set dict_sort_by = ({'Title': 'title', 'View': 'view_number', 'Votes': 'vote_number'}) -%}
 	<div class="container mt-3 px-0">
 		<div class="row">
-			<div class="col p-1 fs-3">{{ func_count_questions }} questions</div>
+			<div class="col p-1 fs-3">
+				<p>{{ func_count_questions }} questions</p></div>
 			<div class="col text-end">
 				<div class="btn-group" role="group" aria-label="Basic outlined">
 					{% for item, value in dict_sort_by.items() -%}
