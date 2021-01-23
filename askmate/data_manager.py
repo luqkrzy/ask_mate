@@ -135,6 +135,8 @@ def fetch_questions_by_request(request_args: dict):
     filter_questions = "Question.query.filter_by({}={}).order_by(Question.{}.{}())".format(filter_by_type, filter_by_value, order_by, order_direction)
     return eval(filter_questions).paginate(page, per_page=10)
 
-def search_query(search_phrase, page):
-    return Question.query.filter(or_(func.lower(Question.title).like(func.lower(f"%{search_phrase}%")),
+def search_query(request_args:dict):
+    search_phrase = request_args.get('search_phrase')
+    page = int(request_args.get('page', 1))
+    return  Question.query.filter(or_(func.lower(Question.title).like(func.lower(f"%{search_phrase}%")),
                                      func.lower(Question.message).like(func.lower(f"%{search_phrase}%")))).order_by(Question.submission_time.desc()).paginate(page, per_page=10)

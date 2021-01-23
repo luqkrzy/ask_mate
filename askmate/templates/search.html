@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% from '_macros.html' import sort_bar, macro_votes, macro_pagination, macro_answer_pl_sg, macro_comment_pl_sg, macro_generate_question_list %}
+{% block title %}Home{% endblock %}
+{% block content %}
+	{{ sort_bar(search_phrase=search_phrase, func_count_questions=func_questions_no, route='route_search', data=questions, order_direction=asc_desc ) }}
+	{# generate questions result #}
+	{{ macro_generate_question_list(item=question, the_list=questions, route="route_search", search_phrase=search_phrase) }}
+	{#pagination #}
+	{{ macro_pagination(data_type=questions, page_num=page_num, search_phrase=search_phrase,  previous=url_for('route_search', page=questions.prev_num, search_phrase=search_phrase), route= 'route_search', next=url_for('route_search', page=questions.next_num, search_phrase=search_phrase)) }}
+{% endblock content %}

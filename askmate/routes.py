@@ -5,7 +5,6 @@ from flask_login import login_user, current_user, logout_user, login_required
 from askmate import data_manager, datetime
 from askmate.models import Users, Question
 
-
 app.jinja_env.globals.update(
     func_user_info=data_manager.find_user_by_id,
     func_questions_no=data_manager.count_all_questions(),
@@ -69,7 +68,7 @@ def route_login():
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
 
-            return redirect(next_page) if  next_page else redirect(url_for('route_home'))
+            return redirect(next_page) if next_page else redirect(url_for('route_home'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
             return redirect(url_for('route_login'))
@@ -117,17 +116,28 @@ def route_update_account():
 
 @app.route("/")
 def route_home():
-    print(request.args)
     order_direction = request.args.get('order_direction')
     switch_order_direction = data_manager.switch_asc_desc(order_direction)
-    search_phrase = request.args.get('search_phrase', '')
-    print(search_phrase != '')
+    if request.args.get('search_phrase') is not None:
+        return redirect(url_for('route_search'))
 
-    questions = data_manager.search_query(search_phrase=search_phrase, page=request.args.get('page', int(1))) if search_phrase != '' \
-        else data_manager.fetch_questions_by_request(request_args=dict(request.args)) if request.args.get('tag_id') is not None \
+    questions = data_manager.fetch_questions_by_request(request_args=dict(request.args)) if request.args.get('tag_id') is not None \
         else data_manager.sort_and_paginate_questions(request_args=dict(request.args), direction=switch_order_direction)
 
-    return render_template('index.html', questions=questions, asc_desc=switch_order_direction, search_phrase=search_phrase)
+    return render_template('index.html', questions=questions, asc_desc=switch_order_direction)
+
+
+@app.route("/search")
+def route_search():
+    order_direction = request.args.get('order_direction')
+    switch_order_direction = data_manager.switch_asc_desc(order_direction)
+    request_args = dict(request.args)
+    print(request_args)
+    search_phrase = request.args.get('search_phrase')
+
+    questions = data_manager.search_query(request_args=request_args)
+
+    return render_template('search.html', questions=questions, asc_desc=switch_order_direction, search_phrase=search_phrase)
 
 
 @app.route('/question', methods=['GET', 'POST'])
