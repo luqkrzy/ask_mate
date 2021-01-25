@@ -5,7 +5,7 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextA
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from askmate.models import Users
-from askmate.data_manager import get_all_tag_names, choice_query
+from askmate.data_manager import choice_query
 
 
 class RegistrationForm(FlaskForm):

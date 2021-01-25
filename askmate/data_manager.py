@@ -37,7 +37,7 @@ def save_picture(form_picture):
 
 
 def switch_asc_desc(order_direction):
-    return 'desc' if order_direction == 'asc' else 'asc'
+    return 'desc' if order_direction == 'asc' else 'desc'
 
 
 def commit_to_database(data):
@@ -92,10 +92,6 @@ def find_question_tag_by_id(question_id):
     # return db.engine.execute('SELECT tag_id FROM question_tag WHERE question_id=124;')
 
 
-def paginate_questions(page):
-    return Question.query.paginate(page, per_page=10)
-
-
 def count_answers_by_question_id(question_id):
     return Answer.query.filter_by(question_id=question_id).count()
 
@@ -108,23 +104,16 @@ def count_comments_by_answer_id(answer_id):
     return Comment.query.filter_by(answer_id=answer_id).count()
 
 
-
 def find_user_by_id(user_id):
     return Users.query.get_or_404(user_id)
 
-def count_all_questions():
-    return Question.query.count()
 
-def fetch_all_questions():
-    return Question.query.all()
-
-
-
-def sort_and_paginate_questions(request_args: dict, direction = 'desc'):
+def sort_and_paginate_questions(request_args: dict, direction='asc'):
     page = int(request_args.get('page', 1))
     order_by = request_args.get('order_by', 'submission_time')
     questions = "Question.query.order_by(Question.{}.{}())".format(order_by, direction)
     return eval(questions).paginate(page, per_page=10)
+
 
 def fetch_questions_by_request(request_args: dict):
     order_by = request_args.get('order_by', 'submission_time')
@@ -135,8 +124,9 @@ def fetch_questions_by_request(request_args: dict):
     filter_questions = "Question.query.filter_by({}={}).order_by(Question.{}.{}())".format(filter_by_type, filter_by_value, order_by, order_direction)
     return eval(filter_questions).paginate(page, per_page=10)
 
-def search_query(request_args:dict):
+
+def search_query(request_args: dict):
     search_phrase = request_args.get('search_phrase')
     page = int(request_args.get('page', 1))
-    return  Question.query.filter(or_(func.lower(Question.title).like(func.lower(f"%{search_phrase}%")),
+    return Question.query.filter(or_(func.lower(Question.title).like(func.lower(f"%{search_phrase}%")),
                                      func.lower(Question.message).like(func.lower(f"%{search_phrase}%")))).order_by(Question.submission_time.desc()).paginate(page, per_page=10)

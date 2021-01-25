@@ -2,18 +2,26 @@
 {% from '_macros.html' import macro_render_field, macro_upload_picture, macro_render_select_field %}
 {% block title %}Test{% endblock %}
 {% block content %}
-	{#{{ data }}#}
-	{#{% for question in data %}#}
-	{#	{{ question.title }}#}
-	{#{% endfor %}#}
+	{#	{{ data.total }}#}
+	{#	{% for question in data.items %}#}
+	{#		{{ question.title }}#}
+	{#	{% endfor %}#}
 
-	{% for question in data.items %}
-		{% if search_phrase in question.title %}
-			{{ question.title.replace(search_phrase, '<span style="background-color: yellow;">{}</span>'.format(search_phrase))|safe }}
-			<br>
-		{% else %}
-			{{ question.title }}
-		{% endif %}
-	{% endfor %}
+	{#		{% for question in data.items %}#}
+	{#		{% if search_phrase in question.title %}#}
+	{#			{{ question.title.replace(search_phrase, '<span style="background-color: yellow;">{}</span>'.format(search_phrase))|safe }}#}
+	{#			<br>#}
+	{#		{% else %}#}
+	{#			{{ question.title }}#}
+	{#		{% endif %}#}
+	{#	{% endfor %}#}
+
+	{{ data }}<br>
+
+	{{ data|striptags }}<br>
+
+	{% set strip_tags = data|striptags %}<br>
+
+{{ strip_tags }}
 
 {% endblock %}

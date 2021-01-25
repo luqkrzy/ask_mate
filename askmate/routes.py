@@ -7,7 +7,6 @@ from askmate.models import Users, Question
 
 app.jinja_env.globals.update(
     func_user_info=data_manager.find_user_by_id,
-    func_questions_no=data_manager.count_all_questions(),
     func_find_tag_name=data_manager.find_tag_name_by_id,
     func_count_answers=data_manager.count_answers_by_question_id,
     func_count_comments=data_manager.count_comments_by_question_id,
@@ -156,7 +155,7 @@ def route_add_question():
         flash('Question posted ', 'success')
         return redirect(url_for('route_home'))
 
-    return render_template("question.html", form=form)
+    return render_template("edit_add_question.html", form=form)
 
 
 @app.route('/question/edit/<int:question_id>', methods=['GET', 'POST'])
@@ -189,7 +188,7 @@ def route_edit_question(question_id):
         flash('Question updated ', 'success')
         return redirect(url_for('route_home'))
 
-    return render_template("question.html", form=form, question_id=question_id)
+    return render_template("edit_add_question.html", form=form, question_id=question_id)
 
 
 def clever_function():
@@ -251,9 +250,13 @@ def route_test():
     # for item in q:
     #     lista.append(list(item))
 
-    page = request.args.get('page', int(1))
-    search_phrase = request.args.get('search_phrase')
-    search_it = data_manager.search_query(search_phrase, page)
-    print(search_phrase)
+    # search_it = data_manager.search_query({'search_phrase': 'nulla', 'page': 1})
+    # print(search_it.total)
+    # print(dir(search_it))
+    
+    val = "<h1>Hello I'm luc</h1>"
 
-    return render_template('test.html', data=search_it, search_phrase=search_phrase)
+    tag_q = data_manager.choice_query()
+    print((tag_q))
+
+    return render_template('test.html', data=val)
