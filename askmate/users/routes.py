@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, url_for, redirect, request, flash
 from flask_login import current_user, login_user, logout_user, login_required
 from askmate import db, bcrypt
 import askmate.data_manager as data_manager
+from askmate.users.utils import save_picture
 from askmate.models import Users, Question
 from askmate.users.forms import RegistrationForm, LoginForm, UpdateAccountForm
 
@@ -18,7 +19,7 @@ def route_register():
 
     if form.validate_on_submit():
         if form.picture.data:
-            picture_file = data_manager.save_picture(form.picture.data)
+            picture_file = save_picture(form.picture.data)
 
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         new_user = {'user_name': form.username.data, 'email': form.email.data, 'password': hashed_password, 'picture': picture_file}

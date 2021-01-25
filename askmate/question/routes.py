@@ -1,10 +1,11 @@
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 import askmate.data_manager as data_manager
 from flask_login import current_user, login_required
+from datetime import datetime
 from askmate import db
 from askmate.models import Question
 from askmate.question.forms import QuestionForm
-from datetime import datetime
+from askmate.users.utils import save_picture
 
 
 questions = Blueprint('questions', __name__)
@@ -32,7 +33,7 @@ def route_add_question():
 
     if form.validate_on_submit():
         if form.image.data:
-            picture_file = data_manager.save_picture(form.image.data)
+            picture_file = save_picture(form.image.data)
         new_question = {'user_id': current_user.user_id, 'title': form.title.data, 'message': form.message.data, 'image': picture_file, 'tag_id': form.tag_name.data.tag_id}
         print(new_question)
 
@@ -59,7 +60,7 @@ def route_edit_question(question_id):
 
     elif form.validate_on_submit():
         if form.image.data:
-            picture_file = data_manager.save_picture(form.image.data)
+            picture_file = save_picture(form.image.data)
             current_user.image = picture_file
 
         question.user_id = current_user.user_id

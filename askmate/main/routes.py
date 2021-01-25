@@ -8,7 +8,7 @@ main = Blueprint('main', __name__)
 
 @main.route("/")
 def route_home():
-    order_direction = request.args.get('order_direction')
+    order_direction = request.args.get('order_direction', 'asc')
     switch_order_direction = data_manager.switch_asc_desc(order_direction)
     if request.args.get('search_phrase') is not None:
         return redirect(url_for('questions.route_search'))
