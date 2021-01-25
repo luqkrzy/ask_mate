@@ -7,21 +7,18 @@
 	{#		{{ question.title }}#}
 	{#	{% endfor %}#}
 
-	{#		{% for question in data.items %}#}
-	{#		{% if search_phrase in question.title %}#}
-	{#			{{ question.title.replace(search_phrase, '<span style="background-color: yellow;">{}</span>'.format(search_phrase))|safe }}#}
-	{#			<br>#}
-	{#		{% else %}#}
-	{#			{{ question.title }}#}
-	{#		{% endif %}#}
-	{#	{% endfor %}#}
+	{% for question in search_it.items %}
+		{% if search_phrase in question.title %}
+			{{ question.title }}<br>
 
-	{{ data }}<br>
+			{#			{% if search_phrase in question.title %}#}
+			{#				{{ question.title.replace(search_phrase, '<span style="background-color: yellow;">{}</span>'.format(search_phrase))|safe }}#}
+			{#				<br>#}
+			{#			{% else %}#}
+			{#				{{ question.title }}#}
+		{% endif %}
+	{% endfor %}
 
-	{{ data|striptags }}<br>
 
-	{% set strip_tags = data|striptags %}<br>
-
-{{ strip_tags }}
 
 {% endblock %}

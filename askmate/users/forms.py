@@ -1,11 +1,9 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, IntegerField
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from askmate.models import Users
-from askmate.data_manager import choice_query
 
 
 class RegistrationForm(FlaskForm):
@@ -41,20 +39,3 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
-
-
-class QuestionForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired(), Length(min=10, max=100)])
-    message = TextAreaField('Message', validators=[DataRequired(), Length(min=20)])
-    image = FileField('Upload image', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
-    tag_name = QuerySelectField('Tag', allow_blank=True, validators=[DataRequired()], query_factory=choice_query, get_label='tag_name')
-    submit = SubmitField('Post')
-
-
-# class TagForm(FlaskForm):
-#     tag_id = IntegerField('tag_id')
-#     tag_name = SelectField('Tag', validators=[DataRequired()], choices=['choose...', *get_all_tag_names()])
-#
-# class QuestionTagForm(FlaskForm):
-#     question_id = IntegerField('question_id')
-#     tag_id = IntegerField('tag_id')

@@ -4,7 +4,7 @@
 {% block content %}
 	<div class="container">
 		<div class="row justify-content-center">
-			<form action="{{ url_for('route_register') }}" method="post" enctype="multipart/form-data" class=" row w-50">
+			<form action="{{ url_for('users.route_register') }}" method="post" enctype="multipart/form-data" class=" row w-50">
 				{{ form.hidden_tag() }}
 				<fieldset>
 					<legend class="border-bottom mb-4 text-center">Join Today</legend>
@@ -17,7 +17,7 @@
 				<div class="form-group my-3">{{ form.submit(class="btn btn-primary") }}</div>
 			</form>
 			<div class="border-top pt-2 mt-3">
-				<small class="text-muted">Already Have An Account? <a class="ml-2" href="{{ url_for('route_login') }}">Sign In</a></small>
+				<small class="text-muted">Already Have An Account? <a class="ml-2" href="{{ url_for('users.route_login') }}">Sign In</a></small>
 			</div>
 		</div>
 	</div>

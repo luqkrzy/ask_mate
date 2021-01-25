@@ -1,9 +1,9 @@
-import inspect
 from askmate import os, db, app_config
-from secrets import token_hex
-from PIL import Image
 from sqlalchemy import or_, func
 from askmate.models import Users, Tag, Question, QuestionTag, Answer, Comment
+import inspect
+from secrets import token_hex
+from PIL import Image
 
 
 def set_picture_path(called_function):

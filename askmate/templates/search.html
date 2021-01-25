@@ -2,11 +2,11 @@
 {% from '_macros.html' import sort_bar, macro_pagination, macro_generate_question_list %}
 {% block title %}Home{% endblock %}
 {% block content %}
-	{{ sort_bar(search_phrase=search_phrase, route='route_search', data=questions, order_direction=asc_desc ) }}
+	{{ sort_bar(search_phrase=search_phrase, route='questions.route_search', data=questions, order_direction=asc_desc ) }}
 	{# generate questions result #}
-	{{ macro_generate_question_list(item=question, the_list=questions, route="route_search", search_phrase=search_phrase) }}
+	{{ macro_generate_question_list(item=question, the_list=questions, route="questions.route_search", search_phrase=search_phrase) }}
 	{#pagination #}
 	{{ macro_pagination(data_type=questions, page_num=page_num, search_phrase=search_phrase,
-	 previous=url_for('route_search', page=questions.prev_num, search_phrase=search_phrase),
-	  route= 'route_search', next=url_for('route_search', page=questions.next_num, search_phrase=search_phrase)) }}
+	 previous=url_for('questions.route_search', page=questions.prev_num, search_phrase=search_phrase),
+	  route= 'questions.route_search', next=url_for('questions.route_search', page=questions.next_num, search_phrase=search_phrase)) }}
 {% endblock content %}
