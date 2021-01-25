@@ -86,13 +86,12 @@ def sort_and_paginate_questions(request_args: dict, direction='asc'):
     return eval(questions).paginate(page, per_page=10)
 
 
-def fetch_questions_by_request(request_args: dict):
+def fetch_questions_by_tag(request_args: dict):
     order_by = request_args.get('order_by', 'submission_time')
     order_direction = request_args.get('order_direction', 'desc')
-    page = request_args.get('page', int(1))
-    filter_by_type = next(iter(request_args))
-    filter_by_value = next(iter(request_args.values()))
-    filter_questions = "Question.query.filter_by({}={}).order_by(Question.{}.{}())".format(filter_by_type, filter_by_value, order_by, order_direction)
+    page = int(request_args.get('page', int(1)))
+    tag_id = int(request_args.get('tag_id'))
+    filter_questions = "Question.query.filter_by(tag_id={}).order_by(Question.{}.{}())".format(tag_id, order_by, order_direction)
     return eval(filter_questions).paginate(page, per_page=10)
 
 
@@ -101,3 +100,5 @@ def search_query(request_args: dict):
     page = int(request_args.get('page', 1))
     return Question.query.filter(or_(func.lower(Question.title).like(func.lower(f"%{search_phrase}%")),
                                      func.lower(Question.message).like(func.lower(f"%{search_phrase}%")))).order_by(Question.submission_time.desc()).paginate(page, per_page=10)
+
+

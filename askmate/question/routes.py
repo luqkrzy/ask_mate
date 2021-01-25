@@ -25,6 +25,19 @@ def route_search():
     return render_template('search.html', questions=questions, asc_desc=switch_order_direction, search_phrase=search_phrase)
 
 
+@questions.route("/tag")
+def route_tag():
+    order_direction = request.args.get('order_direction')
+    switch_order_direction = data_manager.switch_asc_desc(order_direction)
+    request_args = dict(request.args)
+    print(request_args)
+    tag_id = request.args.get('tag_id')
+
+    questions = data_manager.fetch_questions_by_tag(request_args=dict(request.args))
+
+    return render_template('tag.html', questions=questions, asc_desc=switch_order_direction, tag_id=tag_id)
+
+
 @questions.route('/question', methods=['GET', 'POST'])
 @login_required
 def route_add_question():

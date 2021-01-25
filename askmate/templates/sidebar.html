@@ -3,7 +3,7 @@
 	<p class="fw-bold my-1">Tags</p>
 	<div class="list-group">
 		{%- for tag in func_tags() -%}
-			<a href="{{ url_for('main.route_home', tag_id=tag.tag_id) }}" class="d-flex link-secondary text-decoration-none justify-content-between align-items-center my-1">#{{ tag.tag_name }}<span class="badge bg-primary rounded-pill">{{ tag.count }}</span></a>
+			<a href="{{ url_for('questions.route_tag', tag_id=tag.tag_id) }}" class="d-flex link-secondary text-decoration-none justify-content-between align-items-center my-1">#{{ tag.tag_name }}<span class="badge bg-primary rounded-pill">{{ tag.count }}</span></a>
 		{% endfor -%}
 	</div>
 </aside>
