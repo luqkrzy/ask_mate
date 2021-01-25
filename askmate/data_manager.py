@@ -96,9 +96,13 @@ def fetch_questions_by_tag(request_args: dict):
 
 
 def search_query(request_args: dict):
+    order_by = request_args.get('order_by', 'submission_time')
+    order_direction = request_args.get('order_direction', 'desc')
     search_phrase = request_args.get('search_phrase')
     page = int(request_args.get('page', 1))
-    return Question.query.filter(or_(func.lower(Question.title).like(func.lower(f"%{search_phrase}%")),
-                                     func.lower(Question.message).like(func.lower(f"%{search_phrase}%")))).order_by(Question.submission_time.desc()).paginate(page, per_page=10)
+    search_base = 'Question.query.filter(or_(func.lower(Question.title).like(func.lower(f"%{search_phrase}%")),func.lower(Question.message).like(func.lower(f"%{search_phrase}%"))))'
+    order_direction = '.order_by(Question.{}.{}())'.format(order_by, order_direction)
+    full_search_query = search_base + order_direction
 
+    return eval(full_search_query).paginate(page, per_page=10)
 

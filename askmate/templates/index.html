@@ -5,7 +5,7 @@
 	{# sorting bar#}
 	{{ sort_bar(search_phrase=search_phrase, route='main.route_home', data=questions, order_direction=asc_desc ) }}
 	{# generate questions result #}
-	{{ macro_generate_question_list(item=question, the_list=questions, route="main.route_home", search_phrase=search_phrase)  }}
+	{{ macro_generate_question_list(item=question, the_list=questions, search_phrase=search_phrase)  }}
 	{#pagination #}
 	{{ macro_pagination(data_type=questions, page_num=page_num ,previous=url_for('main.route_home', page=questions.prev_num), route= 'main.route_home', next=url_for('main.route_home', page=questions.next_num)) }}
 {% endblock content %}

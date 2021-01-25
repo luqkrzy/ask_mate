@@ -141,14 +141,14 @@
 {%- endmacro -%}
 
 {# generate list of questions#}
-{% macro macro_generate_question_list(item="", the_list="", route="", search_phrase='') %}
+{% macro macro_generate_question_list(item="", the_list="", search_phrase='', route_tag='questions.route_tag') %}
 	{% for item in the_list.items %}
 		<div class="card text-dark bg-light mt-3">
 			<div class="card-header d-flex">
 				<div class="col-10  fw-bold text-start">
 					<span class="badge bg-success">{{ macro_votes(question_votes=item.vote_number) }}</span>&nbsp;
-					<a class="text-decoration-none" href="">{{ macro_heihlight_search_pharse(column=item.title, search_phrase=search_phrase) }}</a>
-					<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for(route, tag_id=item.tag_id) }}">{{ func_find_tag_name(item.tag_id|int).tag_name|e }}</a></span>
+					<a class="text-decoration-none" href="">{{ macro_heihlight_search_pharse(column=item.title, search_phrase=search_phrase)|truncate(115, True, '...') }}</a>
+					<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for(route_tag, tag_id=item.tag_id) }}">{{ func_find_tag_name(item.tag_id|int).tag_name|e }}</a></span>
 				</div>
 				<ul class="col-2 list-inline text-end mb-0">
 					<li class="list-inline-item">
@@ -180,7 +180,7 @@
 {% endmacro %}
 
 {# sorting bar #}
-{% macro sort_bar(route="", data="", order_direction="", search_phrase="") %}
+{% macro sort_bar(route="", data="", order_direction="", search_resoult="") %}
 	{%- if data.total == 0 %}
 		<div class="container mt-3">
 			<p>Your search - did not match any documents.</p>
@@ -192,20 +192,21 @@
 			</ul>
 		</div>
 	{%- else -%}
-		{%- set dict_sort_by = ({'Title': 'title', 'View': 'view_number', 'Votes': 'vote_number'}) -%}
+		{%- set dict_sort_by = ({'Time': 'submission_time', 'Title': 'title', 'View': 'view_number', 'Votes': 'vote_number'}) -%}
 		<div class="container mt-3 px-0">
 			<div class="row">
 				<div class="col p-1 fs-3 ms-2">
 					<p class="fs-5">
-						{% if request.endpoint == 'route_home' %}{{ data.total }} questions
-						{% else %}about {{ data.total }} results for: {{ search_phrase }}
+						{% if request.endpoint == 'main.route_home' %}{{ data.total }} questions
+						{% elif request.endpoint == 'questions.route_tag' %}&nbsp;
+						{% else %}about {{ data.total }} results for: {{ search_resoult }}
 							</p>
 						{% endif %}
 				</div>
 				<div class="col text-end">
 					<div class="btn-group" role="group" aria-label="Basic outlined">
 						{% for item, value in dict_sort_by.items() -%}
-							<a href="{{ url_for(route, page=data.page, order_by=value, order_direction=order_direction) }}" type="button" class="btn mt-0 btn-outline-primary">{{ item }}&nbsp;<i class="fas fa-sort"></i></a>
+							<a href="{{ url_for(route, page=data.page, order_by=value, order_direction=order_direction, **kwargs) }}" type="button" class="btn mt-0 btn-outline-primary">{{ item }}&nbsp;<i class="fas fa-sort"></i></a>
 						{% endfor -%}
 					</div>
 				</div>
