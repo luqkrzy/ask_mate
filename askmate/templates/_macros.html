@@ -1,3 +1,5 @@
+{% from '_modals.html' import macro_modal_delete %}
+
 {# render wtf fields vith validartion  #}
 {% macro macro_render_field(field) %}
 	<div class="form-label">
@@ -140,14 +142,14 @@
 
 {# count asnwers #}
 {% macro macro_count_answers(data="") %}
-<div class="container border-bottom pb-2 fs-3">
-	{% set count_answers = data.count() %}
-	{% if count_answers == 1 %}
-		{{ count_answers }} answer
-	{% else %}
-		{{ count_answers }} answers
-	{% endif %}
-</div>
+	<div class="container border-bottom my-3 fs-3">
+		{% set count_answers = data.count() %}
+		{% if count_answers == 1 %}
+			{{ count_answers }} answer
+		{% else %}
+			{{ count_answers }} answers
+		{% endif %}
+	</div>
 {% endmacro %}
 
 {# breadcrumbs#}
@@ -188,6 +190,7 @@
 	{%- endif -%}
 {%- endmacro -%}
 
+{# add comments #}
 {% macro macro_add_comment(action="", comment_for="") %}
 	<form class="row" action="{{ action }}" method="post">
 		<div class="col-8">
@@ -198,6 +201,21 @@
 			<button type="submit" class="btn btn-primary">post</button>
 		</div>
 	</form>
+{% endmacro %}
+
+{# add comments  for question or answers#}
+{% macro list_comments(item="", the_list="", data_target="", route_question="") %}
+<table class="table text-muted">
+	<tbody>
+	{% for item in the_list %}
+		<tr>
+			<td class="border-bottom-0">{{ item.message }} -
+				<small class="text-muted"><a class="text-decoration-none" href="#">{{ func_user_info(user_id=item.user_id|int).user_name.split()[0] }}</a></small>
+				<i data-bs-toggle="modal" data-bs-target="{{ data_target }}" class="fas fa-trash"></i>
+				{{ macro_modal_delete(modal_id=data-bs-target, route=route_question ) }}
+			</td>
+		</tr>
+	{% endfor %}
 {% endmacro %}
 
 {# generate list of questions#}

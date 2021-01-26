@@ -57,7 +57,6 @@
 													<tr>
 														<td class="small">{{ comment.message }}
 															{% if current_user.user_id == comment.user_id %}
-																&nbsp;
 																<i data-bs-toggle="modal" data-bs-target="#confirm_delete_comment" class="fas fa-trash"></i>
 																</td>
 																{{ macro_modal_delete(modal_id="confirm_delete_comment", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment=True) ) }}
@@ -69,12 +68,11 @@
 												{% endfor %}
 												</tbody>
 											</table>
-											<br>{{ macro_add_comment(action=url_for('questions.route_question', question_id=question.question_id), comment_for="comments_for_question") }}
+											{{ macro_add_comment(action=url_for('questions.route_question', question_id=question.question_id), comment_for="comments_for_question") }}
 										</div>
 									</div>
 								</div>
 							{% else %}
-								<br><br>
 								{{ macro_add_comment(action=url_for('questions.route_question', question_id=question.id), comment_for="comments_for_question") }}
 							{% endif %}
 						</div>
@@ -117,13 +115,16 @@
 									<tbody>
 									{% for comment in answer_comments %}
 										<tr>
-											<td class="border-bottom-0" style="font-size: small">{{ comment.message }} -
-												<small style="font-size: small" class="text-muted"><a class="text-decoration-none" href="#">{{ func_user_info(user_id=comment.user_id|int).user_name.split()[0] }}</a></small>
+											<td class="border-bottom-0">{{ comment.message }} -
+												<small class="text-muted"><a class="text-decoration-none" href="#">{{ func_user_info(user_id=comment.user_id|int).user_name.split()[0] }}</a></small>
+												<i data-bs-toggle="modal" data-bs-target="#confirm_delete_comment_for_answer" class="fas fa-trash"></i>
+												{{ macro_modal_delete(modal_id="confirm_delete_comment_for_answer", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment=True) ) }}
+
 											</td>
 										</tr>
 									{% endfor %}
 									<tr>
-										<td>
+										<td class="pb-3">
 											{{ macro_add_comment(action=url_for('questions.route_question', question_id=question.question_id, answer_id=answer.answer_id), comment_for="comments_for_answer") }}
 										</td>
 									</tr>
@@ -132,15 +133,18 @@
 							{% else %}
 								{{ macro_add_comment(action=url_for('questions.route_question', question_id=question.question_id, answer_id=answer.answer_id), comment_for="comments_for_answer") }}
 							{% endif %}
-							<hr>
 							<div class="row mt-0">
 								<div class="col-sm">
 									<small class="text-muted">{{ macro_submission_time(data=answer) }} by:
 										<a href="" class="text-decoration-none">{{ func_user_info(user_id=answer.user_id|int).user_name.split()[0] }}</a></small>
 								</div>
 								<div class="col-sm text-end">
-									<button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update_answer">edit</button>
-									<button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirm_delete_answer">delete</button>
+									<button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update_answer">
+										edit
+									</button>
+									<button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirm_delete_answer">
+										delete
+									</button>
 								</div>
 							</div>
 						</div>
