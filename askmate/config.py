@@ -16,8 +16,6 @@ def get_connection_string():
 
 
 class Config:
-    # app.config.from_object('config.DevelopmentConfig')
-    # app_config = app.config
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True

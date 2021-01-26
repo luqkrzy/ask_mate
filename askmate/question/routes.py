@@ -37,6 +37,32 @@ def route_tag():
 
     return render_template('tag.html', questions=questions, asc_desc=switch_order_direction, tag_id=tag_id)
 
+@questions.route("/question/<int:question_id>", methods=["GET", "POST"])
+def route_question(question_id):
+    question = data_manager.find_question_by_id(question_id)
+
+    answers_list = data_manager.find_answers_by_question_id(question_id)
+    list_comments_for_question = data_manager.find_comments_by_question_id(question_id)
+    data_to_modify = dict(request.args)
+
+    print(data_to_modify)
+
+    if data_to_modify:
+        question.view_number += 1
+        data_manager.update_to_database()
+
+    if 'remove_question' in data_to_modify:
+        data_manager.remove_question_by_id(question_id)
+        flash('Question deleted', 'info')
+        return redirect(url_for('main.route_home'))
+
+
+    list_comments_for_answers = data_manager.find_comments_by_answer_id
+
+    return render_template('question.html', question=question, answers_list=answers_list,
+                           comments_for_question=list_comments_for_question, comments_for_answers=list_comments_for_answers)
+
+
 
 @questions.route('/question', methods=['GET', 'POST'])
 @login_required
@@ -85,6 +111,19 @@ def route_edit_question(question_id):
         question_tag.tag_id = form.tag_name.data.tag_id
         data_manager.update_to_database()
         flash('Question updated ', 'success')
-        return redirect(url_for('questions.route_home'))
+        return redirect(url_for('questions.route_question', question_id=question_id))
 
     return render_template("edit_add_question.html", form=form, question_id=question_id)
+
+
+@questions.route("/question/<int:question_id>/new_question_comment", methods=["GET", "POST"])
+def route_add_comment_for_question(question_id):
+    if request.method == "POST":
+        new_comment = {
+            'user_id': current_user.user_id,
+            "question_id": question_id,
+            "message": request.form.get('comments_for_question'),
+        }
+
+        data_manager.add_new_comment_for_question(new_comment)
+        return redirect(url_for("questions.route_question", question_id=question_id))

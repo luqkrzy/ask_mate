@@ -84,6 +84,15 @@
 	{%- endif -%}
 {%- endmacro -%}
 
+{# submission time or edit time #}
+{% macro macro_submission_time(data="") %}
+	{% if data.edit_submission_time %}
+		updated {{ data.edit_submission_time.strftime('%y-%m-%d') }}
+	{% else %}
+		posted {{ data.submission_time.strftime('%y-%m-%d') }}
+	{% endif %}
+{% endmacro %}
+
 {# comment  plural/singular #}
 {%- macro macro_comment_pl_sg(count_it='') -%}
 	{%- set count_comment =  count_it %}
@@ -129,6 +138,35 @@
 	</nav>
 {%- endmacro -%}
 
+
+{# breadcrumbs#}
+{%- macro macro_breadcrumbs(route=url_for('main.route_home'), data="") -%}
+	<div class="container">
+		<div class="breadcrumbs">
+			<section class="container">
+				<div class="row">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{{ route }}">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">{{ data.title }}</li>
+						</ol>
+					</nav>
+				</div>
+			</section>
+		</div>
+	</div>
+{%- endmacro %}
+
+{# macro image defalut #}
+
+{% macro macro_image(data="") %}
+	{% if data.image %}
+		<img src="{{ url_for('static', filename='img/question_pic/'+data.image) }}" class="img-fluid" alt="pic">
+	{% else %}
+		<img src="{{ url_for('static', filename='img/question_pic/default_question.png') }}" class="img-fluid w-75" alt="pic">
+	{% endif %}
+{% endmacro %}
+
 {# highlight search results #}
 {%- macro macro_heihlight_search_pharse(column="", search_phrase="") -%}
 	{% set style = '<span class="bg-warning">{}</span>' %}
@@ -140,14 +178,26 @@
 	{%- endif -%}
 {%- endmacro -%}
 
+{% macro macro_add_comment(action="", comment_for="") %}
+	<form class="row" action="{{ action }}" method="post">
+		<div class="col-8">
+			<label for="{{ comment_for }}" class="visually-hidden">comment_for</label>
+			<input type="text" class="form-control" name="{{ comment_for }}" id="{{ comment_for }}" placeholder="add comment">
+		</div>
+		<div class="col-2">
+			<button type="submit" class="btn btn-primary">post</button>
+		</div>
+	</form>
+{% endmacro %}
+
 {# generate list of questions#}
-{% macro macro_generate_question_list(item="", the_list="", search_phrase='', route_tag='questions.route_tag') %}
+{% macro macro_generate_question_list(route_question="", item="", the_list="", search_phrase='', route_tag='questions.route_tag') %}
 	{% for item in the_list.items %}
 		<div class="card text-dark bg-light mt-3">
 			<div class="card-header d-flex">
 				<div class="col-10  fw-bold text-start">
 					<span class="badge bg-success">{{ macro_votes(question_votes=item.vote_number) }}</span>&nbsp;
-					<a class="text-decoration-none" href="">{{ macro_heihlight_search_pharse(column=item.title, search_phrase=search_phrase)|truncate(115, True, '...') }}</a>
+					<a class="text-decoration-none" href="{{ url_for(route_question, question_id=item.question_id) }}">{{ macro_heihlight_search_pharse(column=item.title, search_phrase=search_phrase)|truncate(115, True, '...') }}</a>
 					<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for(route_tag, tag_id=item.tag_id) }}">{{ func_find_tag_name(item.tag_id|int).tag_name|e }}</a></span>
 				</div>
 				<ul class="col-2 list-inline text-end mb-0">

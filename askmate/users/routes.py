@@ -79,7 +79,7 @@ def route_update_account():
         current_user.email = form.email.data
 
         if form.picture.data:
-            current_user.picture = data_manager.save_picture(form.picture.data)
+            current_user.picture = save_picture(form.picture.data)
 
         if bcrypt.check_password_hash(current_user.password, form.password.data):
             data_manager.update_to_database()
