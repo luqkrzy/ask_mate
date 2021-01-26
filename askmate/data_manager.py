@@ -34,6 +34,10 @@ def add_new_comment_for_question(new_comment):
     comment = Comment(user_id=new_comment['user_id'], question_id=new_comment['question_id'], message=new_comment['message'])
     commit_to_database(comment)
 
+def add_new_comment_for_answer(new_comment):
+    comment = Comment(user_id=new_comment['user_id'], answer_id=new_comment['answer_id'], message=new_comment['message'])
+    commit_to_database(comment)
+
 
 def find_user_by_email(email):
     return Users.query.filter_by(email=email).first()

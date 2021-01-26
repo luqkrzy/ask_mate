@@ -63,6 +63,7 @@ class QuestionTag(db.Model):
         return f"{self.question_id}, {self.tag_id}"
 
 class Answer(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     answer_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))
     submission_time = db.Column(db.DateTime, nullable=False, default=datetime.now().replace(microsecond=0).isoformat())

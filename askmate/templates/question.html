@@ -1,85 +1,156 @@
 {% extends "layout.html" %}
-{% from '_macros.html' import macro_breadcrumbs, macro_submission_time, macro_image, macro_add_comment, macro_modal_delete %}
+{% from '_macros.html' import macro_breadcrumbs, macro_submission_time, macro_image, macro_add_comment, macro_count_answers %}
+{% from '_modals.html' import macro_modal_delete %}
 {% block title %}Question{% endblock %}
 {% block content %}
-	<div class="container mt-3">
-		<div class="row">
+	<section> {# start section question title and message #}
+		<div class="container mt-3">
 			<div class="row">
-				<div class="col-lg-8 fs-5">{{ question.title }}&nbsp;
-					<button type="button" class="btn-sm btn-primary">{{ func_find_tag_name(question.tag_id|int).tag_name|e }}</button>
+				<div class="row">
+					<div class="col-lg-8 fs-5">{{ question.title }}&nbsp;
+						<button type="button" class="btn-sm btn-primary">{{ func_find_tag_name(question.tag_id|int).tag_name|e }}</button>
+					</div>
 				</div>
-			</div>
-			<div class="col-md-3 col-sm-2">
-				{{ macro_image(data=question) }}
-			</div>
-			<div class="col-xxl">
-				<div class="card-body">
-					<p>{{ question.message }}</p>
-					<hr>
-					<div class="row mt-0">
-						<div class="col-sm">
-							<small class="text-muted">{{ macro_submission_time(data=question) }}</small>
-						</div>
-						<div class="col-sm">
-							<small class="text-muted">score: {{ question.vote_number }} votes</small>
-						</div>
-						<div class="col-sm mb-2">
-							<small class="text-muted">views: {{ question.view_number }} </small>
-						</div>
-						<div class="col-sm mb-2">
-							<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=+1) }}"><i class="far fa-thumbs-up btn btn-outline-success"></i></a>&nbsp;&nbsp;
-							<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=-1) }}"><i class="far fa-thumbs-down btn btn-outline-danger"></i></a>
-						</div>
-{#						{% if current_user.user_id == question.user_id %}#}
-							<div class="col-sm text-end">
-								<a href="{{ url_for('questions.route_edit_question', question_id=question.question_id) }}">
-									<button type="button" class="btn btn-outline-primary btn-sm">edit</button>
-								</a>
-								<button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirm_delete_question">
-									delete
-								</button>
+				<div class="col-md-3 col-sm-2">
+					{{ macro_image(data=question) }}
+				</div>
+				<div class="col-xxl">
+					<div class="card-body">
+						<p>{{ question.message }}</p>
+						<hr>
+						<div class="row mt-0">
+							<div class="col-sm">
+								<small class="text-muted">{{ macro_submission_time(data=question) }}</small>
 							</div>
-{#						{% endif %}#}
-						{% if comments_for_question %}
-							<div class="container mt-3">
-								<p>
-									<button class="btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_comment" aria-expanded="false" aria-controls="collapse_comment">
-										comments&nbsp;<span class="badge bg-secondary">{{ comments_for_question.count() }}</span>
+							<div class="col-sm">
+								<small class="text-muted">score: {{ question.vote_number }} votes</small>
+							</div>
+							<div class="col-sm mb-2">
+								<small class="text-muted">views: {{ question.view_number }} </small>
+							</div>
+							<div class="col-sm mb-2">
+								<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=+1) }}"><i class="far fa-thumbs-up btn btn-outline-success"></i></a>&nbsp;&nbsp;
+								<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=-1) }}"><i class="far fa-thumbs-down btn btn-outline-danger"></i></a>
+							</div>
+							{% if current_user.user_id == question.user_id %}
+								<div class="col-sm text-end">
+									<a href="{{ url_for('questions.route_edit_question', question_id=question.question_id) }}">
+										<button type="button" class="btn btn-outline-primary btn-sm">edit</button>
+									</a>
+									<button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirm_delete_question">
+										delete
 									</button>
-								</p>
-								<div class="collapse" id="collapse_comment">
-									<div class="card card-body">
-										<table class="table">
-											<tbody>
-											{% for comment in comments_for_question %}
-												<tr>
-													<td class="small">{{ comment.message }}
-														{% if current_user.user_id == comment.user_id %}
-														&nbsp;<i data-bs-toggle="modal" data-bs-target="#confirm_delete_comment" class="fas fa-trash"></i></td>
-													{{ macro_modal_delete(modal_id="confirm_delete_comment", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment=True) ) }}
-													{% endif %}
-													<td>
-														<small class="text-muted"><a class="text-decoration-none" href="#">{{ func_user_info(user_id=comment.user_id|int).user_name.split()[0] }}</a></small>
-													</td>
-												</tr>
-											{% endfor %}
-											</tbody>
-										</table>
-										<br>{{ macro_add_comment(action=url_for('questions.route_add_comment_for_question', question_id=question.question_id), comment_for="comments_for_question") }}
+								</div>
+							{% endif %}
+							{% if comments_for_question %}
+								<div class="container mt-3">
+									<p>
+										<button class="btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_comment" aria-expanded="false" aria-controls="collapse_comment">
+											comments&nbsp;<span class="badge bg-secondary">{{ comments_for_question.count() }}</span>
+										</button>
+									</p>
+									<div class="collapse" id="collapse_comment">
+										<div class="card card-body">
+											<table class="table">
+												<tbody>
+												{% for comment in comments_for_question %}
+													<tr>
+														<td class="small">{{ comment.message }}
+															{% if current_user.user_id == comment.user_id %}
+																&nbsp;
+																<i data-bs-toggle="modal" data-bs-target="#confirm_delete_comment" class="fas fa-trash"></i>
+																</td>
+																{{ macro_modal_delete(modal_id="confirm_delete_comment", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment=True) ) }}
+															{% endif %}
+														<td>
+															<small class="text-muted"><a class="text-decoration-none" href="#">{{ func_user_info(user_id=comment.user_id|int).user_name.split()[0] }}</a></small>
+														</td>
+													</tr>
+												{% endfor %}
+												</tbody>
+											</table>
+											<br>{{ macro_add_comment(action=url_for('questions.route_question', question_id=question.question_id), comment_for="comments_for_question") }}
+										</div>
 									</div>
 								</div>
-							</div>
-						{% else %}
-							<br><br>
-							{{ add_comment(action=url_for('questions.route_add_comment_for_question', question_id=question.id), comment_for="comments_for_question") }}
-						{% endif %}
+							{% else %}
+								<br><br>
+								{{ macro_add_comment(action=url_for('questions.route_question', question_id=question.id), comment_for="comments_for_question") }}
+							{% endif %}
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	{#	Modal confirm delete question #}
-	{{ macro_modal_delete(modal_id="confirm_delete_question", route=url_for('questions.route_question', question_id=question.question_id, remove_question=True) ) }}
+		{#	Modal confirm delete question #}
+		{{ macro_modal_delete(modal_id="confirm_delete_question", route=url_for('questions.route_question', question_id=question.question_id, remove_question=True) ) }}
+	</section> {# end section question title and message #}
+	<section> {# start section answers #}
+		{{ macro_count_answers(data=answers_list) }}
+		{%- for answer in answers_list %}
+			<div class="container border mb-2">
+				<div class="row ">
+					<div class="col-md-1">
+						<div class="row mt-3">
+							<p class="text-center">
+								<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=+1, answer_id=answer.answer_id) }}"><i class="fas fa-chevron-up"></i></a>
+							</p>
+						</div>
+						<div><p class="text-center">
+							{% set vote_number = answer.vote_number %}
+							{% if answer.vote_number >= 1 %}
+								+{{ answer.vote_number }}
+							{% else %}
+								{{ answer.vote_number }}
+							{% endif %}
+						</p></div>
+						<div class="row mb-3"><p class="text-center">
+							<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=-1, answer_id=answer.answer_id) }}"><i class="fas fa-chevron-down"></i></a>
+						</p></div>
+					</div>
+					<div class="col-xxl">
+						<div class="card-body">
+							<p>{{ answer.message }}</p>
+							{% set answer_comments = comments_for_answers(answer.answer_id|int) %}
+							{% if answer_comments %}
+								<table class="table text-muted">
+									<tbody>
+									{% for comment in answer_comments %}
+										<tr>
+											<td class="border-bottom-0" style="font-size: small">{{ comment.message }} -
+												<small style="font-size: small" class="text-muted"><a class="text-decoration-none" href="#">{{ func_user_info(user_id=comment.user_id|int).user_name.split()[0] }}</a></small>
+											</td>
+										</tr>
+									{% endfor %}
+									<tr>
+										<td>
+											{{ macro_add_comment(action=url_for('questions.route_question', question_id=question.question_id, answer_id=answer.answer_id), comment_for="comments_for_answer") }}
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							{% else %}
+								{{ macro_add_comment(action=url_for('questions.route_question', question_id=question.question_id, answer_id=answer.answer_id), comment_for="comments_for_answer") }}
+							{% endif %}
+							<hr>
+							<div class="row mt-0">
+								<div class="col-sm">
+									<small class="text-muted">{{ macro_submission_time(data=answer) }} by:
+										<a href="" class="text-decoration-none">{{ func_user_info(user_id=answer.user_id|int).user_name.split()[0] }}</a></small>
+								</div>
+								<div class="col-sm text-end">
+									<button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update_answer">edit</button>
+									<button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirm_delete_answer">delete</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+
+	</section> {# end section asnwers #}
+
 
 
 {% endblock %}

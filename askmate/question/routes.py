@@ -45,8 +45,6 @@ def route_question(question_id):
     list_comments_for_question = data_manager.find_comments_by_question_id(question_id)
     data_to_modify = dict(request.args)
 
-    print(data_to_modify)
-
     if data_to_modify:
         question.view_number += 1
         data_manager.update_to_database()
@@ -62,6 +60,28 @@ def route_question(question_id):
         flash('Comment deleted', 'info')
         return redirect(url_for('questions.route_question', question_id=question_id))
 
+    if request.method == "POST":
+
+        if 'comments_for_answer' in request.form:
+
+            new_comment = {
+                'user_id': current_user.user_id,
+                "answer_id": request.args.get('answer_id'),
+                "message": request.form.get('comments_for_answer')}
+
+            print(new_comment)
+            data_manager.add_new_comment_for_answer(new_comment)
+
+        elif 'comments_for_question' in request.form:
+                new_comment = {
+                    'user_id': current_user.user_id,
+                    "question_id": question_id,
+                    "message": request.form.get('comments_for_question')}
+
+                print(new_comment)
+                data_manager.add_new_comment_for_question(new_comment)
+
+        return redirect(url_for("questions.route_question", question_id=question_id))
 
     list_comments_for_answers = data_manager.find_comments_by_answer_id
 
@@ -124,6 +144,7 @@ def route_edit_question(question_id):
 
 @questions.route("/question/<int:question_id>/new_question_comment", methods=["GET", "POST"])
 def route_add_comment_for_question(question_id):
+    print(request.form)
     if request.method == "POST":
         new_comment = {
             'user_id': current_user.user_id,
