@@ -56,6 +56,12 @@ def route_question(question_id):
         flash('Question deleted', 'info')
         return redirect(url_for('main.route_home'))
 
+    elif 'remove_comment' in data_to_modify:
+        data_manager.remove_comment_by_id(comment_id=request.args.get('comment_id'))
+
+        flash('Comment deleted', 'info')
+        return redirect(url_for('questions.route_question', question_id=question_id))
+
 
     list_comments_for_answers = data_manager.find_comments_by_answer_id
 

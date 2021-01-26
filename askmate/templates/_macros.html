@@ -158,7 +158,6 @@
 {%- endmacro %}
 
 {# macro image defalut #}
-
 {% macro macro_image(data="") %}
 	{% if data.image %}
 		<img src="{{ url_for('static', filename='img/question_pic/'+data.image) }}" class="img-fluid" alt="pic">
@@ -220,13 +219,34 @@
 							<span class="badge bg-secondary"> {{ macro_comment_pl_sg(func_count_comments(item.question_id|int)) }}</span>
 						</li>
 						<li class="list-inline-item">
-							<span class="badge bg-dark"><a class="link-light text-decoration-none" href="">{{ func_user_info(item.user_id|int).user_name }}</a></span>
+							<span class="badge bg-dark"><a class="link-light text-decoration-none" href="">{{ func_user_info(item.user_id|int).user_name.split()[0]  }}</a></span>
 						</li>
 					</ul>
 				</div>
 			</div>
 		</div>
 	{% endfor %}
+{% endmacro %}
+
+
+{#	macro Modal confirm delete question #}
+{% macro macro_modal_delete(modal_id="", route="") %}
+<div class="modal fade" id={{ modal_id }} tabindex="-1" aria-labelledby="confirm_deleteLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirm_deleteLabel">Confirm delete</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<a href="{{ route }}">
+					<button type="button" class="btn btn-danger btn-sm">delete</button>
+				</a>
+				<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">close</button>
+			</div>
+		</div>
+	</div>
+</div>
 {% endmacro %}
 
 {# sorting bar #}

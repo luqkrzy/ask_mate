@@ -59,6 +59,11 @@ def remove_question_by_id(question_id):
     Question.query.filter_by(question_id=question_id).delete()
     update_to_database()
 
+def remove_comment_by_id(comment_id):
+    Comment.query.filter_by(comment_id=comment_id).delete()
+    update_to_database()
+
+
 
 def find_answers_by_question_id(question_id):
     return Answer.query.filter_by(question_id=question_id)

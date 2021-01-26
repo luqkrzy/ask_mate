@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% from '_macros.html' import macro_breadcrumbs, macro_submission_time, macro_image, macro_add_comment %}
+{% from '_macros.html' import macro_breadcrumbs, macro_submission_time, macro_image, macro_add_comment, macro_modal_delete %}
 {% block title %}Question{% endblock %}
 {% block content %}
 	<div class="container mt-3">
@@ -30,7 +30,7 @@
 							<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=+1) }}"><i class="far fa-thumbs-up btn btn-outline-success"></i></a>&nbsp;&nbsp;
 							<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=-1) }}"><i class="far fa-thumbs-down btn btn-outline-danger"></i></a>
 						</div>
-						{% if current_user.user_id == question.user_id %}
+{#						{% if current_user.user_id == question.user_id %}#}
 							<div class="col-sm text-end">
 								<a href="{{ url_for('questions.route_edit_question', question_id=question.question_id) }}">
 									<button type="button" class="btn btn-outline-primary btn-sm">edit</button>
@@ -39,7 +39,7 @@
 									delete
 								</button>
 							</div>
-						{% endif %}
+{#						{% endif %}#}
 						{% if comments_for_question %}
 							<div class="container mt-3">
 								<p>
@@ -53,9 +53,13 @@
 											<tbody>
 											{% for comment in comments_for_question %}
 												<tr>
-													<td>{{ comment.message }}</td>
+													<td class="small">{{ comment.message }}
+														{% if current_user.user_id == comment.user_id %}
+														&nbsp;<i data-bs-toggle="modal" data-bs-target="#confirm_delete_comment" class="fas fa-trash"></i></td>
+													{{ macro_modal_delete(modal_id="confirm_delete_comment", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment=True) ) }}
+													{% endif %}
 													<td>
-														<small class="text-muted"><a class="text-decoration-none" href="#">nickname</a></small>
+														<small class="text-muted"><a class="text-decoration-none" href="#">{{ func_user_info(user_id=comment.user_id|int).user_name.split()[0] }}</a></small>
 													</td>
 												</tr>
 											{% endfor %}
@@ -75,22 +79,7 @@
 		</div>
 	</div>
 	{#	Modal confirm delete question #}
-	<div class="modal fade" id="confirm_delete_question" tabindex="-1" aria-labelledby="confirm_deleteLabel" aria-hidden="true">
-		<div class="modal-dialog modal-sm">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="confirm_deleteLabel">Confirm delete</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<a href="{{ url_for('questions.route_question', question_id=question.question_id, remove_question=True) }}">
-						<button type="button" class="btn btn-danger btn-sm">delete</button>
-					</a>
-					<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">close</button>
-				</div>
-			</div>
-		</div>
-	</div>
+	{{ macro_modal_delete(modal_id="confirm_delete_question", route=url_for('questions.route_question', question_id=question.question_id, remove_question=True) ) }}
 
 
 {% endblock %}
