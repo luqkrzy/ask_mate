@@ -66,6 +66,11 @@
 	</div>
 {% endmacro %}
 
+
+
+
+
+
 {# votes add plus for positive #}
 {%- macro macro_votes(question_votes="") %}
 	{%- set votes = question_votes -%}
@@ -193,11 +198,11 @@
 {# add comments #}
 {% macro macro_add_comment(action="", comment_for="") %}
 	<form class="row" action="{{ action }}" method="post">
-		<div class="col-8">
+		<div class="col-8 mt-2">
 			<label for="{{ comment_for }}" class="visually-hidden">comment_for</label>
-			<input type="text" class="form-control" name="{{ comment_for }}" id="{{ comment_for }}" placeholder="add comment max 80 signs" maxlength="80">
+			<input type="text" class="form-control" name="{{ comment_for }}" id="{{ comment_for }}" placeholder="add comment max 80 signs" maxlength="80" required>
 		</div>
-		<div class="col-2">
+		<div class="col-2 mt-2">
 			<button type="submit" class="btn btn-primary">post</button>
 		</div>
 	</form>
@@ -205,17 +210,19 @@
 
 {# add comments  for question or answers#}
 {% macro list_comments(item="", the_list="", data_target="", route_question="") %}
-<table class="table text-muted">
-	<tbody>
-	{% for item in the_list %}
-		<tr>
-			<td class="border-bottom-0">{{ item.message }} -
-				<small class="text-muted"><a class="text-decoration-none" href="#">{{ func_user_info(user_id=item.user_id|int).user_name.split()[0] }}</a></small>
-				<i data-bs-toggle="modal" data-bs-target="{{ data_target }}" class="fas fa-trash"></i>
-				{{ macro_modal_delete(modal_id=data-bs-target, route=route_question ) }}
-			</td>
-		</tr>
-	{% endfor %}
+	<table class="table text-muted">
+		<tbody>
+		{% for item in the_list %}
+			<tr>
+				<td class="border-bottom-0">{{ item.message }} -
+					<small class="text-muted"><a class="text-decoration-none" href="#">{{ func_user_info(user_id=item.user_id|int).user_name.split()[0] }}</a></small>
+					<i data-bs-toggle="modal" data-bs-target="{{ data_target }}" class="fas fa-trash"></i>
+					{{ macro_modal_delete(modal_id=data-bs-target, route=route_question ) }}
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
 {% endmacro %}
 
 {# generate list of questions#}
@@ -291,3 +298,14 @@
 		</div>
 	{% endif %}
 {%- endmacro -%}
+
+{# macro answers plus / minus #}
+{% macro macro_answers_plus_minus(item="") %}
+	<div><p class="text-center">
+		{% if item.vote_number >= 1 %}
+			+{{ item.vote_number }}
+		{% else %}
+			{{ item.vote_number }}
+		{% endif %}
+	</p></div>
+{% endmacro %}

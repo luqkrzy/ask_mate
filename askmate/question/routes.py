@@ -4,12 +4,10 @@ from flask_login import current_user, login_required
 from datetime import datetime
 from askmate import db
 from askmate.models import Question
-from askmate.question.forms import QuestionForm
+from askmate.question.forms import QuestionForm, AnswerForm
 from askmate.users.utils import save_picture
 
-
 questions = Blueprint('questions', __name__)
-
 
 
 @questions.route("/search")
@@ -37,32 +35,65 @@ def route_tag():
 
     return render_template('tag.html', questions=questions, asc_desc=switch_order_direction, tag_id=tag_id)
 
+
 @questions.route("/question/<int:question_id>", methods=["GET", "POST"])
 def route_question(question_id):
     question = data_manager.find_question_by_id(question_id)
-
     answers_list = data_manager.find_answers_by_question_id(question_id)
     list_comments_for_question = data_manager.find_comments_by_question_id(question_id)
     data_to_modify = dict(request.args)
 
     if data_to_modify:
+        print(data_to_modify)
         question.view_number += 1
         data_manager.update_to_database()
 
-    if 'remove_question' in data_to_modify:
+    if 'questions_votes' in data_to_modify:
+        question.vote_number += int(data_to_modify.get('questions_votes'))
+        data_manager.update_to_database()
+
+    elif 'answers_votes' in data_to_modify:
+        data_manager.vote_for_answer(data_to_modify)
+
+    elif 'remove_question' in data_to_modify:
         data_manager.remove_question_by_id(question_id)
         flash('Question deleted', 'info')
         return redirect(url_for('main.route_home'))
 
+    elif 'remove_answer' in data_to_modify:
+        data_manager.remove_answer_by_id(answer_id=request.args.get('answer_id'))
+        flash('Answer deleted', 'info')
+        return redirect(url_for('questions.route_question', question_id=question_id))
+
+
     elif 'remove_comment' in data_to_modify:
         data_manager.remove_comment_by_id(comment_id=request.args.get('comment_id'))
-
         flash('Comment deleted', 'info')
         return redirect(url_for('questions.route_question', question_id=question_id))
 
     if request.method == "POST":
 
-        if 'comments_for_answer' in request.form:
+        if 'answer_for_question' in request.form:
+            new_answer = {'user_id': current_user.user_id,
+                          'message': request.form.get('answer_for_question'),
+                          'question_id': question_id
+                          }
+            data_manager.add_new_answer(new_answer)
+            flash('Answer added', 'success')
+            return redirect(url_for('questions.route_question', question_id=question_id))
+
+        elif 'update_answer' in request.form:
+            updated_answer = {
+                'question_id' : question_id,
+                "message": request.form.get('update_answer')
+            }
+
+            data_manager.update_answer(updated_answer)
+            flash('Answer added', 'success')
+            return redirect(url_for('questions.route_question', question_id=question_id))
+
+
+        elif 'comments_for_answer' in request.form:
 
             new_comment = {
                 'user_id': current_user.user_id,
@@ -73,13 +104,13 @@ def route_question(question_id):
             data_manager.add_new_comment_for_answer(new_comment)
 
         elif 'comments_for_question' in request.form:
-                new_comment = {
-                    'user_id': current_user.user_id,
-                    "question_id": question_id,
-                    "message": request.form.get('comments_for_question')}
+            new_comment = {
+                'user_id': current_user.user_id,
+                "question_id": question_id,
+                "message": request.form.get('comments_for_question')}
 
-                print(new_comment)
-                data_manager.add_new_comment_for_question(new_comment)
+            print(new_comment)
+            data_manager.add_new_comment_for_question(new_comment)
 
         return redirect(url_for("questions.route_question", question_id=question_id))
 
@@ -87,7 +118,6 @@ def route_question(question_id):
 
     return render_template('question.html', question=question, answers_list=answers_list,
                            comments_for_question=list_comments_for_question, comments_for_answers=list_comments_for_answers)
-
 
 
 @questions.route('/question', methods=['GET', 'POST'])

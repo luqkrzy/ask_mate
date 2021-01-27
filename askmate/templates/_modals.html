@@ -17,3 +17,33 @@
 		</div>
 	</div>
 {% endmacro %}
+
+
+{# Modal update answer#}
+{% macro macro_modal_edit_answer(modal_id="", route="", answer="") %}
+<div class="modal fade" id="update_answer" tabindex="-1" aria-labelledby="update_answerLabel"
+     aria-hidden="true">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="update_answerLabel">Update answer</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form class="form-label"
+				      action='{{ route }}'
+				      method='POST'>
+					<div class="mb-3">
+						<label for="message" class="col-form-label">Message:</label>
+						<textarea class="form-control" name="update_answer" id="message" rows="10" required minlength="10" maxlength="600">{{ answer.message }}</textarea>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<input class="btn btn-primary" type="submit" value="submit">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endmacro %}

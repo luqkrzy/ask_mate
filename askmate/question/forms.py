@@ -11,3 +11,8 @@ class QuestionForm(FlaskForm):
     image = FileField('Upload image', validators=[FileAllowed(['jpg', 'jpeg', 'png'])])
     tag_name = QuerySelectField('Tag', allow_blank=True, validators=[DataRequired()], query_factory=choice_query, get_label='tag_name')
     submit = SubmitField('Post')
+
+
+class AnswerForm(FlaskForm):
+    message = TextAreaField('post answer', validators=[DataRequired(), Length(min=20)])
+    submit = SubmitField('Post')
