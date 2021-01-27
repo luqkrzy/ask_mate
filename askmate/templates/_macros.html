@@ -297,20 +297,24 @@
 {%- endmacro -%}
 
 
-
 {# macro block for already voted question #}
-{%- macro macro_vote_question(question_vote="", question="" ) -%}
+{%- macro macro_vote_question(current_user="", question_vote="", question="" ) -%}
 	<div class="col-sm mb-2">
-		{%- if question_vote.value('has_voted') == None %}
-			<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=-1) }}"><i class="far fa-thumbs-down btn btn-outline-danger"></i></a>&nbsp;&nbsp;
-			<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=+1) }}"><i class="far fa-thumbs-up btn btn-outline-success"></i></a>
-		{%- elif question_vote.value('has_voted') > 0 %}
-			<i class="far fa-thumbs-up text-success"></i>&nbsp;
-			<small class="text-muted small">voted on {{ question_vote.value('vote_time').strftime('%y-%m-%d') }}</small>
-		{%- elif question_vote.value('has_voted') < 0 %}
+		{% if current_user.is_authenticated %}
+			{%- if question_vote.value('has_voted') == None %}
+				<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=-1) }}"><i class="far fa-thumbs-down btn btn-outline-danger"></i></a>&nbsp;&nbsp;
+				<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=+1) }}"><i class="far fa-thumbs-up btn btn-outline-success"></i></a>
+			{%- elif question_vote.value('has_voted') > 0 %}
+				<i class="far fa-thumbs-up text-success"></i>&nbsp;
+				<small class="text-muted small">voted on {{ question_vote.value('vote_time').strftime('%y-%m-%d') }}</small>
+			{%- elif question_vote.value('has_voted') < 0 %}
+				<i class="far fa-thumbs-down text-danger"></i>&nbsp;&nbsp;
+				<small class="text-muted small">voted on {{ question_vote.value('vote_time').strftime('%y-%m-%d') }}</small>
+			{%- endif %}
+		{% else %}
 			<i class="far fa-thumbs-down text-danger"></i>&nbsp;&nbsp;
-			<small class="text-muted small">voted on {{ question_vote.value('vote_time').strftime('%y-%m-%d') }}</small>
-		{%- endif %}
+			<i class="far fa-thumbs-up text-success"></i>
+		{% endif %}
 	</div>
 {%- endmacro -%}
 
@@ -328,36 +332,52 @@
 {%- endmacro -%}
 
 {# macro vote for answer #}
-{% macro macro_vote_for_answer(function="", question="", answer="") %}
-	{% if function == None %}
-		<div class="col-md-1">
-			<div class="row mt-3">
-				<p class="text-center">
-					<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=+1, answer_id=answer.answer_id) }}"><i class="fas fa-chevron-up"></i></a>
-				</p>
+{% macro macro_vote_for_answer(current_user="", function="", question="", answer="") %}
+	{% if current_user.is_authenticated %}
+		{% if function == None %}
+			<div class="col-md-1">
+				<div class="row mt-3">
+					<p class="text-center">
+						<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=+1, answer_id=answer.answer_id) }}"><i class="fas fa-chevron-up"></i></a>
+					</p>
+				</div>
+				{{ macro_answers_plus_minus(item=answer) }}
+				<div class="row mb-3">
+					<p class="text-center">
+						<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=-1, answer_id=answer.answer_id) }}"><i class="fas fa-chevron-down"></i></a>
+					</p>
+				</div>
 			</div>
-			{{ macro_answers_plus_minus(item=answer) }}
-			<div class="row mb-3">
-				<p class="text-center">
-					<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=-1, answer_id=answer.answer_id) }}"><i class="fas fa-chevron-down"></i></a>
-				</p>
+		{%- elif function > 0 %}
+			<div class="col-md-1">
+				<div class="row mt-3">
+					<p class="text-center">
+						<i class="fas fa-chevron-up text-success"></i>
+					</p>
+				</div>
+				{{ macro_answers_plus_minus(item=answer) }}
+				<div class="row mb-3">
+					<p class="text-center">
+						<i class="fas fa-chevron-down"></i>
+					</p>
+				</div>
 			</div>
-		</div>
-	{%- elif function > 0 %}
-		<div class="col-md-1">
-			<div class="row mt-3">
-				<p class="text-center">
-					<i class="fas fa-chevron-up text-success"></i>
-				</p>
+		{%- elif function < 0 %}
+			<div class="col-md-1">
+				<div class="row mt-3">
+					<p class="text-center">
+						<i class="fas fa-chevron-up"></i>
+					</p>
+				</div>
+				{{ macro_answers_plus_minus(item=answer) }}
+				<div class="row mb-3">
+					<p class="text-center">
+						<i class="fas fa-chevron-down text-danger"></i>
+					</p>
+				</div>
 			</div>
-			{{ macro_answers_plus_minus(item=answer) }}
-			<div class="row mb-3">
-				<p class="text-center">
-					<i class="fas fa-chevron-down"></i>
-				</p>
-			</div>
-		</div>
-	{%- elif function < 0 %}
+		{% endif %}
+	{% else %}
 		<div class="col-md-1">
 			<div class="row mt-3">
 				<p class="text-center">
@@ -367,9 +387,10 @@
 			{{ macro_answers_plus_minus(item=answer) }}
 			<div class="row mb-3">
 				<p class="text-center">
-					<i class="fas fa-chevron-down text-danger"></i>
+					<i class="fas fa-chevron-down"></i>
 				</p>
 			</div>
 		</div>
+
 	{% endif %}
 {% endmacro %}

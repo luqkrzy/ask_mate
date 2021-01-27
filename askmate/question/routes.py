@@ -42,8 +42,11 @@ def route_question(question_id):
     answers_list = data_manager.find_answers_by_question_id(question_id)
     list_comments_for_question = data_manager.find_comments_by_question_id(question_id)
     data_to_modify = dict(request.args)
-    question_vote = data_manager.check_user_question_vote(user_id=current_user.user_id, question_id=question_id)
+    if not current_user.is_authenticated:
+        print('im here')
+        current_user.user_id = 1000
 
+    question_vote = data_manager.check_user_question_vote(user_id=current_user.user_id, question_id=question_id)
 
     if data_to_modify:
         print(data_to_modify)
@@ -91,7 +94,7 @@ def route_question(question_id):
 
         elif 'update_answer' in request.form:
             updated_answer = {
-                'question_id' : question_id,
+                'question_id': question_id,
                 "message": request.form.get('update_answer')
             }
 

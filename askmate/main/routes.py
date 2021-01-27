@@ -31,6 +31,11 @@ def route_test():
 
     # answer_votes = data_manager.check_user_answer_vote(51, 495)
     answers_list = data_manager.find_answers_by_question_id(146)
+    if not current_user.is_authenticated:
+        print('im here')
+        current_user.user_id = 1000
+
+        print(current_user.user_id)
 
 
     return render_template('test.html', func_answer_vote=data_manager.check_user_answer_vote, answers_list=answers_list)
