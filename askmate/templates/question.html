@@ -1,8 +1,12 @@
 {% extends "layout.html" %}
-{% from '_macros.html' import macro_breadcrumbs, macro_submission_time, macro_image, macro_add_comment, macro_count_answers, macro_answers_plus_minus %}
+{% from '_macros.html' import macro_breadcrumbs, macro_submission_time, macro_image, macro_add_comment, macro_count_answers, macro_answers_plus_minus, macro_vote_question %}
 {% from '_modals.html' import macro_modal_delete, macro_modal_edit_answer %}
 {% block title %}Question{% endblock %}
 {% block content %}
+	{{ question_vote.value('has_voted') == True}}
+	{{ question_vote.value('vote_time').strftime('%y-%m-%d') }}
+	{{ current_user.user_id }}
+
 	<section> {# start section question title and message #}
 		<div class="container mt-3">
 			<div class="row">
@@ -28,10 +32,7 @@
 							<div class="col-sm mb-2">
 								<small class="text-muted">views: {{ question.view_number }} </small>
 							</div>
-							<div class="col-sm mb-2">
-								<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=+1) }}"><i class="far fa-thumbs-up btn btn-outline-success"></i></a>&nbsp;&nbsp;
-								<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=-1) }}"><i class="far fa-thumbs-down btn btn-outline-danger"></i></a>
-							</div>
+						{{ macro_vote_question(question_vote=question_vote, question=question) }}
 							{% if current_user.user_id == question.user_id %}
 								<div class="col-sm text-end">
 									<a href="{{ url_for('questions.route_edit_question', question_id=question.question_id) }}">
@@ -161,7 +162,4 @@
 			</div>
 		</div>
 	</section>
-
-
-
 {% endblock %}

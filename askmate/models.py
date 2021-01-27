@@ -3,11 +3,11 @@ from datetime import datetime
 from askmate import db, login_manager
 from flask_login import UserMixin
 
-# from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.ext.automap import automap_base
 
 # Base = automap_base()
 # Base.prepare(db.engine, reflect=True)
-# Users = Base.classes.users
+# UsersVote = Base.classes.uservote
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -85,3 +85,14 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f"'{self.comment_id}', '{self.user_id}', '{self.question_id}', '{self.answer_id}', '{self.message}', '{self.submission_time}', '{self.edited_number}'"
+
+class UserVotes(db.Model):
+    vote_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))
+    answer_id = db.Column(db.Integer, db.ForeignKey('answer.answer_id'))
+    has_voted = db.Column(db.Text, default=True)
+    vote_time = db.Column(db.DateTime, nullable=False, default=datetime.now().replace(microsecond=0).isoformat())
+
+    def __repr__(self):
+        return f"'{self.vote_id}', '{self.user_id}', '{self.question_id}', '{self.has_voted}', '{self.vote_time}'"

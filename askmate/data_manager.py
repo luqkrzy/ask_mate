@@ -1,7 +1,7 @@
 import os
 from askmate import db
 from sqlalchemy import or_, func
-from askmate.models import Users, Tag, Question, QuestionTag, Answer, Comment
+from askmate.models import Users, Tag, Question, QuestionTag, Answer, Comment, UserVotes
 
 
 def switch_asc_desc(order_direction):
@@ -29,6 +29,7 @@ def ask_new_question(new_question):
     question = Question(user_id=new_question['user_id'], title=new_question['title'], message=new_question['message'], image=new_question['image'], tag_id=new_question['tag_id'])
     commit_to_database(question)
 
+
 def add_new_answer(new_answer):
     answer = Answer(user_id=new_answer['user_id'], message=new_answer['message'], question_id=new_answer['question_id'])
     commit_to_database(answer)
@@ -38,21 +39,33 @@ def add_new_comment_for_question(new_comment):
     comment = Comment(user_id=new_comment['user_id'], question_id=new_comment['question_id'], message=new_comment['message'])
     commit_to_database(comment)
 
+
 def add_new_comment_for_answer(new_comment):
     comment = Comment(user_id=new_comment['user_id'], answer_id=new_comment['answer_id'], message=new_comment['message'])
     commit_to_database(comment)
+
 
 def vote_for_answer(data_to_modify):
     answer_id = int(data_to_modify.get('answer_id'))
     vote = int(data_to_modify.get('answers_votes'))
     db.session.query(Answer).filter(Answer.answer_id == answer_id).update({Answer.vote_number: Answer.vote_number + vote})
 
+def vote_for_question_user_votes_table(question_id, user_id):
+    vote = UserVotes(user_id=user_id, question_id=question_id)
+    commit_to_database(vote)
+
+
+def check_user_question_vote(user_id, question_id):
+    return db.session.query(UserVotes).filter_by(user_id=user_id, question_id=question_id)
+
+
 
 def update_answer(updated_answer):
     question_id = updated_answer.get('question_id')
-    message =  updated_answer.get('message')
+    message = updated_answer.get('message')
     db.session.query(Answer).filter(Answer.question_id == question_id).update({Answer.message: message})
     update_to_database()
+
 
 def find_user_by_email(email):
     return Users.query.filter_by(email=email).first()
@@ -78,13 +91,16 @@ def remove_question_by_id(question_id):
     Question.query.filter_by(question_id=question_id).delete()
     update_to_database()
 
+
 def remove_comment_by_id(comment_id):
     Comment.query.filter_by(comment_id=comment_id).delete()
     update_to_database()
 
+
 def remove_answer_by_id(answer_id):
     Answer.query.filter_by(answer_id=answer_id).delete()
     update_to_database()
+
 
 def find_answers_by_question_id(question_id):
     return Answer.query.filter_by(question_id=question_id)

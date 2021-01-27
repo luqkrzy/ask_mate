@@ -1,6 +1,6 @@
 from flask import render_template, redirect, request, Blueprint, url_for
 import askmate.data_manager as data_manager
-from askmate.models import Question
+
 
 main = Blueprint('main', __name__)
 
@@ -21,3 +21,8 @@ def route_home():
     return render_template('index.html', questions=questions, asc_desc=switch_order_direction)
 
 
+@main.route('/test', methods=['GET', 'POST'])
+def route_test():
+
+
+    return render_template('test.html', vote=check_vote)

@@ -306,3 +306,20 @@
 		{% endif %}
 	</p></div>
 {% endmacro %}
+
+{# macro block for already voted question #}
+{%- macro macro_vote_question(question_vote="", question="" ) -%}
+	<div class="col-sm mb-2">
+		{%- if question_vote.value('has_voted') == True %}
+			<i class="far fa-thumbs-down "></i>&nbsp;&nbsp;
+			<i class="far fa-thumbs-up "></i>&nbsp;
+			<small class="text-muted small">voted on {{ question_vote.value('vote_time').strftime('%y-%m-%d') }}</small>
+
+		{%- else -%}
+			<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=-1) }}"><i class="far fa-thumbs-down btn btn-outline-danger"></i></a>&nbsp;&nbsp;
+			<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=+1) }}"><i class="far fa-thumbs-up btn btn-outline-success"></i></a>
+		{%- endif %}
+	</div>
+{%- endmacro -%}
+
+
