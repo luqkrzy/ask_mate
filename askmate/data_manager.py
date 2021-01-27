@@ -91,11 +91,11 @@ def find_answers_by_question_id(question_id):
 
 
 def find_comments_by_question_id(question_id):
-    return Comment.query.filter_by(question_id=question_id)
+    return Comment.query.filter_by(question_id=question_id).order_by(Comment.submission_time.asc())
 
 
 def find_comments_by_answer_id(answer_id):
-    return Comment.query.filter_by(answer_id=answer_id)
+    return Comment.query.filter_by(answer_id=answer_id).order_by(Comment.submission_time.asc())
 
 
 def find_tag_name_by_id(tag_id):

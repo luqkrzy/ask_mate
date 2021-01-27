@@ -42,6 +42,8 @@ def route_question(question_id):
     answers_list = data_manager.find_answers_by_question_id(question_id)
     list_comments_for_question = data_manager.find_comments_by_question_id(question_id)
     data_to_modify = dict(request.args)
+    print(dir(list_comments_for_question))
+    print(list_comments_for_question.count())
 
     if data_to_modify:
         print(data_to_modify)
