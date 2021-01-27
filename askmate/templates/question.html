@@ -1,12 +1,9 @@
 {% extends "layout.html" %}
-{% from '_macros.html' import macro_breadcrumbs, macro_submission_time, macro_image, macro_add_comment, macro_count_answers, macro_answers_plus_minus, macro_vote_question %}
+{% from '_macros.html' import macro_breadcrumbs, macro_submission_time, macro_image, macro_add_comment,
+ macro_count_answers, macro_answers_plus_minus, macro_vote_question, macro_vote_for_answer %}
 {% from '_modals.html' import macro_modal_delete, macro_modal_edit_answer %}
 {% block title %}Question{% endblock %}
 {% block content %}
-	{{ question_vote.value('has_voted') == True}}
-	{{ question_vote.value('vote_time').strftime('%y-%m-%d') }}
-	{{ current_user.user_id }}
-
 	<section> {# start section question title and message #}
 		<div class="container mt-3">
 			<div class="row">
@@ -32,7 +29,7 @@
 							<div class="col-sm mb-2">
 								<small class="text-muted">views: {{ question.view_number }} </small>
 							</div>
-						{{ macro_vote_question(question_vote=question_vote, question=question) }}
+							{{ macro_vote_question(question_vote=question_vote, question=question) }}
 							{% if current_user.user_id == question.user_id %}
 								<div class="col-sm text-end">
 									<a href="{{ url_for('questions.route_edit_question', question_id=question.question_id) }}">
@@ -87,17 +84,8 @@
 		{%- for answer in answers_list %}
 			<div class="container border mb-2">
 				<div class="row ">
-					<div class="col-md-1">
-						<div class="row mt-3">
-							<p class="text-center">
-								<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=+1, answer_id=answer.answer_id) }}"><i class="fas fa-chevron-up"></i></a>
-							</p>
-						</div>
-						{{ macro_answers_plus_minus(item=answer) }}
-						<div class="row mb-3"><p class="text-center">
-							<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=-1, answer_id=answer.answer_id) }}"><i class="fas fa-chevron-down"></i></a>
-						</p></div>
-					</div>
+
+					{{ macro_vote_for_answer(function=func_check_user_answer_vote(current_user.user_id|int, answer.answer_id|int).value('has_voted'), question=question, answer=answer) }}
 					<div class="col-xxl">
 						<div class="card-body">
 							<p>{{ answer.message }}</p>
@@ -115,7 +103,7 @@
 												{% endif %}
 											</td>
 										</tr>
-									{% endfor %}
+									{%- endfor -%}
 									<tr>
 										<td class="pb-3">
 											{{ macro_add_comment(action=url_for('questions.route_question', question_id=question.question_id, answer_id=answer.answer_id), comment_for="comments_for_answer") }}
@@ -123,9 +111,9 @@
 									</tr>
 									</tbody>
 								</table>
-							{% else %}
+							{%- else %}
 								{{ macro_add_comment(action=url_for('questions.route_question', question_id=question.question_id, answer_id=answer.answer_id), comment_for="comments_for_answer") }}
-							{% endif %}
+							{%- endif %}
 							<div class="row mt-0">
 								<div class="col-sm">
 									<small class="text-muted">{{ macro_submission_time(data=answer) }} by:
@@ -144,8 +132,7 @@
 					</div>
 				</div>
 			</div>
-
-		{% endfor %}
+		{%- endfor %}
 	</section> {# end section asnwers #}
 	<section>{# Add new answer#}
 		<div class="container">

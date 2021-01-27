@@ -21,7 +21,8 @@ def create_app(config_class=DevelopmentConfig):
         func_find_tag_name=data_manager.find_tag_name_by_id,
         func_count_answers=data_manager.count_answers_by_question_id,
         func_count_comments=data_manager.count_comments_by_question_id,
-        func_tags=data_manager.count_tags
+        func_tags=data_manager.count_tags,
+        func_check_user_answer_vote=data_manager.check_user_answer_vote
     )
 
     from askmate.users.routes import users

@@ -91,7 +91,7 @@ class UserVotes(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'))
     answer_id = db.Column(db.Integer, db.ForeignKey('answer.answer_id'))
-    has_voted = db.Column(db.Text, default=True)
+    has_voted = db.Column(db.Integer)
     vote_time = db.Column(db.DateTime, nullable=False, default=datetime.now().replace(microsecond=0).isoformat())
 
     def __repr__(self):

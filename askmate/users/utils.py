@@ -1,6 +1,5 @@
 import os
 import inspect
-from askmate import db
 from flask import current_app
 
 from secrets import token_hex
@@ -13,7 +12,7 @@ def set_picture_path(called_function):
     answer_pic = current_app.config['ANSWER_PIC']
     pic_path = current_app.config['PIC_PATH']
 
-    if called_function == 'route_register':
+    if called_function == 'route_register' or called_function == 'route_update_account':
         pic_path = usr_pic_path
 
     elif called_function == 'route_add_question' or called_function == 'route_edit_question':

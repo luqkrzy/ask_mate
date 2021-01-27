@@ -4,11 +4,18 @@
 {% block content %}
 
 
-{#{{ vote.first() }}#}
+{#{{ answer_vote.value('has_voted') > 0 }}#}
+{#{{ answers_list == None }}#}
+{#{{ answers_list.all() }}#}
+{#	{% for answer in answers_list %}#}
+{#		id: {{ answer.answer_id }}&nbsp;{{ func_answer_vote(current_user.user_id|int, answer.answer_id|int).value('has_voted') == None }} <br>#}
+{#	{% endfor %}#}
 
-{#	{{ vote.first() == True }}#}
+{%   if current_user.is_authenticated %}
 
-{{ vote.value('has_voted') == True }}
+	<p>Im authenticated and my id is {{ current_user.user_id }}</p>
+
+{% endif %}
 
 
 

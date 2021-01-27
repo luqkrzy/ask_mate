@@ -1,4 +1,5 @@
 from flask import render_template, redirect, request, Blueprint, url_for
+from flask_login import current_user
 import askmate.data_manager as data_manager
 
 
@@ -8,6 +9,10 @@ main = Blueprint('main', __name__)
 
 @main.route("/")
 def route_home():
+    print(current_user)
+    print(dir(current_user))
+    print(current_user.is_anonymous)
+
     order_direction = request.args.get('order_direction', 'asc')
     switch_order_direction = data_manager.switch_asc_desc(order_direction)
     if request.args.get('search_phrase') is not None:
@@ -24,5 +29,8 @@ def route_home():
 @main.route('/test', methods=['GET', 'POST'])
 def route_test():
 
+    # answer_votes = data_manager.check_user_answer_vote(51, 495)
+    answers_list = data_manager.find_answers_by_question_id(146)
 
-    return render_template('test.html', vote=check_vote)
+
+    return render_template('test.html', func_answer_vote=data_manager.check_user_answer_vote, answers_list=answers_list)

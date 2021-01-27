@@ -1,6 +1,7 @@
 import os
 from askmate import db
 from sqlalchemy import or_, func
+from sqlalchemy.exc import IntegrityError
 from askmate.models import Users, Tag, Question, QuestionTag, Answer, Comment, UserVotes
 
 
@@ -12,8 +13,11 @@ def switch_asc_desc(order_direction):
 
 
 def commit_to_database(data):
-    db.session.add(data)
-    db.session.commit()
+    try:
+        db.session.add(data)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
 
 
 def update_to_database():
@@ -45,18 +49,25 @@ def add_new_comment_for_answer(new_comment):
     commit_to_database(comment)
 
 
-def vote_for_answer(data_to_modify):
+def vote_for_answer(data_to_modify, user_id):
     answer_id = int(data_to_modify.get('answer_id'))
-    vote = int(data_to_modify.get('answers_votes'))
-    db.session.query(Answer).filter(Answer.answer_id == answer_id).update({Answer.vote_number: Answer.vote_number + vote})
+    vote_value = int(data_to_modify.get('answers_votes'))
+    db.session.query(Answer).filter(Answer.answer_id == answer_id).update({Answer.vote_number: Answer.vote_number + vote_value})
+    update_to_database()
+    vote = UserVotes(user_id=user_id, answer_id=answer_id, has_voted=vote_value)
+    commit_to_database(vote)
 
-def vote_for_question_user_votes_table(question_id, user_id):
-    vote = UserVotes(user_id=user_id, question_id=question_id)
+
+def vote_for_question_user_votes_table(question_id, user_id, vote_value):
+    vote = UserVotes(user_id=user_id, question_id=question_id, has_voted=int(vote_value))
     commit_to_database(vote)
 
 
 def check_user_question_vote(user_id, question_id):
     return db.session.query(UserVotes).filter_by(user_id=user_id, question_id=question_id)
+
+def check_user_answer_vote(user_id, answer_id):
+    return db.session.query(UserVotes).filter_by(user_id=user_id, answer_id=answer_id)
 
 
 

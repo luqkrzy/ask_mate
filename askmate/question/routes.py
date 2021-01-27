@@ -53,13 +53,15 @@ def route_question(question_id):
     if 'questions_votes' in data_to_modify:
         question.vote_number += int(data_to_modify.get('questions_votes'))
         data_manager.update_to_database()
-        data_manager.vote_for_question_user_votes_table(question_id=question_id, user_id=current_user.user_id)
+        data_manager.vote_for_question_user_votes_table(question_id=question_id, user_id=current_user.user_id, vote_value=data_to_modify.get('questions_votes'))
         return redirect(url_for('questions.route_question', question_id=question_id))
 
 
-
     elif 'answers_votes' in data_to_modify:
-        data_manager.vote_for_answer(data_to_modify)
+        print(data_to_modify)
+        data_manager.vote_for_answer(data_to_modify, user_id=current_user.user_id)
+        return redirect(url_for('questions.route_question', question_id=question_id))
+
 
     elif 'remove_question' in data_to_modify:
         data_manager.remove_question_by_id(question_id)
