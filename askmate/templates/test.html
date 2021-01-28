@@ -24,11 +24,11 @@
 {#		hey!#}
 {#	{% endif %}#}
 
+{% for question in questions %}
+{{ question.title|truncate(20) }} {{ question.question_id }}<br>
+{% endfor %}
 
 
-	{% for user in users.items %}
-{{ user.user_name }}<br>
-	{% endfor %}
 
 
 

@@ -1,9 +1,20 @@
 <aside class="col-sm-2">
 	<a class="btn btn-outline-primary my-3" href="{{ url_for('questions.route_add_question') }}" role="button">Ask question</a>
-	<p class="fw-bold my-1">Tags</p>
-	<div class="list-group">
-		{%- for tag in func_tags() -%}
-			<a href="{{ url_for('questions.route_tag', tag_id=tag.tag_id) }}" class="d-flex link-secondary text-decoration-none justify-content-between align-items-center my-1">#{{ tag.tag_name }}<span class="badge bg-primary rounded-pill">{{ tag.count }}</span></a>
-		{% endfor -%}
+	<div class="mb-5 mt-3">
+		<p class="fw-bold my-1">Tags</p>
+		<div class="list-group">
+			{%- for tag in func_tags() -%}
+				<a href="{{ url_for('questions.route_tag', tag_id=tag.tag_id) }}" class="d-flex link-secondary text-decoration-none justify-content-between align-items-center my-1">#{{ tag.tag_name }}<span class="badge bg-primary rounded-pill">{{ tag.count }}</span></a>
+			{% endfor -%}
+		</div>
+	</div>
+	<div class="mt-6">
+		<p class="fw-bold my-1">Recent</p>
+		{% for question in func_find_last_10_question_titles() %}
+			<div class="my-2">
+				<span class="badge bg-success">{{ question.vote_number }}</span>
+				<a class="text-decoration-none small" href="{{ url_for('questions.route_question', question_id=question.question_id) }}">{{ question.title|truncate(50, False) }}</a>
+			</div>
+		{% endfor %}
 	</div>
 </aside>

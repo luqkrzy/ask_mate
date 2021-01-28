@@ -8,11 +8,11 @@
 		<div class="container mt-3">
 			<div class="row">
 				<div class="row">
-					<div class="col-lg-8 fs-5">{{ question.title }}&nbsp;
+					<div class="col-lg-8 fs-5 mb-3">{{ question.title }}&nbsp;
 						<span class="badge btn-primary">{{ func_find_tag_name(question.tag_id|int).tag_name|e }}</span>
 					</div>
 				</div>
-				<div class="col-md-3 col-sm-2">
+				<div class="col-md-4 col-sm-9 col-lg-4 col-xl-3 col-xxl-2">
 					{{ macro_image(data=question) }}
 				</div>
 				<div class="col-xxl">

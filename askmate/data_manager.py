@@ -66,6 +66,7 @@ def vote_for_question_user_votes_table(question_id, user_id, vote_value):
 def check_user_question_vote(user_id, question_id):
     return db.session.query(UserVotes).filter_by(user_id=user_id, question_id=question_id)
 
+
 def check_user_answer_vote(user_id, answer_id):
     return db.session.query(UserVotes).filter_by(user_id=user_id, answer_id=answer_id)
 
@@ -84,7 +85,8 @@ def find_user_by_email(email):
 def fetch_tags():
     return Tag.query.all()
 
-def fetch_users(request_args:dict):
+
+def fetch_users(request_args: dict):
     page = int(request_args.get('page', int(1)))
     order_by = request_args.get('order_by', 'user_name')
     order_direction = request_args.get('order_direction', 'asc')
@@ -117,6 +119,10 @@ def remove_comment_by_id(comment_id):
 def remove_answer_by_id(answer_id):
     Answer.query.filter_by(answer_id=answer_id).delete()
     update_to_database()
+
+
+def find_last_10_question_titles():
+    return Question.query.with_entities(Question.question_id, Question.title,Question.vote_number).order_by(Question.submission_time.desc()).limit(10).all()
 
 
 def find_answers_by_question_id(question_id):

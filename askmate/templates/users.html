@@ -1,8 +1,10 @@
 {% extends "layout.html" %}
-{% from '_macros.html' import sort_bar, macro_pagination %}
+{% from '_macros.html' import sort_bar, macro_pagination, macro_reputation_color %}
 {% block title %}users{% endblock %}
 {%- block content %}
+	{# sort bar	#}
 	{{ sort_bar(route='users.route_users', data=users, order_direction=asc_desc) }}
+	{# user cards #}
 	<div class="container mt-3">
 		<div class="row row-cols-1 row-cols-lg-3 g-2 g-lg-3">
 			{%- for user in users.items %}
@@ -14,8 +16,11 @@
 							</div>
 							<div class="col-md-10 col-sm-9 col-lg-8 col-xl-9">
 								<div class="card-body">
-									<p class="card-text"><a href="" class="text-decoration-none">{{ user.user_name.split()[0] }}</a> <span class="badge bg-success rounded-pill">{{ user.reputation }}</span></p>
-									<p class="card-text"><small class="text-muted">since: {{ user.register_date.strftime('%y-%m-%d')}} </small>
+									<p class="card-text">
+										<a href="" class="text-decoration-none">{{ user.user_name.split()[0] }}</a>
+										{{ macro_reputation_color(data=user) }}</p>
+									<p class="card-text">
+										<small class="text-muted">since: {{ user.register_date.strftime('%y-%m-%d') }} </small>
 									</p>
 								</div>
 							</div>
