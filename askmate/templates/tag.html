@@ -2,7 +2,7 @@
 {% from '_macros.html' import sort_bar, macro_pagination, macro_generate_question_list %}
 {% block title %}Tag{% endblock %}
 {% block content %}
-	{{ sort_bar(route='questions.route_tag', data=questions, order_direction=asc_desc, tag_id=tag_id ) }}
+	{{ sort_bar(route='questions.route_tag', data=questions, order_direction=asc_desc, tag_id=tag_id) }}
 	{# generate questions result #}
 	{{ macro_generate_question_list(route_question='questions.route_question', item=question, the_list=questions) }}
 	{#pagination #}

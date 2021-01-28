@@ -9,10 +9,6 @@ main = Blueprint('main', __name__)
 
 @main.route("/")
 def route_home():
-    print(current_user)
-    print(dir(current_user))
-    print(current_user.is_anonymous)
-
     order_direction = request.args.get('order_direction', 'asc')
     switch_order_direction = data_manager.switch_asc_desc(order_direction)
     if request.args.get('search_phrase') is not None:
@@ -30,12 +26,16 @@ def route_home():
 def route_test():
 
     # answer_votes = data_manager.check_user_answer_vote(51, 495)
-    answers_list = data_manager.find_answers_by_question_id(146)
-    if not current_user.is_authenticated:
-        print('im here')
-        current_user.user_id = 1000
+    # answers_list = data_manager.find_answers_by_question_id(146)
+    # if not current_user.is_authenticated:
+    #     print('im here')
+    #     current_user.user_id = 1000
+    #     print(current_user.user_id)
 
-        print(current_user.user_id)
+    # all_users = data_manager.fetch_users(1, 'user_name', 'asc')
+    #
+    # print(dir(all_users))
+    # print(all_users.items)
 
 
-    return render_template('test.html', func_answer_vote=data_manager.check_user_answer_vote, answers_list=answers_list)
+    return render_template('test.html', users=all_users)

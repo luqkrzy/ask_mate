@@ -11,18 +11,26 @@
 {#		id: {{ answer.answer_id }}&nbsp;{{ func_answer_vote(current_user.user_id|int, answer.answer_id|int).value('has_voted') == None }} <br>#}
 {#	{% endfor %}#}
 
-{%   if current_user.is_authenticated %}
+{#{%   if current_user.is_authenticated %}#}
+{##}
+{#	<p>Im authenticated and my id is {{ current_user.user_id }}</p>#}
+{##}
+{#{% endif %}#}
+{##}
+{#	{{ current_user.user_id }}#}
+{##}
+{#	{% if current_user.user_id == 50 %}#}
+{##}
+{#		hey!#}
+{#	{% endif %}#}
 
-	<p>Im authenticated and my id is {{ current_user.user_id }}</p>
 
-{% endif %}
 
-	{{ current_user.user_id }}
+	{% for user in users.items %}
+{{ user.user_name }}<br>
+	{% endfor %}
 
-	{% if current_user.user_id == 50 %}
 
-		hey!
-	{% endif %}
 
 
 {% endblock %}

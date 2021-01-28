@@ -91,10 +91,10 @@
 		{{ macro_count_answers(data=answers_list) }}
 		{%- for answer in answers_list %}
 			<div class="container border mb-2">
-				<div class="row ">
+				<div class="row">
 					{{ macro_vote_for_answer(current_user=current_user, function=func_check_user_answer_vote(current_user.user_id|int, answer.answer_id|int).value('has_voted'), question=question, answer=answer) }}
 					<div class="col-xxl">
-						<div class="card-body">
+						<div class="card-body pb-2">
 							<p>{{ answer.message }}</p>
 							{% set answer_comments = comments_for_answers(answer.answer_id|int) %}
 							{% if answer_comments %}

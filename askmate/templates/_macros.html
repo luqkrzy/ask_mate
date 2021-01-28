@@ -66,8 +66,6 @@
 	</div>
 {% endmacro %}
 
-
-
 {# votes add plus for positive #}
 {%- macro macro_votes(question_votes="") %}
 	{%- set votes = question_votes -%}
@@ -120,39 +118,37 @@
 			{%- endif -%}
 			{%- for page_num in data_type.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) -%}
 				{%- if page_num -%}
-					{%- if data_type.page == page_num -%}
+					{%- if data_type.page == page_num %}
 						<li class="page-item active">
 							<a class="page-link" href="{{ url_for(route, page=page_num, **kwargs) }}">{{ page_num }}</a>
 						</li>
-					{%- else -%}
+					{%- else %}
 						<li class="page-item">
 							<a class="page-link" href="{{ url_for(route, page=page_num, **kwargs) }}">{{ page_num }}</a>
 						</li>
-					{%- endif -%}
+					{%- endif %}
 				{%- endif -%}
 			{%- endfor -%}
-			{% if data_type.has_next -%}
+			{% if data_type.has_next %}
 				<li class="page-item">
-					<a class="page-link" href="{{ next }}" aria-label="Previous">
-						<span aria-hidden="true">&raquo;</span>
-					</a>
+					<a class="page-link" href="{{ next }}" aria-label="Previous"><span aria-hidden="true">&raquo;</span></a>
 				</li>
-			{%- endif -%}
+			{%- endif %}
 		</ul>
 	</nav>
 {%- endmacro -%}
 
 {# count asnwers #}
-{% macro macro_count_answers(data="") %}
+{%- macro macro_count_answers(data="") -%}
 	<div class="container border-bottom my-3 fs-3">
-		{% set count_answers = data.count() %}
-		{% if count_answers == 1 %}
+		{%- set count_answers = data.count() -%}
+		{%- if count_answers == 1 %}
 			{{ count_answers }} answer
-		{% else %}
+		{%- else -%}
 			{{ count_answers }} answers
-		{% endif %}
+		{%- endif -%}
 	</div>
-{% endmacro %}
+{%- endmacro %}
 
 {# breadcrumbs#}
 {%- macro macro_breadcrumbs(route=url_for('main.route_home'), data="") -%}
@@ -260,8 +256,9 @@
 		</div>
 	{% endfor %}
 {% endmacro %}
+
 {# sorting bar #}
-{% macro sort_bar(route="", data="", order_direction="", search_resoult="") %}
+{% macro sort_bar(route="", data="", order_direction="", search_resoult="", tag_name="") %}
 	{%- if data.total == 0 %}
 		<div class="container mt-3">
 			<p>Your search - did not match any documents.</p>
@@ -273,16 +270,22 @@
 			</ul>
 		</div>
 	{%- else -%}
-		{%- set dict_sort_by = ({'Time': 'submission_time', 'Title': 'title', 'View': 'view_number', 'Votes': 'vote_number'}) -%}
+		{%- if request.endpoint == 'users.route_users' -%}
+			{%- set dict_sort_by = ({'Date': 'register_date', 'Name': 'user_name', 'Reputation': 'reputation'}) -%}
+		{% else %}
+			{%- set dict_sort_by = ({'Date': 'submission_time', 'Title': 'title', 'View': 'view_number', 'Votes': 'vote_number'}) -%}
+		{%- endif %}
 		<div class="container mt-3 px-0">
 			<div class="row">
 				<div class="col p-1 fs-3 ms-2">
 					<p class="fs-5">
 						{% if request.endpoint == 'main.route_home' %}{{ data.total }} questions
-						{% elif request.endpoint == 'questions.route_tag' %}&nbsp;
-						{% else %}about {{ data.total }} results for: {{ search_resoult }}
+						{% elif request.endpoint == 'questions.route_tag' %}&nbsp;Tag {{ tag_name }}
+						{% elif request.endpoint == 'questions.route_search' %}
+							about {{ data.total }} results for: {{ search_resoult }}
 							</p>
-						{% endif %}
+							{%- else -%}total users: {{ data.total }}
+						{%- endif -%}
 				</div>
 				<div class="col text-end">
 					<div class="btn-group" role="group" aria-label="Basic outlined">
@@ -335,7 +338,7 @@
 {% macro macro_vote_for_answer(current_user="", function="", question="", answer="") %}
 	{% if current_user.is_authenticated %}
 		{% if function == None %}
-			<div class="col-md-1">
+			<div class="col-xl-1">
 				<div class="row mt-3">
 					<p class="text-center">
 						<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=+1, answer_id=answer.answer_id) }}"><i class="fas fa-chevron-up"></i></a>

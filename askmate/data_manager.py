@@ -70,7 +70,6 @@ def check_user_answer_vote(user_id, answer_id):
     return db.session.query(UserVotes).filter_by(user_id=user_id, answer_id=answer_id)
 
 
-
 def update_answer(updated_answer):
     question_id = updated_answer.get('question_id')
     message = updated_answer.get('message')
@@ -85,9 +84,16 @@ def find_user_by_email(email):
 def fetch_tags():
     return Tag.query.all()
 
+def fetch_users(request_args:dict):
+    page = int(request_args.get('page', int(1)))
+    order_by = request_args.get('order_by', 'user_name')
+    order_direction = request_args.get('order_direction', 'asc')
+    users = "Users.query.order_by(Users.{}.{}())".format(order_by, order_direction)
+    return eval(users).paginate(page, per_page=20)
+
 
 def count_tags():
-    return db.engine.execute('SELECT tag.tag_id, tag.tag_name, COUNT(tag.tag_id) FROM tag, question_tag WHERE tag.tag_id = question_tag.tag_id GROUP BY tag.tag_id;')
+    return db.engine.execute('SELECT tag.tag_id, tag.tag_name, count(question.tag_id) as count FROM tag, question WHERE question.tag_id = tag.tag_id GROUP BY tag.tag_name, tag.tag_id;')
 
 
 def choice_query():

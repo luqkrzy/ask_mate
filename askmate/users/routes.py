@@ -89,3 +89,18 @@ def route_update_account():
             flash('wrong password', 'danger')
 
     return render_template('update_account.html', form=form)
+
+
+@users.route("/users")
+@login_required
+def route_users():
+    order_direction = request.args.get('order_direction')
+    switch_order_direction = data_manager.switch_asc_desc(order_direction)
+    request_args = dict(request.args)
+    print(request_args)
+    users= data_manager.fetch_users(request_args)
+
+
+
+
+    return render_template('users.html', users=users, asc_desc=switch_order_direction)

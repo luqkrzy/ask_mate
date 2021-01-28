@@ -2,7 +2,6 @@
 {% from '_macros.html' import sort_bar, macro_votes, macro_pagination, macro_answer_pl_sg, macro_comment_pl_sg, macro_generate_question_list %}
 {% block title %}Home{% endblock %}
 {% block content %}
-	{{ current_user.is_authenticated }}
 	{# sorting bar#}
 	{{ sort_bar(route='main.route_home', data=questions, order_direction=asc_desc ) }}
 	{# generate questions result #}
