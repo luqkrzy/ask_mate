@@ -37,7 +37,5 @@ def route_test():
     # print(dir(all_users))
     # print(all_users.items)
 
-    question = data_manager.find_last_10_question_titles()
-    print(question)
 
-    return render_template('test.html', questions=question)
+    return render_template('test.html')

@@ -6,8 +6,8 @@ from askmate.users.utils import save_picture
 from askmate.models import Users, Question
 from askmate.users.forms import RegistrationForm, LoginForm, UpdateAccountForm
 
-
 users = Blueprint('users', __name__)
+
 
 @users.route("/register", methods=['GET', 'POST'])
 def route_register():
@@ -62,7 +62,17 @@ def route_logout():
 @users.route("/account", methods=['GET', 'POST'])
 @login_required
 def route_account():
-    return render_template('account.html')
+    questions = data_manager.find_questions_by_user_id(user_id=current_user.user_id)
+    answers_and_rel_data= data_manager.find_answers_and_all_related_by_user_id(user_id=current_user.user_id)
+    comments_for_questions = data_manager.find_comments_for_questions_by_user_id(current_user.user_id)
+    comments_for_answers = data_manager.find_comments_for_questions_by_user_id(current_user.user_id)
+
+
+    return render_template('account.html', questions=questions,
+                           comments_for_questions=comments_for_questions,
+                           comments_for_answers=comments_for_answers,
+                           questions_and_answers=answers_and_rel_data
+                           )
 
 
 @users.route("/update_account", methods=['GET', 'POST'])
@@ -98,9 +108,6 @@ def route_users():
     switch_order_direction = data_manager.switch_asc_desc(order_direction)
     request_args = dict(request.args)
     print(request_args)
-    users= data_manager.fetch_users(request_args)
-
-
-
+    users = data_manager.fetch_users(request_args)
 
     return render_template('users.html', users=users, asc_desc=switch_order_direction)

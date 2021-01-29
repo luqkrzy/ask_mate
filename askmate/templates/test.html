@@ -24,11 +24,10 @@
 {#		hey!#}
 {#	{% endif %}#}
 
-{% for question in questions %}
-{{ question.title|truncate(20) }} {{ question.question_id }}<br>
-{% endfor %}
 
-
+{% for item in mix %}
+	{{ item }}
+	{% endfor %}
 
 
 

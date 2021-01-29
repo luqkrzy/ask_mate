@@ -398,18 +398,36 @@
 	{% endif %}
 {% endmacro %}
 
+
+{# change question score pill color #}
+{% macro macro_question_score_color(data="") %}
+	{% if   data.vote_number < 0 %}
+		{% set color = 'danger' %}
+	{% elif 0 <= data.vote_number < 30 %}
+		{% set color = 'secondary' %}
+	{% elif 30 < data.vote_number < 55 %}
+		{% set color = 'warning' %}
+	{% elif 55 < data.vote_number < 100 %}
+		{% set color = 'primary' %}
+	{% elif data.vote_number > 100 %}
+		{% set color = 'success' %}
+	{% endif %}
+	<span class="badge bg-{{ color }}">{{ data.vote_number }}</span>
+{% endmacro %}
+
 {# change user reputation pill color #}
+
 {% macro macro_reputation_color(data="") %}
 	{% if   data.reputation|int < 0 %}
 		{% set color = 'danger' %}
-	{% elif 0 < data.reputation|int < 500 %}
+	{% elif 0 <= data.reputation < 500 %}
 		{% set color = 'secondary' %}
-	{% elif 500 < data.reputation|int < 1000 %}
+	{% elif 500 < data.reputation < 1000 %}
 		{% set color = 'warning' %}
-	{% elif 1000 < data.reputation|int < 2000 %}
+	{% elif 1000 < data.reputation < 2000 %}
 		{% set color = 'primary' %}
-	{% elif data.reputation|int > 2000 %}
+	{% elif data.reputation > 2000 %}
 		{% set color = 'success' %}
 	{% endif %}
-	<span class="badge bg-{{ color }} rounded-pill">{{ data.reputation }}</span>
+	<span class="badge bg-{{ color }}">{{ data.reputation }}</span>
 {% endmacro %}
