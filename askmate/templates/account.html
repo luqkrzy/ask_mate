@@ -1,127 +1,127 @@
 {% extends "layout.html" %}
-{% from '_macros.html' import macro_question_score_color %}
+{% from '_macros.html' import macro_score_color %}
 {% block title %}Account{% endblock %}
 {% block content %}
-{#	section user card #}
-<section>
-	<div class="card mb-3 border-0">
-		<div class="row">
-			<div class="col-2  me-3">
-				<img class="row-cols-3" src="{{ url_for('static', filename='img/usr_pic/' + current_user.picture) }}" alt="pic">
-			</div>
-			<div class="col-xl">
-				<div class="card-body">
-					<p class="card-title fw-bold mt-3 fs-4">{{ current_user.user_name }}<a href="{{ url_for('users.route_update_account') }}"><i class="far fa-edit fa-xs ms-2"></i></a>
-					</p>
-					<p class="mt-4 text-muted">{{ current_user.email }}</p>
-					<p class="my-2">reputation: {{ current_user.reputation }}</p>
-					<p class="my-2">
-						<small class="text-muted">since: {{ current_user.register_date.strftime('%Y-%m-%d') }}</small>
-					</p>
+	{#	section user card #}
+	<section>
+		<div class="card mb-3 border-0">
+			<div class="row">
+				<div class="col-2  me-3">
+					<img class="row-cols-3" src="{{ url_for('static', filename='img/usr_pic/' + current_user.picture) }}" alt="pic">
+				</div>
+				<div class="col-xl">
+					<div class="card-body">
+						<p class="card-title fw-bold mt-3 fs-4">{{ current_user.user_name }}<a href="{{ url_for('users.route_update_account') }}"><i class="far fa-edit fa-xs ms-2"></i></a>
+						</p>
+						<p class="mt-4 text-muted">{{ current_user.email }}</p>
+						<p class="my-2">reputation: {{ current_user.reputation }}</p>
+						<p class="my-2">
+							<small class="text-muted">since: {{ current_user.register_date.strftime('%Y-%m-%d') }}</small>
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-</section> {# end user card #}
-{# user contents #}
-<section>
-	<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-		<li class="nav-item" role="presentation">
-			<a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#pills-questions" role="tab" aria-controls="pills-home" aria-selected="true">Questions
-				<span class="badge bg-light text-dark">{{ questions.rowcount }}</span></a>
-		</li>
-		<li class="nav-item" role="presentation">
-			<a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#pills-answers" role="tab" aria-controls="pills-profile" aria-selected="false">Answers
-				<span class="badge bg-light text-dark">{{ questions_and_answers.rowcount }}</span></a>
-		</li>
-		<li class="nav-item" role="presentation">
-			<a class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" href="#pills-comments-questions" role="tab" aria-controls="pills-contact" aria-selected="false">Comments for questions
-				<span class="badge bg-light text-dark">{{ comments_for_questions|count }}</span></a>
-		</li>
-		<li class="nav-item" role="presentation">
-			<a class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" href="#pills-comments-answers" role="tab" aria-controls="pills-contact" aria-selected="false">Comments for answers
-				<span class="badge bg-light text-dark">{{ comments_for_answers|count }}</span></a>
-		</li>
+	</section> {# end user card #}
+	{# user contents #}
+	<section>
+		<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#pills-questions" role="tab" aria-controls="pills-home" aria-selected="true">Questions
+					<span class="badge bg-light text-dark">{{ questions.rowcount }}</span></a>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#pills-answers" role="tab" aria-controls="pills-profile" aria-selected="false">Answers
+					<span class="badge bg-light text-dark">{{ answers_and_rel_data.rowcount }}</span></a>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" href="#pills-comments-questions" role="tab" aria-controls="pills-contact" aria-selected="false">Comments for questions
+					<span class="badge bg-light text-dark">{{ comments_for_questions.rowcount }}</span></a>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" href="#pills-comments-answers" role="tab" aria-controls="pills-contact" aria-selected="false">Comments for answers
+					<span class="badge bg-light text-dark">{{ comments_for_answers.rowcount }}</span></a>
+			</li>
+		</ul>
+		<div class="tab-content" id="pills-tabContent">
+			<div class="tab-pane fade show active" id="pills-questions" role="tabpanel" aria-labelledby="pills-home-tab">
+				<table class="table">
+					<tbody>
+					{% for question in questions %}
+						<tr>
+						<td class="col-9">{{ macro_score_color(data=question) }}
+							<a class="text-decoration-none" href="{{ url_for('questions.route_question', question_id=question.question_id) }}">{{ question.question_title }}</a>&nbsp;
+							<span class="badge btn-primary">{{ question.tag_name }}</span>&nbsp;
+							<small class="text-muted">{{ question.question_message|truncate(100) }}</small>
+						</td>
+						<td class="text-end col-1 text-muted small">
+							<small>answers: {{ question.count_answer }}</small></td>
+						<td class="text-end col-1 text-muted small">
+							<small>comments: {{ question.count_comment }}</small></td>
+						<td class="text-end col-2 text-muted small">
+							<small>{{ question.question_submission_time.strftime('%y-%m-%d %H:%M') }}</small></td>
+					{% endfor %}
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="tab-pane fade" id="pills-answers" role="tabpanel" aria-labelledby="pills-profile-tab">
+				<table class="table">
+					<tbody>
+					{% for item in answers_and_rel_data %}
+						<tr>
+						<td class="col-9">{{ macro_score_color(data=item) }}
+							<small class="text-muted">{{ item.answer_message|truncate(100) }}</small>&nbsp;
+							<small><a class="text-decoration-none" href="{{ url_for('questions.route_question', question_id=item.answer_question_id) }}">{{ item.question_title }}</a></small>&nbsp;
+							<span class="badge btn-primary">{{ item.tag_name }}</span>
+						</td>
+						<td class="text-end col-1 text-muted small"><small>comments: {{ item.count_comment }}</small>
+						</td>
+						<td class="text-end col-2 text-muted small">
+							<small>{{ item.asnwer_submission_time.strftime('%y-%m-%d %H:%M') }}</small></td>
+					{% endfor %}
+					</tr>
+					</tbody>
+				</table>
+			</div>
 
-	</ul>
-	<div class="tab-content" id="pills-tabContent">
-		<div class="tab-pane fade show active" id="pills-questions" role="tabpanel" aria-labelledby="pills-home-tab">
-			<table class="table">
-				<tbody>
-				{% for question in questions %}
-					<tr>
-					<td class="col-9">{{ macro_question_score_color(data=question) }}
-						<a class="text-decoration-none" href="{{ url_for('questions.route_question', question_id=question.question_id) }}">{{ question.question_title }}</a>&nbsp;
-						<span class="badge btn-primary">{{ question.tag_name }}</span>&nbsp;
-						<small class="text-muted">{{ question.question_message|truncate(100) }}</small>
-					</td>
-					<td class="text-end col-1 text-muted small">
-						<small>answers: {{ question.count_answer }}</small></td>
-					<td class="text-end col-1 text-muted small">
-						<small>comments: {{ question.count_comment }}</small></td>
-					<td class="text-end col-2 text-muted small">
-						<small>{{ question.question_submission_time.strftime('%y-%m-%d %H:%M') }}</small></td>
-				{% endfor %}
-				</tr>
-				</tbody>
-			</table>
+			<div class="tab-pane fade" id="pills-comments-questions" role="tabpanel" aria-labelledby="pills-contact-tab">
+				<table class="table">
+					<tbody>
+					{% for comment in comments_for_questions %}
+						<tr>
+						<td class="col-9">
+							<small class="text-muted">{{ comment.message|truncate(80) }}</small>&nbsp;
+							<small><a class="text-decoration-none" href="{{ url_for('questions.route_question', question_id=comment.comment_question_id) }}">{{ comment.question_title|truncate(60) }}</a></small>&nbsp;
+							<span class="badge btn-primary">{{ func_find_tag_name(comment.question_tag_id|int).tag_name }}</span>
+						</td>
+						<td class="text-end col-2 text-muted small">
+							<small>{{ comment.submission_time.strftime('%y-%m-%d %H:%M') }}</small></td>
+					{% endfor %}
+					</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="tab-pane fade" id="pills-comments-answers" role="tabpanel" aria-labelledby="pills-contact-tab">
+				<table class="table">
+					<tbody>
+					{% for comment in comments_for_answers %}
+						<tr>
+						<td class="col-9">
+							<small class="text-muted">{{ comment.message|truncate(80) }}</small>&nbsp;
+							<small><a class="text-decoration-none" href="{{ url_for('questions.route_question', question_id=comment.comment_question_id) }}">{{ comment.question_title|truncate(60) }}</a></small>&nbsp;
+							<span class="badge btn-primary">{{ func_find_tag_name(comment.question_tag_id|int).tag_name }}</span>
+						</td>
+						<td class="text-end col-2 text-muted small">
+							<small>{{ comment.submission_time.strftime('%y-%m-%d %H:%M') }}</small></td>
+					{% endfor %}
+					</tr>
+					</tbody>
+				</table>
+			</div>
+
 		</div>
-		<div class="tab-pane fade" id="pills-answers" role="tabpanel" aria-labelledby="pills-profile-tab">
-			<table class="table">
-				<tbody>
-				{% for item in questions_and_answers %}
-					<tr>
-					<td class="col-9">{{ macro_question_score_color(data=item) }}
-						<small class="text-muted">{{ item.answer_message|truncate(100) }}</small>&nbsp;
-						<smal>
-							<a class="text-decoration-none" href="{{ url_for('questions.route_question', question_id=item.answer_question_id) }}">{{ item.question_title }}</a>
-						</smal>&nbsp;
-						<span class="badge btn-primary">{{ item.tag_name }}</span>&nbsp;
-					</td>
-					<td class="text-end col-1 text-muted small">
-						<small>comments: {{ item.count_comment }}</small></td>
-					<td class="text-end col-2 text-muted small">
-						<small>{{ item.asnwer_submission_time.strftime('%y-%m-%d %H:%M') }}</small></td>
-				{% endfor %}
-				</tr>
-				</tbody>
-			</table>
-		</div>
-
-		<div class="tab-pane fade" id="pills-comments-questions" role="tabpanel" aria-labelledby="pills-contact-tab">
-			<table class="table">
-				<tbody>
-				{% for comment in comments_for_questions %}
-					<tr>
-					<td class="col-9">
-						<small><a class="text-decoration-none text-muted" href="{{ url_for('questions.route_question', question_id=comment.question_id) }}">{{ comment.message|truncate(100) }}</a></small>
-					</td>
-					<td class="text-end col-2 text-muted small">
-						<small>{{ comment.submission_time.strftime('%y-%m-%d %H:%M') }}</small></td>
-				{% endfor %}
-				</tr>
-				</tbody>
-			</table>
-		</div>
-		<div class="tab-pane fade" id="pills-comments-answers" role="tabpanel" aria-labelledby="pills-contact-tab">
-			<table class="table">
-				<tbody>
-				{% for comment in comments_for_answers %}
-					<tr>
-					<td class="col-9">
-						<small><a class="text-decoration-none text-muted" href="{{ url_for('questions.route_question', question_id=comment.question_id) }}">{{ comment.message|truncate(100) }}</a></small>
-					</td>
-					<td class="text-end col-2 text-muted small">
-						<small>{{ comment.submission_time.strftime('%y-%m-%d %H:%M') }}</small></td>
-				{% endfor %}
-				</tr>
-				</tbody>
-			</table>
-		</div>
-
-	</div>
-</section>
-
-
+	</section>
 {% endblock %}

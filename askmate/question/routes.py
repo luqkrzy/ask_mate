@@ -75,8 +75,13 @@ def route_question(question_id):
         flash('Answer deleted', 'info')
         return redirect(url_for('questions.route_question', question_id=question_id))
 
-    elif 'remove_comment' in data_to_modify:
-        data_manager.remove_comment_by_id(comment_id=request.args.get('comment_id'))
+    elif 'remove_comment_for_question' in data_to_modify:
+        data_manager.remove_comment_for_question_by_id(comment_id=request.args.get('comment_id'))
+        flash('Comment deleted', 'info')
+        return redirect(url_for('questions.route_question', question_id=question_id))
+
+    elif 'remove_comment_for_answer' in data_to_modify:
+        data_manager.remove_comment_for_answer_by_id(comment_id=request.args.get('comment_id'))
         flash('Comment deleted', 'info')
         return redirect(url_for('questions.route_question', question_id=question_id))
 
@@ -104,6 +109,7 @@ def route_question(question_id):
 
         elif 'comments_for_answer' in request.form:
             new_comment = {
+                "question_id": question_id,
                 'user_id': current_user.user_id,
                 "answer_id": request.args.get('answer_id'),
                 "message": request.form.get('comments_for_answer')}

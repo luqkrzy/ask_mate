@@ -58,7 +58,7 @@
 																{% if current_user.user_id == comment.user_id %}
 																	<i data-bs-toggle="modal" type="button" data-bs-target="#confirm_delete_comment" class="fas fa-trash"></i>
 																	</td>
-																	{{ macro_modal_delete(modal_id="confirm_delete_comment", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment=True)) }}
+																	{{ macro_modal_delete(modal_id="confirm_delete_comment", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment_for_question=True)) }}
 																{% endif %}
 															{% endif %}
 														<td>
@@ -107,7 +107,7 @@
 												{% if current_user.is_authenticated %}
 													{% if current_user.user_id == comment.user_id %}
 														<i data-bs-toggle="modal" type="button" data-bs-target="#confirm_delete_comment_for_answer" class="fas fa-trash"></i>
-														{{ macro_modal_delete(modal_id="confirm_delete_comment_for_answer", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment=True) ) }}
+														{{ macro_modal_delete(modal_id="confirm_delete_comment_for_answer", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment_for_answer=True) ) }}
 													{% endif %}
 												{% endif %}
 											</td>

@@ -63,15 +63,14 @@ def route_logout():
 @login_required
 def route_account():
     questions = data_manager.find_questions_by_user_id(user_id=current_user.user_id)
-    answers_and_rel_data= data_manager.find_answers_and_all_related_by_user_id(user_id=current_user.user_id)
-    comments_for_questions = data_manager.find_comments_for_questions_by_user_id(current_user.user_id)
-    comments_for_answers = data_manager.find_comments_for_questions_by_user_id(current_user.user_id)
-
+    answers_and_rel_data = data_manager.find_answers_and_all_related_by_user_id(user_id=current_user.user_id)
+    comments_for_questions = data_manager.find_comments_for_questions_by_user_id(user_id=current_user.user_id)
+    comments_for_answers = data_manager.find_comments_for_answers_by_user_id(user_id=current_user.user_id)
 
     return render_template('account.html', questions=questions,
                            comments_for_questions=comments_for_questions,
                            comments_for_answers=comments_for_answers,
-                           questions_and_answers=answers_and_rel_data
+                           answers_and_rel_data=answers_and_rel_data
                            )
 
 

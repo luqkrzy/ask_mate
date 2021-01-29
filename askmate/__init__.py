@@ -21,11 +21,10 @@ def create_app(config_class=DevelopmentConfig):
         func_count_answers=data_manager.count_answers_by_question_id,
         func_count_comments=data_manager.count_comments_by_question_id,
         func_check_user_answer_vote=data_manager.check_user_answer_vote,
-        func_tags=data_manager.count_tags,
-        func_find_last_10_question_titles=data_manager.find_last_10_question_titles,
-        func_find_top_10_users=data_manager.find_top_10_users,
+        func_tags=data_manager.func_count_tags,
+        func_find_last_10_question_titles=data_manager.func_find_last_10_question_titles,
+        func_find_top_10_users=data_manager.func_find_top_10_users,
     )
-
 
     from askmate.users.routes import users
     from askmate.question.routes import questions

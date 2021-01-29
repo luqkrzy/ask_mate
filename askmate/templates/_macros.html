@@ -399,8 +399,8 @@
 {% endmacro %}
 
 
-{# change question score pill color #}
-{% macro macro_question_score_color(data="") %}
+{# change question or answer score pill color #}
+{% macro macro_score_color(data="") %}
 	{% if   data.vote_number < 0 %}
 		{% set color = 'danger' %}
 	{% elif 0 <= data.vote_number < 30 %}
