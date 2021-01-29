@@ -21,13 +21,20 @@
 						<hr>
 						<div class="row mt-0">
 							<div class="col-sm">
-								<small class="text-muted">{{ macro_submission_time(data=question) }}</small>
+								<small class="text-muted">{{ macro_submission_time(data=question) }}
+								</small>
+							</div>
+							<div class="col-sm small">{% set user_info = func_user_info(question.user_id|int) %}
+								<small><a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=user_info.user_id) }}">
+									{{ user_info.user_name.split()[0] }}
+									<span class="badge bg-success">{{ user_info.reputation }}</span></a></small>
 							</div>
 							<div class="col-sm">
-								<small class="text-muted">score: {{ question.vote_number }} votes</small>
+								<small class="text-muted">{{ question.vote_number }} votes</small>
 							</div>
+
 							<div class="col-sm mb-2">
-								<small class="text-muted">views: {{ question.view_number }} </small>
+								<small class="text-muted">{{ question.view_number }} views</small>
 							</div>
 							{{ macro_vote_question(current_user=current_user, question_vote=question_vote, question=question) }}
 							{% if current_user.is_authenticated %}
@@ -61,8 +68,11 @@
 																	{{ macro_modal_delete(modal_id="confirm_delete_comment", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment_for_question=True)) }}
 																{% endif %}
 															{% endif %}
-														<td>
-															<small class="text-muted"><a class="text-decoration-none" href="#">{{ func_user_info(user_id=comment.user_id|int).user_name.split()[0] }}</a></small>
+														<td class="small">
+															{% set user_info = func_user_info(comment.user_id|int) %}
+															<small><a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=user_info.user_id) }}">
+																{{ user_info.user_name.split()[0] }}
+																<span class="badge bg-success">{{ user_info.reputation }}</span></a></small>
 														</td>
 													</tr>
 												{% endfor %}
@@ -103,7 +113,7 @@
 									{% for comment in answer_comments %}
 										<tr>
 											<td class="border-bottom py-1 small">{{ comment.message }} -
-												<small class="text-muted">&nbsp;{{ comment.submission_time.strftime('%y-%m-%d') }}&nbsp;<a class="text-decoration-none" href="#">- &nbsp;{{ func_user_info(user_id=comment.user_id|int).user_name.split()[0] }}</a></small>
+												<small class="text-muted">&nbsp;{{ comment.submission_time.strftime('%y-%m-%d') }}&nbsp;-<a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=func_user_info(comment.user_id|int).user_id) }}"> &nbsp;{{ func_user_info(user_id=comment.user_id|int).user_name.split()[0] }}</a></small>
 												{% if current_user.is_authenticated %}
 													{% if current_user.user_id == comment.user_id %}
 														<i data-bs-toggle="modal" type="button" data-bs-target="#confirm_delete_comment_for_answer" class="fas fa-trash"></i>
@@ -128,9 +138,13 @@
 								{%- endif %}
 							{%- endif %}
 							<div class="row mt-0">
-								<div class="col-sm">
+								<div class="col-sm small">
 									<small class="text-muted">{{ macro_submission_time(data=answer) }} by:
-										<a href="" class="text-decoration-none">{{ func_user_info(user_id=answer.user_id|int).user_name.split()[0] }}</a></small>
+										{% set user_info = func_user_info(question.user_id|int) %}
+										<a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=user_info.user_id) }}">
+											{{ user_info.user_name.split()[0] }}
+											<span class="badge bg-success">{{ user_info.reputation }}</span></a>
+									</small>
 								</div>
 								{% if current_user.is_authenticated %}
 									{% if current_user.user_id == answer.user_id %}

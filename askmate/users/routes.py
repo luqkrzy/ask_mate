@@ -101,7 +101,6 @@ def route_update_account():
 
 
 @users.route("/users")
-@login_required
 def route_users():
     order_direction = request.args.get('order_direction')
     switch_order_direction = data_manager.switch_asc_desc(order_direction)
@@ -110,3 +109,9 @@ def route_users():
     users = data_manager.fetch_users(request_args)
 
     return render_template('users.html', users=users, asc_desc=switch_order_direction)
+
+@users.route("/user/<int:user_id>")
+def route_user(user_id):
+    user = data_manager.find_user_by_id(user_id)
+
+    return render_template('user.html', user=user)

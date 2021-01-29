@@ -201,7 +201,7 @@
 	</form>
 {% endmacro %}
 
-{# add comments  for question or answers#}
+{# list comments #}
 {% macro list_comments(item="", the_list="", data_target="", route_question="") %}
 	<table class="table text-muted">
 		<tbody>
@@ -248,7 +248,7 @@
 							<span class="badge bg-secondary"> {{ macro_comment_pl_sg(func_count_comments(item.question_id|int)) }}</span>
 						</li>
 						<li class="list-inline-item">
-							<span class="badge bg-dark"><a class="link-light text-decoration-none" href="">{{ func_user_info(item.user_id|int).user_name.split()[0] }}</a></span>
+							<span class="badge bg-dark"><a class="link-light text-decoration-none" href="{{ url_for('users.route_user', user_id=func_user_info(item.user_id|int).user_id) }}">{{ func_user_info(item.user_id|int).user_name.split()[0] }}</a></span>
 						</li>
 					</ul>
 				</div>

@@ -25,7 +25,7 @@
 		{% for user in func_find_top_10_users() %}
 			<div class="my-2">
 				<span class="badge bg-success">{{ user.reputation }}</span>
-				<a class="text-decoration-none small text-muted" href="#">{{ user.user_name }}</a>
+				<a class="text-decoration-none small text-muted" href="{{ url_for('users.route_user', user_id=func_user_info(user.user_id|int).user_id) }}">{{ user.user_name }}</a>
 			</div>
 		{% endfor %}
 	</div>
