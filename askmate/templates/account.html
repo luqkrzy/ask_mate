@@ -75,14 +75,14 @@
 					<tbody>
 					{% for item in answers_and_rel_data %}
 						<tr>
-						<td class="col-9">{{ macro_score_color(data=item) }}
-							<small class="text-muted">{{ item.answer_message|truncate(100) }}</small>&nbsp;
-							<small><a class="text-decoration-none" href="{{ url_for('questions.route_question', question_id=item.answer_question_id) }}">{{ item.question_title }}</a></small>&nbsp;
+						<td class="col-10">{{ macro_score_color(data=item) }}
+							<small class="text-muted">{{ item.answer_message|truncate(80) }}</small>&nbsp;
+							<small><a class="text-decoration-none" href="{{ url_for('questions.route_question', question_id=item.answer_question_id) }}">{{ item.question_title|truncate(60) }}</a></small>&nbsp;
 							<span class="badge btn-primary">{{ item.tag_name }}</span>
 						</td>
-						<td class="text-end col-1 text-muted small"><small>comments: {{ item.count_comment }}</small>
+						<td class="text-end col-1 text-end text-muted small"><small>comments: {{ item.count_comment }}</small>
 						</td>
-						<td class="text-end col-2 text-muted small">
+						<td class="text-end col-1 text-muted small">
 							<small>{{ item.asnwer_submission_time.strftime('%y-%m-%d %H:%M') }}</small></td>
 					{% endfor %}
 					</tr>
@@ -129,3 +129,4 @@
 	</section>
 	{% endif %}
 {% endblock %}
+

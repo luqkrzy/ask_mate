@@ -193,10 +193,10 @@
 	<form class="row" action="{{ action }}" method="post">
 		<div class="col-8 mt-2">
 			<label for="{{ comment_for }}" class="visually-hidden">comment_for</label>
-			<input type="text" class="form-control" name="{{ comment_for }}" id="{{ comment_for }}" placeholder="add comment max 80 signs" maxlength="80" required>
+			<input type="text" class="form-control p-1" name="{{ comment_for }}" id="{{ comment_for }}" placeholder="add comment max 80 signs" maxlength="80" required>
 		</div>
 		<div class="col-2 mt-2">
-			<button type="submit" class="btn btn-primary">post</button>
+			<button type="submit" class="btn btn-primary p-1">post</button>
 		</div>
 	</form>
 {% endmacro %}
@@ -225,7 +225,7 @@
 			<div class="card-header d-flex">
 				<div class="col-10  fw-bold text-start">
 					<span class="badge bg-success">{{ macro_votes(question_votes=item.vote_number) }}</span>&nbsp;
-					<a class="text-decoration-none" href="{{ url_for(route_question, question_id=item.question_id) }}">{{ macro_heihlight_search_pharse(column=item.title, search_phrase=search_phrase)|truncate(115, True, '...') }}</a>
+					<a class="text-decoration-none text-dark" href="{{ url_for(route_question, question_id=item.question_id) }}">{{ macro_heihlight_search_pharse(column=item.title, search_phrase=search_phrase)|truncate(115, True, '...') }}</a>
 					<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for(route_tag, tag_id=item.tag_id) }}">{{ func_find_tag_name(item.tag_id|int).tag_name|e }}</a></span>
 				</div>
 				<ul class="col-2 list-inline text-end mb-0">
@@ -320,7 +320,7 @@
 {# macro answers plus / minus #}
 {%- macro macro_answers_plus_minus(item="") -%}
 	<div>
-		<p class="text-center">
+		<p class="text-center small">
 			{%- if item.vote_number >= 1 -%}
 				+{{ item.vote_number }}
 			{%- else %}
@@ -334,7 +334,7 @@
 {% macro macro_vote_for_answer(current_user="", function="", question="", answer="") %}
 	{% if current_user.is_authenticated %}
 		{% if function.value('has_voted') == None %}
-			<div class="col-xl-1">
+			<div class="col-sm-1 p-0 col-lg-1">
 				<div class="row mt-3">
 					<p class="text-center">
 						<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=+1, answer_id=answer.answer_id, user_id=answer.user_id) }}"><i class="fas fa-chevron-up"></i></a>
@@ -348,7 +348,7 @@
 				</div>
 			</div>
 		{%- elif function.value('has_voted') > 0 %}
-			<div class="col-md-1">
+			<div class="col-sm-1 p-0 col-lg-1">
 				<div class="row mt-3">
 					<p class="text-center">
 						<i class="fas fa-chevron-up text-success"  data-bs-toggle="tooltip" data-bs-placement="top" title="voted on {{  function.value('vote_time')}}"></i>
@@ -362,7 +362,7 @@
 				</div>
 			</div>
 		{%- elif function.value('has_voted') < 0 %}
-			<div class="col-md-1">
+			<div class="col-sm-1 p-0 col-lg-1">
 				<div class="row mt-3">
 					<p class="text-center">
 						<i class="fas fa-chevron-up"></i>
@@ -377,7 +377,7 @@
 			</div>
 		{% endif %}
 	{% else %}
-		<div class="col-md-1">
+		<div class="col-1">
 			<div class="row mt-3">
 				<p class="text-center">
 					<i class="fas fa-chevron-up"></i>
@@ -390,7 +390,6 @@
 				</p>
 			</div>
 		</div>
-
 	{% endif %}
 {% endmacro %}
 

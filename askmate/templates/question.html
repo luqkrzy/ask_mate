@@ -98,15 +98,15 @@
 	<section> {# start section answers #}
 		{{ macro_count_answers(data=answers_list) }}
 		{%- for answer in answers_list %}
-			<div class="container border mb-2">
+			<div class="container border-bottom pb-1 mb-2">
 				<div class="row">
 					{{ macro_vote_for_answer(current_user=current_user, function=func_check_user_answer_vote(current_user.user_id|int, answer.answer_id|int), question=question, answer=answer) }}
-					<div class="col-xxl">
+					<div class="col">
 						<div class="card-body pb-2">
 							<p>{{ answer.message }}</p>
 							{% set answer_comments = comments_for_answers(answer.answer_id|int) %}
 							{% if answer_comments %}
-								<table class="table text-muted">
+								<table class="table text-muted mb-1 ">
 									<tbody>
 									{#	comments for answers #}
 									{% for comment in answer_comments %}
@@ -165,6 +165,7 @@
 					</div>
 				</div>
 			</div>
+{#			<hr>#}
 		{%- endfor %}
 	</section> {# end section asnwers #}
 	{% if current_user.is_authenticated %}
@@ -185,3 +186,5 @@
 		</section>
 	{% endif %}
 {% endblock %}
+
+

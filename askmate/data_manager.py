@@ -25,17 +25,17 @@ def update_to_database():
 
 
 def register_new_user(new_user: dict):
-    user = Users(user_name=new_user['user_name'], email=new_user['email'], password=new_user['password'], picture=new_user['picture'])
+    user = Users(user_name=new_user.get('user_name'), email=new_user.get('email'), password=new_user.get('password'), picture=new_user.get('picture'))
     commit_to_database(user)
 
 
 def ask_new_question(new_question):
-    question = Question(user_id=new_question['user_id'], title=new_question['title'], message=new_question['message'], image=new_question['image'], tag_id=new_question['tag_id'])
+    question = Question(user_id=new_question.get('user_id'), title=new_question.get(['title'], message=new_question.get('message'), image=new_question.get('image'), tag_id=new_question.get('tag_id')))
     commit_to_database(question)
 
 
 def add_new_answer(new_answer):
-    answer = Answer(user_id=new_answer['user_id'], message=new_answer['message'], question_id=new_answer['question_id'])
+    answer = Answer(user_id=new_answer('user_id'), message=new_answer('message'), question_id=new_answer('question_id'))
     commit_to_database(answer)
 
 
