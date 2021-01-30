@@ -209,28 +209,28 @@ def search_query(request_args: dict):
 
 
 def find_answers_and_all_related_by_user_id(user_id):
-    return db.engine.execute(
-        f"""SELECT answer.answer_id as answer_answer_id, 
+    return db.engine.execute("""
+    SELECT answer.answer_id as answer_answer_id,
         answer.submission_time as asnwer_submission_time,
         answer.vote_number as vote_number,
-       answer.question_id as answer_question_id, 
-       answer.message as answer_message, 
-       answer.user_id as answer_user_id,
-       question.question_id as question_question_id, 
-       question.user_id as question_user_id, 
-       question.submission_time as question_submission_time,
-       question.view_number as question_view_number, 
-       question.vote_number as question_vote_number, question.title as question_title,
-       question.message as question_message, 
-       question.tag_id as question_tag_id, 
+        answer.question_id as answer_question_id, 
+        answer.message as answer_message, 
+        answer.user_id as answer_user_id,
+        question.question_id as question_question_id, 
+        question.user_id as question_user_id, 
+        question.submission_time as question_submission_time,
+        question.view_number as question_view_number, 
+        question.vote_number as question_vote_number, question.title as question_title,
+        question.message as question_message, 
+        question.tag_id as question_tag_id, 
        (SELECT tag.tag_name FROM tag WHERE tag.tag_id = question.tag_id) as tag_name,
        (SELECT count(comment_for_answer.comment_id) FROM comment_for_answer WHERE comment_for_answer.answer_id = answer.answer_id) as count_comment
         FROM answer INNER JOIN question ON (answer.question_id = question.question_id) 
-        WHERE answer.user_id = {user_id} ORDER BY answer.submission_time DESC;""")
+        WHERE answer.user_id = %(user_id)s ORDER BY answer.submission_time DESC;""", {'user_id': user_id})
 
 
 def find_questions_by_user_id(user_id):
-    return db.engine.execute(f"""
+    return db.engine.execute("""
     SELECT question.question_id as question_id,
        question.user_id as question_user_id,
        question.submission_time as question_submission_time,
@@ -243,12 +243,11 @@ def find_questions_by_user_id(user_id):
        (SELECT tag.tag_name FROM tag WHERE tag.tag_id = question.tag_id) as tag_name,
        (SELECT count(comment_for_question.comment_id) FROM comment_for_question WHERE comment_for_question.question_id = question.question_id) as count_comment,
        (SELECT count(answer.answer_id) FROM answer WHERE answer.question_id = question.question_id) as count_answer
-    FROM question WHERE user_id = {user_id} ORDER BY submission_time DESC;
-    """)
+    FROM question WHERE user_id =  %(user_id)s ORDER BY submission_time DESC;""", {'user_id': user_id})
 
 
 def find_comments_for_questions_by_user_id(user_id):
-    return db.engine.execute(f"""
+    return db.engine.execute("""
     SELECT comment_for_question.comment_id as comment_id, comment_for_question.user_id as user_id,
        comment_for_question.question_id as comment_question_id, comment_for_question.message as message,
        comment_for_question.submission_time as submission_time, comment_for_question.edited_number as edited_number,
@@ -256,13 +255,13 @@ def find_comments_for_questions_by_user_id(user_id):
        (SELECT question.title as question_title FROM question WHERE question.question_id = comment_for_question.question_id),
        (SELECT question.vote_number as question_vote_number FROM question WHERE question.question_id = comment_for_question.question_id),
        (SELECT  question.tag_id as question_tag_id FROM question WHERE question.question_id = comment_for_question.question_id)
-        FROM comment_for_question WHERE comment_for_question.question_id NOTNULL AND comment_for_question.user_id = {user_id} ORDER BY comment_for_question.submission_time DESC;
-    """)
+        FROM comment_for_question WHERE comment_for_question.question_id NOTNULL AND comment_for_question.user_id =  %(user_id)s ORDER BY comment_for_question.submission_time DESC;""",
+        {'user_id': user_id})
     # return Comment.query.filter(Comment.question_id.isnot(None)).filter_by(user_id=user_id).order_by(Comment.submission_time.desc()).all()
 
 
 def find_comments_for_answers_by_user_id(user_id):
-    return db.engine.execute(f"""
+    return db.engine.execute("""
     SELECT comment_for_answer.comment_id as comment_id, comment_for_answer.user_id as user_id,
        comment_for_answer.question_id as comment_question_id, comment_for_answer.answer_id as answer_id, comment_for_answer.message as message,
        comment_for_answer.submission_time as submission_time, comment_for_answer.edited_number as edited_number,
@@ -270,6 +269,6 @@ def find_comments_for_answers_by_user_id(user_id):
        (SELECT question.title as question_title FROM question WHERE question.question_id = comment_for_answer.question_id),
        (SELECT question.vote_number as question_vote_number FROM question WHERE question.question_id = comment_for_answer.question_id),
        (SELECT  question.tag_id as question_tag_id FROM question WHERE question.question_id = comment_for_answer.question_id)
-        FROM comment_for_answer WHERE comment_for_answer.answer_id NOTNULL AND comment_for_answer.user_id = {user_id} ORDER BY comment_for_answer.submission_time DESC;
-    """)
+        FROM comment_for_answer WHERE comment_for_answer.answer_id NOTNULL AND comment_for_answer.user_id =  %(user_id)s ORDER BY comment_for_answer.submission_time DESC;""",
+        {'user_id': user_id})
     # return Comment.query.filter(Comment.answer_id.isnot(None)).filter_by(user_id=user_id).order_by(Comment.submission_time.desc()).all()

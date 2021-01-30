@@ -3,7 +3,7 @@ from flask_wtf.file import FileAllowed, FileField
 from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, Length
-from wtforms_validators import AlphaSpace, AlphaNumeric
+from wtforms_validators import AlphaSpace
 from askmate.data_manager import choice_query
 
 class QuestionForm(FlaskForm):
