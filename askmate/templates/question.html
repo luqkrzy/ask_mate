@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% from '_macros.html' import macro_breadcrumbs, macro_submission_time, macro_image, macro_add_comment,
- macro_count_answers, macro_answers_plus_minus, macro_vote_question, macro_vote_for_answer %}
+ macro_count_answers, macro_answers_plus_minus, macro_vote_question, macro_vote_for_answer, macro_reputation_color %}
 {% from '_modals.html' import macro_modal_delete, macro_modal_edit_answer %}
 {% block title %}Question{% endblock %}
 {% block content %}
@@ -27,7 +27,7 @@
 							<div class="col-sm small">{% set user_info = func_user_info(question.user_id|int) %}
 								<small><a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=user_info.user_id) }}">
 									{{ user_info.user_name.split()[0] }}
-									<span class="badge bg-success">{{ user_info.reputation }}</span></a></small>
+									{{ macro_reputation_color(data=user_info, type='number') }}</a></small>
 							</div>
 							<div class="col-sm">
 								<small class="text-muted">{{ question.vote_number }} votes</small>
@@ -41,9 +41,8 @@
 								{% if current_user.user_id == question.user_id %}
 									<div class="col-sm text-end">
 										<a href="{{ url_for('questions.route_edit_question', question_id=question.question_id) }}">
-											<button type="button" class="btn btn-outline-primary btn-sm">edit</button>
-										</a>
-										<button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirm_delete_question">delete</button>
+											<i type="button" class="far fa-edit"></i></a>
+										<i type="button" class="btn text-danger btn-sm fas fa-trash-alt" data-bs-toggle="modal" data-bs-target="#confirm_delete_question"></i>
 									</div>
 								{% endif %}
 							{% endif %}
@@ -61,6 +60,11 @@
 												{% for comment in comments_for_question %}
 													<tr>
 														<td class="small text-muted">{{ comment.message }}&nbsp;<small>{{ comment.submission_time.strftime('%y-%m-%d') }}&nbsp;</small>
+															{% set user_info = func_user_info(comment.user_id|int) %}
+															<small><a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=user_info.user_id) }}">
+																{{ user_info.user_name.split()[0] }}
+																{{ macro_reputation_color(data=user_info) }}
+															</a></small>
 															{% if current_user.is_authenticated %}
 																{% if current_user.user_id == comment.user_id %}
 																	<i data-bs-toggle="modal" type="button" data-bs-target="#confirm_delete_comment" class="fas fa-trash"></i>
@@ -68,12 +72,7 @@
 																	{{ macro_modal_delete(modal_id="confirm_delete_comment", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment_for_question=True)) }}
 																{% endif %}
 															{% endif %}
-														<td class="small">
-															{% set user_info = func_user_info(comment.user_id|int) %}
-															<small><a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=user_info.user_id) }}">
-																{{ user_info.user_name.split()[0] }}
-																<span class="badge bg-success">{{ user_info.reputation }}</span></a></small>
-														</td>
+
 													</tr>
 												{% endfor %}
 												</tbody>
@@ -113,7 +112,12 @@
 									{% for comment in answer_comments %}
 										<tr>
 											<td class="border-bottom py-1 small">{{ comment.message }} -
-												<small class="text-muted">&nbsp;{{ comment.submission_time.strftime('%y-%m-%d') }}&nbsp;-<a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=func_user_info(comment.user_id|int).user_id) }}"> &nbsp;{{ func_user_info(user_id=comment.user_id|int).user_name.split()[0] }}</a></small>
+												<small class="text-muted">&nbsp;{{ comment.submission_time.strftime('%y-%m-%d') }}&nbsp;
+													{% set user_info = func_user_info(comment.user_id|int) %}
+													<a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=user_info.user_id) }}">
+														{{ user_info.user_name.split()[0] }}
+														{{ macro_reputation_color(data=user_info) }}
+													</a></small>
 												{% if current_user.is_authenticated %}
 													{% if current_user.user_id == comment.user_id %}
 														<i data-bs-toggle="modal" type="button" data-bs-target="#confirm_delete_comment_for_answer" class="fas fa-trash"></i>
@@ -140,17 +144,17 @@
 							<div class="row mt-0">
 								<div class="col-sm small">
 									<small class="text-muted">{{ macro_submission_time(data=answer) }} by:
-										{% set user_info = func_user_info(question.user_id|int) %}
+										{% set user_info = func_user_info(answer.user_id|int) %}
 										<a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=user_info.user_id) }}">
 											{{ user_info.user_name.split()[0] }}
-											<span class="badge bg-success">{{ user_info.reputation }}</span></a>
+											{{ macro_reputation_color(data=user_info, type='number') }}</a>
 									</small>
 								</div>
 								{% if current_user.is_authenticated %}
 									{% if current_user.user_id == answer.user_id %}
 										<div class="col-sm text-end">
-											<button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#update_answer">edit</button>
-											<button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirm_delete_answer">delete</button>
+											<i type="button" class="far fa-edit text-primary" data-bs-toggle="modal" data-bs-target="#update_answer"></i>
+											<i type="button" class="btn text-danger btn-sm fas fa-trash-alt" data-bs-toggle="modal" data-bs-target="#confirm_delete_answer"></i>
 											{{ macro_modal_delete(modal_id="confirm_delete_answer", route=url_for('questions.route_question', question_id=question.question_id, answer_id=answer.answer_id, remove_answer=True)) }}
 										</div>
 										{{ macro_modal_edit_answer(modal_id="update_answer", route=url_for('questions.route_question', answer_id=answer.answer_id, question_id=question.question_id), answer=answer) }}

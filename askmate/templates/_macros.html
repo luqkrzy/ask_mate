@@ -305,14 +305,12 @@
 	<div class="col-sm mb-2">
 		{% if current_user.is_authenticated %}
 			{%- if question_vote.value('has_voted') == None %}
-				<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=-1) }}"><i class="far fa-thumbs-down btn btn-outline-danger"></i></a>&nbsp;&nbsp;
-				<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=+1) }}"><i class="far fa-thumbs-up btn btn-outline-success"></i></a>
+				<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=-1, user_id = question.user_id) }}"><i class="far fa-thumbs-down btn btn-outline-danger"></i></a>&nbsp;&nbsp;
+				<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=+1, user_id = question.user_id) }}"><i class="far fa-thumbs-up btn btn-outline-success"></i></a>
 			{%- elif question_vote.value('has_voted') > 0 %}
-				<i class="far fa-thumbs-up text-success"></i>&nbsp;
-				<small class="text-muted small">voted on {{ question_vote.value('vote_time').strftime('%y-%m-%d') }}</small>
+				<i class="far fa-thumbs-up text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="voted on {{ question_vote.value('vote_time').strftime('%y-%m-%d') }}"></i>&nbsp;
 			{%- elif question_vote.value('has_voted') < 0 %}
-				<i class="far fa-thumbs-down text-danger"></i>&nbsp;&nbsp;
-				<small class="text-muted small">voted on {{ question_vote.value('vote_time').strftime('%y-%m-%d') }}</small>
+				<i class="far fa-thumbs-down text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="voted on {{ question_vote.value('vote_time').strftime('%y-%m-%d') }}"></i>&nbsp;&nbsp;
 			{%- endif %}
 		{% else %}
 			<i class="far fa-thumbs-down text-danger"></i>&nbsp;&nbsp;
@@ -341,13 +339,13 @@
 			<div class="col-xl-1">
 				<div class="row mt-3">
 					<p class="text-center">
-						<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=+1, answer_id=answer.answer_id) }}"><i class="fas fa-chevron-up"></i></a>
+						<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=+1, answer_id=answer.answer_id, user_id=answer.user_id) }}"><i class="fas fa-chevron-up"></i></a>
 					</p>
 				</div>
 				{{ macro_answers_plus_minus(item=answer) }}
 				<div class="row mb-3">
 					<p class="text-center">
-						<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=-1, answer_id=answer.answer_id) }}"><i class="fas fa-chevron-down"></i></a>
+						<a href="{{ url_for('questions.route_question', question_id=question.question_id, answers_votes=-1, answer_id=answer.answer_id, user_id=answer.user_id) }}"><i class="fas fa-chevron-down"></i></a>
 					</p>
 				</div>
 			</div>
@@ -417,7 +415,7 @@
 
 {# change user reputation pill color #}
 
-{% macro macro_reputation_color(data="") %}
+{% macro macro_reputation_color(data="", type="") %}
 	{% if   data.reputation|int < 0 %}
 		{% set color = 'danger' %}
 	{% elif 0 <= data.reputation < 500 %}
@@ -429,5 +427,9 @@
 	{% elif data.reputation > 2000 %}
 		{% set color = 'success' %}
 	{% endif %}
-	<span class="badge bg-{{ color }}">{{ data.reputation }}</span>
+	{% if type == 'number' %}
+		<span class="badge bg-{{ color }}">{{ data.reputation }}</span>
+	{% else %}
+		<span class="text-{{ color }} fw-bold ">&#9679;</span>
+	{% endif %}
 {% endmacro %}

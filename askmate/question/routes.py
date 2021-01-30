@@ -2,9 +2,7 @@ from flask import Blueprint, request, render_template, redirect, url_for, flash
 import askmate.data_manager as data_manager
 from flask_login import current_user, login_required
 from datetime import datetime
-from askmate import db
-from askmate.models import Question
-from askmate.question.forms import QuestionForm, AnswerForm
+from askmate.question.forms import QuestionForm
 from askmate.users.utils import save_picture
 
 questions = Blueprint('questions', __name__)
@@ -46,6 +44,7 @@ def route_question(question_id):
         current_user.user_id = 1000
 
     question_vote = data_manager.check_user_question_vote(user_id=current_user.user_id, question_id=question_id)
+    print(dir(question_vote))
 
     if data_to_modify:
         print(data_to_modify)
@@ -55,6 +54,7 @@ def route_question(question_id):
     if 'questions_votes' in data_to_modify:
         question.vote_number += int(data_to_modify.get('questions_votes'))
         data_manager.update_to_database()
+        data_manager.modify_user_reputation(data_to_modify)
         data_manager.vote_for_question_user_votes_table(question_id=question_id, user_id=current_user.user_id, vote_value=data_to_modify.get('questions_votes'))
         return redirect(url_for('questions.route_question', question_id=question_id))
 
@@ -62,6 +62,7 @@ def route_question(question_id):
     elif 'answers_votes' in data_to_modify:
         print(data_to_modify)
         data_manager.vote_for_answer(data_to_modify, user_id=current_user.user_id)
+        data_manager.modify_user_reputation(data_to_modify)
         return redirect(url_for('questions.route_question', question_id=question_id))
 
 

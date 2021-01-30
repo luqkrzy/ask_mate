@@ -58,13 +58,28 @@ def vote_for_answer(data_to_modify, user_id):
     commit_to_database(vote)
 
 
+def modify_user_reputation(data_to_modify: dict):
+    vote_value = 0
+    user = find_user_by_id(user_id=data_to_modify.get('user_id'))
+    if 'questions_votes' in data_to_modify:
+        vote_value = int(data_to_modify.get('questions_votes'))
+    elif 'answers_votes' in data_to_modify:
+        vote_value = int(data_to_modify.get('answers_votes'))
+    if vote_value > 0:
+        user.reputation += 5
+    else:
+        user.reputation -= 5
+    update_to_database()
+
+
 def vote_for_question_user_votes_table(question_id, user_id, vote_value):
     vote = UserVotes(user_id=user_id, question_id=question_id, has_voted=int(vote_value))
     commit_to_database(vote)
 
 
 def check_user_question_vote(user_id, question_id):
-    return db.session.query(UserVotes).filter_by(user_id=user_id, question_id=question_id)
+    return UserVotes.query.filter_by(user_id=user_id, question_id=question_id)
+    # return db.session.query(UserVotes).filter_by(user_id=user_id, question_id=question_id)
 
 
 def check_user_answer_vote(user_id, answer_id):
@@ -135,7 +150,7 @@ def func_find_top_10_users():
 
 
 def find_answers_by_question_id(question_id):
-    return Answer.query.filter_by(question_id=question_id)
+    return Answer.query.filter_by(question_id=question_id).order_by(Answer.submission_time.asc())
 
 
 def find_comments_by_question_id(question_id):
