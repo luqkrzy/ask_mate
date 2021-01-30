@@ -70,9 +70,8 @@
 																	<i data-bs-toggle="modal" type="button" data-bs-target="#confirm_delete_comment" class="fas fa-trash"></i>
 																	</td>
 																	{{ macro_modal_delete(modal_id="confirm_delete_comment", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment_for_question=True)) }}
-																{% endif %}
-															{% endif %}
-
+																{%- endif %}
+															{%- endif %}
 													</tr>
 												{% endfor %}
 												</tbody>
@@ -101,7 +100,7 @@
 		{%- for answer in answers_list %}
 			<div class="container border mb-2">
 				<div class="row">
-					{{ macro_vote_for_answer(current_user=current_user, function=func_check_user_answer_vote(current_user.user_id|int, answer.answer_id|int).value('has_voted'), question=question, answer=answer) }}
+					{{ macro_vote_for_answer(current_user=current_user, function=func_check_user_answer_vote(current_user.user_id|int, answer.answer_id|int), question=question, answer=answer) }}
 					<div class="col-xxl">
 						<div class="card-body pb-2">
 							<p>{{ answer.message }}</p>
@@ -109,6 +108,7 @@
 							{% if answer_comments %}
 								<table class="table text-muted">
 									<tbody>
+									{#	comments for answers #}
 									{% for comment in answer_comments %}
 										<tr>
 											<td class="border-bottom py-1 small">{{ comment.message }} -

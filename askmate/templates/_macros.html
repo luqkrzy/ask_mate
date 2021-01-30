@@ -298,8 +298,6 @@
 		</div>
 	{% endif %}
 {%- endmacro -%}
-
-
 {# macro block for already voted question #}
 {%- macro macro_vote_question(current_user="", question_vote="", question="" ) -%}
 	<div class="col-sm mb-2">
@@ -308,9 +306,9 @@
 				<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=-1, user_id = question.user_id) }}"><i class="far fa-thumbs-down btn btn-outline-danger"></i></a>&nbsp;&nbsp;
 				<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=+1, user_id = question.user_id) }}"><i class="far fa-thumbs-up btn btn-outline-success"></i></a>
 			{%- elif question_vote.value('has_voted') > 0 %}
-				<i class="far fa-thumbs-up text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="voted on {{ question_vote.value('vote_time').strftime('%y-%m-%d') }}"></i>&nbsp;
+				<i class="far fa-thumbs-up text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="voted on {{ question_vote.value('vote_time') }}"></i>&nbsp;
 			{%- elif question_vote.value('has_voted') < 0 %}
-				<i class="far fa-thumbs-down text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="voted on {{ question_vote.value('vote_time').strftime('%y-%m-%d') }}"></i>&nbsp;&nbsp;
+				<i class="far fa-thumbs-down text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="voted on {{ question_vote.value('vote_time') }}"></i>&nbsp;&nbsp;
 			{%- endif %}
 		{% else %}
 			<i class="far fa-thumbs-down text-danger"></i>&nbsp;&nbsp;
@@ -335,7 +333,7 @@
 {# macro vote for answer #}
 {% macro macro_vote_for_answer(current_user="", function="", question="", answer="") %}
 	{% if current_user.is_authenticated %}
-		{% if function == None %}
+		{% if function.value('has_voted') == None %}
 			<div class="col-xl-1">
 				<div class="row mt-3">
 					<p class="text-center">
@@ -349,11 +347,11 @@
 					</p>
 				</div>
 			</div>
-		{%- elif function > 0 %}
+		{%- elif function.value('has_voted') > 0 %}
 			<div class="col-md-1">
 				<div class="row mt-3">
 					<p class="text-center">
-						<i class="fas fa-chevron-up text-success"></i>
+						<i class="fas fa-chevron-up text-success"  data-bs-toggle="tooltip" data-bs-placement="top" title="voted on {{  function.value('vote_time')}}"></i>
 					</p>
 				</div>
 				{{ macro_answers_plus_minus(item=answer) }}
@@ -363,7 +361,7 @@
 					</p>
 				</div>
 			</div>
-		{%- elif function < 0 %}
+		{%- elif function.value('has_voted') < 0 %}
 			<div class="col-md-1">
 				<div class="row mt-3">
 					<p class="text-center">
@@ -373,7 +371,7 @@
 				{{ macro_answers_plus_minus(item=answer) }}
 				<div class="row mb-3">
 					<p class="text-center">
-						<i class="fas fa-chevron-down text-danger"></i>
+						<i class="fas fa-chevron-down text-danger"  data-bs-toggle="tooltip" data-bs-placement="top" title="voted on {{  function.value('vote_time')}}"></i>
 					</p>
 				</div>
 			</div>

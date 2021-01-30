@@ -39,12 +39,12 @@ def route_question(question_id):
     question = data_manager.find_question_by_id(question_id)
     answers_list = data_manager.find_answers_by_question_id(question_id)
     list_comments_for_question = data_manager.find_comments_by_question_id(question_id)
+    list_comments_for_answers = data_manager.find_comments_by_answer_id
+    question_vote = data_manager.check_user_question_vote(user_id=current_user.user_id, question_id=question_id)
     data_to_modify = dict(request.args)
+
     if not current_user.is_authenticated:
         current_user.user_id = 1000
-
-    question_vote = data_manager.check_user_question_vote(user_id=current_user.user_id, question_id=question_id)
-    print(dir(question_vote))
 
     if data_to_modify:
         print(data_to_modify)
@@ -127,7 +127,6 @@ def route_question(question_id):
 
         return redirect(url_for("questions.route_question", question_id=question_id))
 
-    list_comments_for_answers = data_manager.find_comments_by_answer_id
 
     return render_template('question.html', question=question, answers_list=answers_list, question_vote=question_vote,
                            comments_for_question=list_comments_for_question, comments_for_answers=list_comments_for_answers)
