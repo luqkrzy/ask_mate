@@ -4,6 +4,7 @@ from flask_login import current_user, login_required
 from datetime import datetime
 from askmate.question.forms import QuestionForm
 from askmate.users.utils import save_picture
+
 questions = Blueprint('questions', __name__)
 
 
@@ -42,93 +43,86 @@ def route_question(question_id):
     data_to_modify = dict(request.args)
     question.view_number += 1
     data_manager.update_to_database()
-
-    if not current_user.is_authenticated:
-        current_user.user_id = 1000
-
-    question_vote = data_manager.check_user_question_vote(user_id=current_user.user_id, question_id=question_id)
+    question_vote = None
 
 
-    # if data_to_modify:
-    #     print(data_to_modify)
-    #     question.view_number += 1
-    #     data_manager.update_to_database()
+    if current_user.is_authenticated:
+        question_vote = data_manager.check_user_question_vote(user_id=current_user.user_id, question_id=question_id)
 
-    if 'questions_votes' in data_to_modify:
-        question.vote_number += int(data_to_modify.get('questions_votes'))
-        data_manager.update_to_database()
-        data_manager.modify_user_reputation(data_to_modify)
-        data_manager.vote_for_question_user_votes_table(question_id=question_id, user_id=current_user.user_id, vote_value=data_to_modify.get('questions_votes'))
-        return redirect(url_for('questions.route_question', question_id=question_id))
-
-
-    elif 'answers_votes' in data_to_modify:
-        print(data_to_modify)
-        data_manager.vote_for_answer(data_to_modify, user_id=current_user.user_id)
-        data_manager.modify_user_reputation(data_to_modify)
-        return redirect(url_for('questions.route_question', question_id=question_id))
-
-
-    elif 'remove_question' in data_to_modify:
-        data_manager.remove_question_by_id(question_id)
-        flash('Question deleted', 'info')
-        return redirect(url_for('main.route_home'))
-
-    elif 'remove_answer' in data_to_modify:
-        data_manager.remove_answer_by_id(answer_id=request.args.get('answer_id'))
-        flash('Answer deleted', 'info')
-        return redirect(url_for('questions.route_question', question_id=question_id))
-
-    elif 'remove_comment_for_question' in data_to_modify:
-        data_manager.remove_comment_for_question_by_id(comment_id=request.args.get('comment_id'))
-        flash('Comment deleted', 'info')
-        return redirect(url_for('questions.route_question', question_id=question_id))
-
-    elif 'remove_comment_for_answer' in data_to_modify:
-        data_manager.remove_comment_for_answer_by_id(comment_id=request.args.get('comment_id'))
-        flash('Comment deleted', 'info')
-        return redirect(url_for('questions.route_question', question_id=question_id))
-
-    if request.method == "POST":
-
-        if 'answer_for_question' in request.form:
-            new_answer = {'user_id': current_user.user_id,
-                          'message': request.form.get('answer_for_question'),
-                          'question_id': question_id}
-
-            data_manager.add_new_answer(new_answer)
-            flash('Answer added', 'success')
-            return redirect(url_for('questions.route_question', question_id=question_id))
-
-        elif 'update_answer' in request.form:
-            updated_answer = {
-                'question_id': question_id,
-                "message": request.form.get('update_answer')}
-
-            data_manager.update_answer(updated_answer)
-            flash('Answer added', 'success')
+        if 'questions_votes' in data_to_modify:
+            question.vote_number += int(data_to_modify.get('questions_votes'))
+            data_manager.update_to_database()
+            data_manager.modify_user_reputation(data_to_modify)
+            data_manager.vote_for_question_user_votes_table(question_id=question_id, user_id=current_user.user_id, vote_value=data_to_modify.get('questions_votes'))
             return redirect(url_for('questions.route_question', question_id=question_id))
 
 
-        elif 'comments_for_answer' in request.form:
-            new_comment = {
-                "question_id": question_id,
-                'user_id': current_user.user_id,
-                "answer_id": request.args.get('answer_id'),
-                "message": request.form.get('comments_for_answer')}
+        elif 'answers_votes' in data_to_modify:
+            print(data_to_modify)
+            data_manager.vote_for_answer(data_to_modify, user_id=current_user.user_id)
+            data_manager.modify_user_reputation(data_to_modify)
+            return redirect(url_for('questions.route_question', question_id=question_id))
 
-            data_manager.add_new_comment_for_answer(new_comment)
 
-        elif 'comments_for_question' in request.form:
-            new_comment = {
-                'user_id': current_user.user_id,
-                "question_id": question_id,
-                "message": request.form.get('comments_for_question')}
+        elif 'remove_question' in data_to_modify:
+            data_manager.remove_question_by_id(question_id)
+            flash('Question deleted', 'info')
+            return redirect(url_for('main.route_home'))
 
-            data_manager.add_new_comment_for_question(new_comment)
+        elif 'remove_answer' in data_to_modify:
+            data_manager.remove_answer_by_id(answer_id=request.args.get('answer_id'))
+            flash('Answer deleted', 'info')
+            return redirect(url_for('questions.route_question', question_id=question_id))
 
-        return redirect(url_for("questions.route_question", question_id=question_id))
+        elif 'remove_comment_for_question' in data_to_modify:
+            data_manager.remove_comment_for_question_by_id(comment_id=request.args.get('comment_id'))
+            flash('Comment deleted', 'info')
+            return redirect(url_for('questions.route_question', question_id=question_id))
 
+        elif 'remove_comment_for_answer' in data_to_modify:
+            data_manager.remove_comment_for_answer_by_id(comment_id=request.args.get('comment_id'))
+            flash('Comment deleted', 'info')
+            return redirect(url_for('questions.route_question', question_id=question_id))
+
+        if request.method == "POST":
+
+            if 'answer_for_question' in request.form:
+                new_answer = {'user_id': current_user.user_id,
+                              'message': request.form.get('answer_for_question'),
+                              'question_id': question_id}
+
+                data_manager.add_new_answer(new_answer)
+                flash('Answer added', 'success')
+                return redirect(url_for('questions.route_question', question_id=question_id))
+
+            elif 'update_answer' in request.form:
+                updated_answer = {
+                    'question_id': question_id,
+                    "message": request.form.get('update_answer')}
+
+                data_manager.update_answer(updated_answer)
+                flash('Answer added', 'success')
+                return redirect(url_for('questions.route_question', question_id=question_id))
+
+
+            elif 'comments_for_answer' in request.form:
+                new_comment = {
+                    "question_id": question_id,
+                    'user_id': current_user.user_id,
+                    "answer_id": request.args.get('answer_id'),
+                    "message": request.form.get('comments_for_answer')}
+
+                data_manager.add_new_comment_for_answer(new_comment)
+
+            elif 'comments_for_question' in request.form:
+                new_comment = {
+                    'user_id': current_user.user_id,
+                    "question_id": question_id,
+                    "message": request.form.get('comments_for_question')}
+
+                data_manager.add_new_comment_for_question(new_comment)
+
+            return redirect(url_for("questions.route_question", question_id=question_id))
 
     return render_template('question.html', question=question, answers_list=answers_list, question_vote=question_vote,
                            comments_for_question=list_comments_for_question, comments_for_answers=list_comments_for_answers)

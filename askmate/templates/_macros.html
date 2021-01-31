@@ -335,9 +335,11 @@
 {%- endmacro -%}
 
 {# macro vote for answer #}
-{% macro macro_vote_for_answer(current_user="", function="", question="", answer="") %}
+{% macro macro_vote_for_answer(current_user="", question="", answer="") %}
+
 	{% if current_user.is_authenticated %}
-		{% if question.user_id == current_user.user_id %}
+		{% set function = func_check_user_answer_vote(current_user.user_id|int, answer.answer_id|int)%}
+		{% if answer.user_id == current_user.user_id %}
 			<div class="col-1">
 				<div class="row mt-3">
 					<p class="text-center">

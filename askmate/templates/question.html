@@ -100,7 +100,7 @@
 		{%- for answer in answers_list %}
 			<div class="container border-bottom pb-1 mb-2">
 				<div class="row">
-					{{ macro_vote_for_answer(current_user=current_user, function=func_check_user_answer_vote(current_user.user_id|int, answer.answer_id|int), question=question, answer=answer) }}
+					{{ macro_vote_for_answer(current_user=current_user, question=question, answer=answer) }}
 					<div class="col">
 						<div class="card-body pb-2">
 							<p>{{ answer.message }}</p>
