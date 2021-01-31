@@ -4,7 +4,6 @@ from flask_login import current_user, login_required
 from datetime import datetime
 from askmate.question.forms import QuestionForm
 from askmate.users.utils import save_picture
-
 questions = Blueprint('questions', __name__)
 
 
@@ -40,16 +39,20 @@ def route_question(question_id):
     answers_list = data_manager.find_answers_by_question_id(question_id)
     list_comments_for_question = data_manager.find_comments_by_question_id(question_id)
     list_comments_for_answers = data_manager.find_comments_by_answer_id
-    question_vote = data_manager.check_user_question_vote(user_id=current_user.user_id, question_id=question_id)
     data_to_modify = dict(request.args)
+    question.view_number += 1
+    data_manager.update_to_database()
 
     if not current_user.is_authenticated:
         current_user.user_id = 1000
 
-    if data_to_modify:
-        print(data_to_modify)
-        question.view_number += 1
-        data_manager.update_to_database()
+    question_vote = data_manager.check_user_question_vote(user_id=current_user.user_id, question_id=question_id)
+
+
+    # if data_to_modify:
+    #     print(data_to_modify)
+    #     question.view_number += 1
+    #     data_manager.update_to_database()
 
     if 'questions_votes' in data_to_modify:
         question.vote_number += int(data_to_modify.get('questions_votes'))
@@ -91,8 +94,8 @@ def route_question(question_id):
         if 'answer_for_question' in request.form:
             new_answer = {'user_id': current_user.user_id,
                           'message': request.form.get('answer_for_question'),
-                          'question_id': question_id
-                          }
+                          'question_id': question_id}
+
             data_manager.add_new_answer(new_answer)
             flash('Answer added', 'success')
             return redirect(url_for('questions.route_question', question_id=question_id))
@@ -100,8 +103,7 @@ def route_question(question_id):
         elif 'update_answer' in request.form:
             updated_answer = {
                 'question_id': question_id,
-                "message": request.form.get('update_answer')
-            }
+                "message": request.form.get('update_answer')}
 
             data_manager.update_answer(updated_answer)
             flash('Answer added', 'success')

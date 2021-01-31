@@ -55,7 +55,7 @@
 					{% for question in questions %}
 						<tr>
 						<td class="col-9">{{ macro_score_color(data=question) }}
-							<a class="text-decoration-none" href="{{ url_for('questions.route_question', question_id=question.question_id) }}">{{ question.question_title }}</a>&nbsp;
+							<a class="text-decoration-none" href="{{ url_for('questions.route_question', question_id=question.question_id) }}">{{ question.question_title|truncate(80) }}</a>&nbsp;
 							<span class="badge btn-primary">{{ question.tag_name }}</span>&nbsp;
 							<small class="text-muted">{{ question.question_message|truncate(100) }}</small>
 						</td>

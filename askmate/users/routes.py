@@ -112,6 +112,12 @@ def route_users():
 
 @users.route("/user/<int:user_id>")
 def route_user(user_id):
+
+    if current_user.is_authenticated and user_id == current_user.user_id:
+        return redirect(url_for('users.route_account'))
+
     user = data_manager.find_user_by_id(user_id)
+
+
 
     return render_template('user.html', user=user)

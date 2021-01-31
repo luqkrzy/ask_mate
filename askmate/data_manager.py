@@ -35,7 +35,7 @@ def ask_new_question(new_question):
 
 
 def add_new_answer(new_answer):
-    answer = Answer(user_id=new_answer('user_id'), message=new_answer('message'), question_id=new_answer('question_id'))
+    answer = Answer(user_id=new_answer.get('user_id'), message=new_answer.get('message'), question_id=new_answer.get('question_id'))
     commit_to_database(answer)
 
 
