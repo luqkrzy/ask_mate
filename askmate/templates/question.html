@@ -29,27 +29,27 @@
 									{{ user_info.user_name.split()[0] }}
 									{{ macro_reputation_color(data=user_info, type='number') }}</a></small>
 							</div>
-							<div class="col-sm">
-								<small class="text-muted">{{ question.vote_number }} votes</small>
+							<div class="col-sm"><i class="text-muted fas fa-poll" data-bs-toggle="tooltip" data-bs-placement="top" title="score"></i>
+								<small class="text-muted">{{ question.vote_number }}</small>
 							</div>
 
 							<div class="col-sm mb-2">
-								<small class="text-muted">{{ question.view_number }} views</small>
+								<small class="text-muted"><i class="fas fa-eye" data-bs-toggle="tooltip" data-bs-placement="top" title="views number"></i> {{ question.view_number }}</small>
 							</div>
 							{{ macro_vote_question(current_user=current_user, question_vote=question_vote, question=question) }}
 							{% if current_user.is_authenticated %}
 								{% if current_user.user_id == question.user_id %}
 									<div class="col-sm text-end">
 										<a href="{{ url_for('questions.route_edit_question', question_id=question.question_id) }}">
-											<i type="button" class="far fa-edit"></i></a>
-										<i type="button" class="btn text-danger btn-sm fas fa-trash-alt" data-bs-toggle="modal" data-bs-target="#confirm_delete_question"></i>
+											<i class="far fa-edit"></i></a>
+										<i class="btn text-danger btn-sm fas fa-trash-alt" data-bs-toggle="modal" data-bs-target="#confirm_delete_question"></i>
 									</div>
 								{% endif %}
 							{% endif %}
 							{% if comments_for_question %}
 								<div class="container mt-3">
 									<p>
-										<span class="btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_comment" aria-expanded="false" aria-controls="collapse_comment">
+										<span class="btn-sm btn-primary" data-bs-toggle="collapse" data-bs-target="#collapse_comment" aria-expanded="false" aria-controls="collapse_comment">
 											comments&nbsp;<span class="badge bg-secondary">{{ comments_for_question.count() }}</span>
 										</span>
 									</p>
@@ -67,7 +67,7 @@
 															</a></small>
 															{% if current_user.is_authenticated %}
 																{% if current_user.user_id == comment.user_id %}
-																	<i data-bs-toggle="modal" type="button" data-bs-target="#confirm_delete_comment" class="fas fa-trash"></i>
+																	<i data-bs-toggle="modal" data-bs-target="#confirm_delete_comment" class="fas fa-trash"></i>
 																	</td>
 																	{{ macro_modal_delete(modal_id="confirm_delete_comment", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment_for_question=True)) }}
 																{%- endif %}
