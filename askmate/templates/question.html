@@ -59,7 +59,7 @@
 												<tbody>
 												{% for comment in comments_for_question %}
 													<tr>
-														<td class="small text-muted">{{ comment.message }}&nbsp;<small>{{ comment.submission_time.strftime('%y-%m-%d') }}&nbsp;</small>
+														<td class="small text-muted" id="comment-question-{{ comment.comment_id }}">{{ comment.message }}&nbsp;<small>{{ comment.submission_time.strftime('%y-%m-%d') }}&nbsp;</small>
 															{% set user_info = func_user_info(comment.user_id|int) %}
 															<small><a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=user_info.user_id) }}">
 																{{ user_info.user_name.split()[0] }}
@@ -103,7 +103,7 @@
 					{{ macro_vote_for_answer(current_user=current_user, question=question, answer=answer) }}
 					<div class="col">
 						<div class="card-body pb-2">
-							<p>{{ answer.message }}</p>
+							<p id="answer-{{ answer.answer_id|string }}">{{ answer.message }}</p>
 							{% set answer_comments = comments_for_answers(answer.answer_id|int) %}
 							{% if answer_comments %}
 								<table class="table text-muted mb-1 ">
@@ -111,7 +111,7 @@
 									{#	comments for answers #}
 									{% for comment in answer_comments %}
 										<tr>
-											<td class="border-bottom py-1 small">{{ comment.message }} -
+											<td class="border-bottom py-1 small" id="comment-answer-{{ comment.comment_id }}">{{ comment.message }} -
 												<small class="text-muted">&nbsp;{{ comment.submission_time.strftime('%y-%m-%d') }}&nbsp;
 													{% set user_info = func_user_info(comment.user_id|int) %}
 													<a class="text-decoration-none" href="{{ url_for('users.route_user', user_id=user_info.user_id) }}">
@@ -120,7 +120,7 @@
 													</a></small>
 												{% if current_user.is_authenticated %}
 													{% if current_user.user_id == comment.user_id %}
-														<i data-bs-toggle="modal" type="button" data-bs-target="#confirm_delete_comment_for_answer" class="fas fa-trash"></i>
+														<i data-bs-toggle="modal" data-bs-target="#confirm_delete_comment_for_answer" class="fas fa-trash"></i>
 														{{ macro_modal_delete(modal_id="confirm_delete_comment_for_answer", route=url_for('questions.route_question', question_id=question.question_id, comment_id=comment.comment_id, remove_comment_for_answer=True) ) }}
 													{% endif %}
 												{% endif %}

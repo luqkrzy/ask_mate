@@ -17,7 +17,7 @@
 							<div class="col-md-10 col-sm-9 col-lg-8 col-xl-9">
 								<div class="card-body">
 									<p class="mb-2">
-										<a href="" class="text-decoration-none">{{ user.user_name.split()[0] }}</a>
+										<a href="{{ url_for('users.route_user', user_id=user.user_id) }}" class="text-decoration-none">{{ user.user_name.split()[0] }}</a>
 										{{ macro_reputation_color(data=user) }}</p>
 									<p class="card-text">
 										<small class="text-muted">since: {{ user.register_date.strftime('%y-%m-%d') }} </small>

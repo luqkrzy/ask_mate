@@ -1,9 +1,7 @@
 {% extends "layout.html" %}
 {% from '_macros.html' import macro_question_input %}
 {% block title %}Question{% endblock %}
-{% block content %}
-
-	{{ question_id == True}}
+{%- block content %}
 	{%- if not question_id -%}
 		{% set add_question = True -%}
 	{%- else %}
@@ -16,4 +14,4 @@
 		{{ macro_question_input(action= url_for('questions.route_edit_question', question_id=question_id), info="Update", title=form.title,
 		 message=form.message, tag_name=form.tag_name, image=form.image, hidden_tag=form.hidden_tag(), submit=form.submit) }}
 	{%- endif %}
-{% endblock %}
+{%- endblock %}
