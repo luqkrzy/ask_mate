@@ -263,7 +263,7 @@
 
 {# sorting bar #}
 {% macro sort_bar(route="", data="", order_direction="", search_resoult="", tag_name="") %}
-	{%- if data.total == 0 %}
+	{%- if data.total == 0 and request.endpoint == 'questions.route_search' %}
 		<div class="container mt-3">
 			<p>Your search - did not match any documents.</p>
 			<p>Suggestions:</p>
