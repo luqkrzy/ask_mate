@@ -87,13 +87,13 @@
 {%- endmacro -%}
 
 {# submission time or edit time #}
-{% macro macro_submission_time(data="") %}
-	{% if data.edit_submission_time %}
+{%- macro macro_submission_time(data="") -%}
+	{%- if data.edit_submission_time -%}
 		updated {{ data.edit_submission_time.strftime('%y-%m-%d') }}
-	{% else %}
+	{%- else -%}
 		posted {{ data.submission_time.strftime('%y-%m-%d') }}
-	{% endif %}
-{% endmacro %}
+	{%- endif -%}
+{%- endmacro -%}
 
 {# comment  plural/singular #}
 {%- macro macro_comment_pl_sg(count_it='') -%}
@@ -169,13 +169,13 @@
 {%- endmacro %}
 
 {# macro image defalut #}
-{% macro macro_image(data="") %}
-	{% if data.image %}
+{%- macro macro_image(data="") %}
+	{%- if data.image -%}
 		<img src="{{ url_for('static', filename='img/question_pic/'+data.image) }}" class="img-fluid" alt="pic">
-	{% else %}
+	{%- else -%}
 		<img src="{{ url_for('static', filename='img/question_pic/default_question.png') }}" class="img-fluid w-75" alt="pic">
-	{% endif %}
-{% endmacro %}
+	{%- endif -%}
+{%- endmacro -%}
 
 {# highlight search results #}
 {%- macro macro_heihlight_search_pharse(column="", search_phrase="") -%}
@@ -189,7 +189,7 @@
 {%- endmacro -%}
 
 {# add comments #}
-{% macro macro_add_comment(action="", comment_for="") %}
+{%- macro macro_add_comment(action="", comment_for="") -%}
 	<form class="row" action="{{ action }}" method="post">
 		<div class="col-8 mt-2">
 			<label for="{{ comment_for }}" class="visually-hidden">comment_for</label>
@@ -199,7 +199,7 @@
 			<button type="submit" class="btn btn-primary p-1">post</button>
 		</div>
 	</form>
-{% endmacro %}
+{%- endmacro -%}
 
 {# list comments #}
 {% macro list_comments(item="", the_list="", data_target="", route_question="") %}
@@ -305,23 +305,23 @@
 {# macro block for already voted question #}
 {%- macro macro_vote_question(current_user="", question_vote="", question="" ) -%}
 	<div class="col-sm mb-2">
-		{% if current_user.is_authenticated %}
-			{% if question.user_id == current_user.user_id %}
+		{%- if current_user.is_authenticated -%}
+			{%- if question.user_id == current_user.user_id -%}
 				&nbsp;
-			{% else %}
-				{%- if question_vote.value('has_voted') == None %}
+			{%- else %}
+				{%- if question_vote.value('has_voted') == None -%}
 					<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=-1, user_id = question.user_id) }}"><i class="far fa-thumbs-down btn btn-outline-danger"></i></a>&nbsp;&nbsp;
 					<a href="{{ url_for('questions.route_question', question_id=question.question_id, questions_votes=+1, user_id = question.user_id) }}"><i class="far fa-thumbs-up btn btn-outline-success"></i></a>
-				{%- elif question_vote.value('has_voted') > 0 %}
+				{%- elif question_vote.value('has_voted') > 0 -%}
 					<i class="far fa-thumbs-up text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="voted on {{ question_vote.value('vote_time') }}"></i>&nbsp;
-				{%- elif question_vote.value('has_voted') < 0 %}
+				{%- elif question_vote.value('has_voted') < 0 -%}
 					<i class="far fa-thumbs-down text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="voted on {{ question_vote.value('vote_time') }}"></i>&nbsp;&nbsp;
-				{%- endif %}
+				{%- endif -%}
 			{%- endif %}
-		{%- else %}
+		{%- else -%}
 			<i class="far fa-thumbs-down text-danger"></i>&nbsp;&nbsp;
 			<i class="far fa-thumbs-up text-success"></i>
-		{%- endif %}
+		{%- endif -%}
 	</div>
 {%- endmacro -%}
 
@@ -339,10 +339,10 @@
 {%- endmacro -%}
 
 {# macro vote for answer #}
-{% macro macro_vote_for_answer(current_user="", question="", answer="") %}
-	{% if current_user.is_authenticated %}
-		{% set function = func_check_user_answer_vote(current_user.user_id|int, answer.answer_id|int)%}
-		{% if answer.user_id == current_user.user_id %}
+{%- macro macro_vote_for_answer(current_user="", question="", answer="") -%}
+	{% if current_user.is_authenticated -%}
+		{%- set function = func_check_user_answer_vote(current_user.user_id|int, answer.answer_id|int) -%}
+		{%- if answer.user_id == current_user.user_id -%}
 			<div class="col-1">
 				<div class="row mt-3">
 					<p class="text-center">
@@ -356,8 +356,8 @@
 					</p>
 				</div>
 			</div>
-		{% else %}
-			{% if function.value('has_voted') == None %}
+		{%- else -%}
+			{%- if function.value('has_voted') == None -%}
 				<div class="col-sm-1 p-0 col-lg-1">
 					<div class="row mt-3">
 						<p class="text-center" id="vote-{{ answer.answer_id }}">
@@ -371,7 +371,7 @@
 						</p>
 					</div>
 				</div>
-			{%- elif function.value('has_voted') > 0 %}
+			{%- elif function.value('has_voted') > 0 -%}
 				<div class="col-sm-1 p-0 col-lg-1">
 					<div class="row mt-3">
 						<p class="text-center">
@@ -385,7 +385,7 @@
 						</p>
 					</div>
 				</div>
-			{%- elif function.value('has_voted') < 0 %}
+			{%- elif function.value('has_voted') < 0 -%}
 				<div class="col-sm-1 p-0 col-lg-1">
 					<div class="row mt-3">
 						<p class="text-center">
@@ -399,9 +399,9 @@
 						</p>
 					</div>
 				</div>
-			{% endif %}
-		{% endif %}
-	{% else %}
+			{%- endif -%}
+		{%- endif -%}
+	{%- else -%}
 		<div class="col-1">
 			<div class="row mt-3">
 				<p class="text-center">
@@ -415,42 +415,42 @@
 				</p>
 			</div>
 		</div>
-	{% endif %}
-{% endmacro %}
+	{%- endif -%}
+{%- endmacro -%}
 
 
 {# change question or answer score pill color #}
-{% macro macro_score_color(data="") %}
-	{% if   data.vote_number < 0 %}
-		{% set color = 'danger' %}
-	{% elif 0 <= data.vote_number < 30 %}
-		{% set color = 'secondary' %}
-	{% elif 30 < data.vote_number < 55 %}
-		{% set color = 'warning' %}
-	{% elif 55 < data.vote_number < 100 %}
-		{% set color = 'primary' %}
-	{% elif data.vote_number > 100 %}
-		{% set color = 'success' %}
-	{% endif %}
+{%- macro macro_score_color(data="") -%}
+	{%- if   data.vote_number < 0 -%}
+		{%- set color = 'danger' -%}
+	{%- elif 0 <= data.vote_number < 30 -%}
+		{%- set color = 'secondary' -%}
+	{%- elif 30 < data.vote_number < 55 -%}
+		{%- set color = 'warning' -%}
+	{%- elif 55 < data.vote_number < 100 -%}
+		{%- set color = 'primary' -%}
+	{%- elif data.vote_number > 100 -%}
+		{%- set color = 'success' -%}
+	{%- endif -%}
 	<span class="badge bg-{{ color }}">{{ data.vote_number }}</span>
-{% endmacro %}
+{%- endmacro -%}
 
 {# change user reputation pill color #}
-{% macro macro_reputation_color(data="", type="") %}
-	{% if   data.reputation|int < 0 %}
-		{% set color = 'danger' %}
-	{% elif 0 <= data.reputation < 500 %}
-		{% set color = 'secondary' %}
-	{% elif 500 < data.reputation < 1000 %}
-		{% set color = 'warning' %}
-	{% elif 1000 < data.reputation < 2000 %}
-		{% set color = 'primary' %}
-	{% elif data.reputation > 2000 %}
-		{% set color = 'success' %}
-	{% endif %}
-	{% if type == 'number' %}
+{%- macro macro_reputation_color(data="", type="") %}
+	{%- if   data.reputation|int < 0 -%}
+		{%- set color = 'danger' -%}
+	{%- elif 0 <= data.reputation < 500 -%}
+		{% set color = 'secondary' -%}
+	{%- elif 500 < data.reputation < 1000 -%}
+		{%- set color = 'warning' -%}
+	{%- elif 1000 < data.reputation < 2000 -%}
+		{%- set color = 'primary' -%}
+	{%- elif data.reputation > 2000 -%}
+		{%- set color = 'success' -%}
+	{%- endif -%}
+	{%- if type == 'number' -%}
 		<span class="badge bg-{{ color }}">{{ data.reputation }}</span>
-	{% else %}
+	{%- else -%}
 		<span class="text-{{ color }} fw-bold ">&#9679;</span>
-	{% endif %}
-{% endmacro %}
+	{%- endif -%}
+{%- endmacro -%}

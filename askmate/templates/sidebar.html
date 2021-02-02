@@ -5,28 +5,27 @@
 	<div class="mb-5 mt-3">
 		<p class="fw-bold my-1">Tags</p>
 		<div class="list-group">
-			{%- for tag in func_tags() -%}
+			{%- for tag in func_tags() %}
 				<a href="{{ url_for('questions.route_tag', tag_id=tag.tag_id) }}" class="d-flex link-secondary text-decoration-none justify-content-between align-items-center my-1">#{{ tag.tag_name }}<span class="badge bg-primary rounded-pill">{{ tag.count }}</span></a>
-			{% endfor -%}
+			{%- endfor -%}
 		</div>
 	</div>
 	<div class="mb-5">
 		<p class="fw-bold my-1">Recent</p>
-		{% for question in func_find_last_10_question_titles() %}
+		{%- for question in func_find_last_10_question_titles() %}
 			<div class="my-2">
 				{{ macro_score_color(data=question) }}
 				<a class="text-decoration-none small" href="{{ url_for('questions.route_question', question_id=question.question_id) }}">{{ question.title|truncate(50, False) }}</a>
 			</div>
-		{% endfor %}
+		{%- endfor %}
 	</div>
 	<div class="mt-6">
-		<p class="fw-bold my-1"><a href="{{ url_for('users.route_users') }}" class="text-decoration-none">Top users</a>
-		</p>
-		{% for user in func_find_top_10_users() %}
+		<p class="fw-bold my-1"><a href="{{ url_for('users.route_users') }}" class="text-decoration-none">Top users</a></p>
+		{%- for user in func_find_top_10_users() %}
 			<div class="my-2">
 				<span class="badge bg-success">{{ user.reputation }}</span>
 				<a class="text-decoration-none small text-muted" href="{{ url_for('users.route_user', user_id=func_user_info(user.user_id|int).user_id) }}">{{ user.user_name }}</a>
 			</div>
-		{% endfor %}
+		{%- endfor %}
 	</div>
 </aside>
