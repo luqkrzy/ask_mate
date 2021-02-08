@@ -225,7 +225,7 @@
 			<div class="card-header d-flex">
 				<div class="col-10 text-start">
 					<span class="badge bg-success">{{ macro_votes(question_votes=item.vote_number) }}</span>&nbsp;
-					<a class="text-decoration-none fw-bold text-dark" href="{{ url_for(route_question, question_id=item.question_id) }}">{{ macro_heihlight_search_pharse(column=item.title, search_phrase=search_phrase)|truncate(115, True, '...') }}</a>
+					<a class="text-decoration-none fw-bold text-dark title" href="{{ url_for(route_question, question_id=item.question_id) }}">{{item.title|truncate(115, True, '...') }}</a>
 					<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for(route_tag, tag_id=item.tag_id) }}">{{ func_find_tag_name(item.tag_id|int).tag_name|e }}</a></span>
 				</div>
 				<ul class="col-2 list-inline text-end mb-0">
@@ -238,7 +238,7 @@
 			</div>
 			<div class="card-body pb-1">
 				<div class="row">
-					<p class="card-text">{{ macro_heihlight_search_pharse(column=item.message, search_phrase=search_phrase) }}</p>
+					<p class="card-text message">{{ item.message }}</p>
 					<hr class="m-1">
 					<ul class="list-inline text-end mb-0">
 						<li class="list-inline-item">

@@ -9,4 +9,13 @@
 	{{ macro_pagination(data_type=questions, page_num=page_num, search_phrase=search_phrase,
 	 previous=url_for('questions.route_search', page=questions.prev_num, search_phrase=search_phrase),
 	  route= 'questions.route_search', next=url_for('questions.route_search', page=questions.next_num, search_phrase=search_phrase)) }}
+
+	{#	search highlighter #}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww=="
+	        crossorigin="anonymous"></script>
+	<script>
+		let context = document.querySelectorAll('.title, .message');
+		let instance = new Mark(context);
+		instance.mark('{{ search_phrase }}');
+	</script>
 {% endblock content %}
