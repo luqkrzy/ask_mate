@@ -1,7 +1,6 @@
 import os
 import inspect
 from flask import current_app
-
 from secrets import token_hex
 from PIL import Image
 

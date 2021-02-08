@@ -13,7 +13,6 @@ def route_search():
     order_direction = request.args.get('order_direction')
     switch_order_direction = data_manager.switch_asc_desc(order_direction)
     request_args = dict(request.args)
-    print(request_args)
     search_phrase = request.args.get('search_phrase')
 
     questions = data_manager.search_query(request_args=request_args)
@@ -25,8 +24,6 @@ def route_search():
 def route_tag():
     order_direction = request.args.get('order_direction')
     switch_order_direction = data_manager.switch_asc_desc(order_direction)
-    request_args = dict(request.args)
-    print(request_args)
     tag_id = request.args.get('tag_id')
 
     questions = data_manager.fetch_questions_by_tag(request_args=dict(request.args))
@@ -53,12 +50,11 @@ def route_question(question_id):
             question.vote_number += int(data_to_modify.get('questions_votes'))
             data_manager.update_to_database()
             data_manager.modify_user_reputation(data_to_modify)
-            data_manager.vote_for_question_user_votes_table(question_id=question_id, user_id=current_user.user_id, vote_value=data_to_modify.get('questions_votes'))
+            data_manager.vote_for_question_user_votes_table(question_id=question_id, user_id=current_user.user_id, vote_value=int(data_to_modify.get('questions_votes')))
             return redirect(url_for('questions.route_question', question_id=question_id))
 
 
         elif 'answers_votes' in data_to_modify:
-            print(data_to_modify)
             data_manager.vote_for_answer(data_to_modify, user_id=current_user.user_id)
             data_manager.modify_user_reputation(data_to_modify)
             return redirect(url_for('questions.route_question', question_id=question_id))
@@ -70,12 +66,12 @@ def route_question(question_id):
             return redirect(url_for('main.route_home'))
 
         elif 'remove_answer' in data_to_modify:
-            data_manager.remove_answer_by_id(answer_id=request.args.get('answer_id'))
+            data_manager.remove_answer_by_id(answer_id=int(request.args.get('answer_id')))
             flash('Answer deleted', 'info')
             return redirect(url_for('questions.route_question', question_id=question_id))
 
         elif 'remove_comment_for_question' in data_to_modify:
-            data_manager.remove_comment_for_question_by_id(comment_id=request.args.get('comment_id'))
+            data_manager.remove_comment_for_question_by_id(comment_id=int(request.args.get('comment_id')))
             flash('Comment deleted', 'info')
             return redirect(url_for('questions.route_question', question_id=question_id))
 
@@ -138,7 +134,6 @@ def route_add_question():
         if form.image.data:
             picture_file = save_picture(form.image.data)
         new_question = {'user_id': current_user.user_id, 'title': form.title.data, 'message': form.message.data, 'image': picture_file, 'tag_id': form.tag_name.data.tag_id}
-        print(new_question)
 
         data_manager.ask_new_question(new_question)
         flash('Question posted ', 'success')
@@ -182,7 +177,6 @@ def route_edit_question(question_id):
 
 @questions.route("/question/<int:question_id>/new_question_comment", methods=["GET", "POST"])
 def route_add_comment_for_question(question_id):
-    print(request.form)
     if request.method == "POST":
         new_comment = {
             'user_id': current_user.user_id,

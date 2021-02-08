@@ -223,9 +223,9 @@
 	{% for item in the_list.items %}
 		<div class="card text-dark bg-light mt-3">
 			<div class="card-header d-flex">
-				<div class="col-10  fw-bold text-start">
+				<div class="col-10 text-start">
 					<span class="badge bg-success">{{ macro_votes(question_votes=item.vote_number) }}</span>&nbsp;
-					<a class="text-decoration-none text-dark" href="{{ url_for(route_question, question_id=item.question_id) }}">{{ macro_heihlight_search_pharse(column=item.title, search_phrase=search_phrase)|truncate(115, True, '...') }}</a>
+					<a class="text-decoration-none fw-bold text-dark" href="{{ url_for(route_question, question_id=item.question_id) }}">{{ macro_heihlight_search_pharse(column=item.title, search_phrase=search_phrase)|truncate(115, True, '...') }}</a>
 					<span class="badge bg-primary"><a class="link-light text-decoration-none" href="{{ url_for(route_tag, tag_id=item.tag_id) }}">{{ func_find_tag_name(item.tag_id|int).tag_name|e }}</a></span>
 				</div>
 				<ul class="col-2 list-inline text-end mb-0">
@@ -302,6 +302,7 @@
 		</div>
 	{% endif %}
 {%- endmacro -%}
+
 {# macro block for already voted question #}
 {%- macro macro_vote_question(current_user="", question_vote="", question="" ) -%}
 	<div class="col-sm mb-2">
@@ -417,7 +418,6 @@
 		</div>
 	{%- endif -%}
 {%- endmacro -%}
-
 
 {# change question or answer score pill color #}
 {%- macro macro_score_color(data="") -%}

@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash
 from flask_login import current_user, login_user, logout_user, login_required
-from askmate import db, bcrypt
+from askmate import bcrypt
 import askmate.data_manager as data_manager
 from askmate.users.utils import save_picture
-from askmate.models import Users, Question
 from askmate.users.forms import RegistrationForm, LoginForm, UpdateAccountForm
 
 users = Blueprint('users', __name__)
@@ -110,14 +109,12 @@ def route_users():
 
     return render_template('users.html', users=users, asc_desc=switch_order_direction)
 
+
 @users.route("/user/<int:user_id>")
 def route_user(user_id):
-
     if current_user.is_authenticated and user_id == current_user.user_id:
         return redirect(url_for('users.route_account'))
 
     user = data_manager.find_user_by_id(user_id)
-
-
 
     return render_template('user.html', user=user)

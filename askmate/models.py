@@ -1,14 +1,7 @@
-from flask import current_app
 from datetime import datetime
 from askmate import db, login_manager
 from flask_login import UserMixin
 
-from sqlalchemy.ext.automap import automap_base
-
-
-# Base = automap_base()
-# Base.prepare(db.engine, reflect=True)
-# UsersVote = Base.classes.uservote
 
 @login_manager.user_loader
 def load_user(user_id):
