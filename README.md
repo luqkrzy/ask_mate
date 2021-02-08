@@ -1,6 +1,6 @@
-# AskMate (sprint 1)
+# AskMate
 
-This is a Q&A page, where you can ask questions and answers them. Like Reddit.
+This is a Q&A page, where you can ask questions and answer them. Like Reddit.
 
 ## Story
 

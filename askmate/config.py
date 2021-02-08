@@ -23,7 +23,7 @@ class Config:
     TESTING = False
     CSRF_ENABLED = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = 'd6843ae88d2a6755ea08ef12e2f2f046'
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     UPLOAD_EXTENSIONS = ['.jpg', '.png', '.jpeg'],
     USR_PIC_PATH = 'askmate/static/img/usr_pic'
     QUESTION_PIC_PATH = 'askmate/static/img/question_pic'
